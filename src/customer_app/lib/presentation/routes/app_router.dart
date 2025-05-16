@@ -12,7 +12,8 @@ import 'package:customer_app/presentation/screens/settings/settings_screen.dart'
 import 'package:customer_app/presentation/screens/details/university_details_screen.dart';
 import 'package:customer_app/presentation/screens/details/program_details_screen.dart';
 import 'package:customer_app/presentation/screens/bookmarks/bookmarks_screen.dart';
-import 'package:customer_app/presentation/screens/application/application_screen_new.dart' as new_app_screen;
+import 'package:customer_app/presentation/screens/application/application_screen_new.dart'
+    as new_app_screen;
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
