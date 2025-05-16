@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../constants/app_constants.dart';
 import '../errors/exceptions.dart';
 
@@ -238,19 +239,25 @@ class ApiClient {
   InterceptorsWrapper _createLoggingInterceptor() {
     return InterceptorsWrapper(
       onRequest: (options, handler) {
-        print('REQUEST[${options.method}] => PATH: ${options.path}');
+        if (kDebugMode) {
+          print('REQUEST[${options.method}] => PATH: ${options.path}');
+        }
         return handler.next(options);
       },
       onResponse: (response, handler) {
-        print(
-          'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-        );
+        if (kDebugMode) {
+          print(
+            'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+          );
+        }
         return handler.next(response);
       },
       onError: (DioException e, handler) {
-        print(
-          'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
-        );
+        if (kDebugMode) {
+          print(
+            'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
+          );
+        }
         return handler.next(e);
       },
     );

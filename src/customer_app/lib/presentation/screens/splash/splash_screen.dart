@@ -1,3 +1,4 @@
+import 'package:customer_app/core/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -45,7 +46,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withPreciseOpacity(0.1),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -73,7 +74,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             Text(
               'Connecting students with educational services',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withPreciseOpacity(0.8),
               ),
             ),
             const SizedBox(height: 48),

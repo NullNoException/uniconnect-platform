@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/data/mock_program_repository.dart';
 import '../../domain/entities/program.dart';
+import '../../domain/repositories/program_repository.dart';
 import '../../domain/usecases/program_usecases.dart';
 
 // Program search state
@@ -149,7 +151,6 @@ final toggleProgramBookmarkUseCaseProvider =
 
 // Mock repository provider
 // Will be replaced with a real implementation
-final programRepositoryProvider = Provider((ref) {
-  // Return a mock implementation for now
-  throw UnimplementedError('Program repository not yet implemented');
+final programRepositoryProvider = Provider<ProgramRepository>((ref) {
+  return MockProgramRepository();
 });

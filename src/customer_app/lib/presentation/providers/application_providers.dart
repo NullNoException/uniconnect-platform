@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:file_picker/file_picker.dart';
 
 import '../../domain/entities/application.dart';
 import '../../domain/usecases/application_usecases.dart';

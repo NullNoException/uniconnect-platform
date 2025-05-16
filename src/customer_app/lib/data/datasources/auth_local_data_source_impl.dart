@@ -5,7 +5,7 @@ import '../../core/errors/exceptions.dart';
 import '../models/user_model.dart';
 import 'auth_local_data_source.dart';
 
-const CACHED_USER_KEY = 'CACHED_USER';
+const cachedUserKey = 'CACHED_USER';
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final SharedPreferences sharedPreferences;
@@ -14,7 +14,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<UserModel?> getLastUser() async {
-    final jsonString = sharedPreferences.getString(CACHED_USER_KEY);
+    final jsonString = sharedPreferences.getString(cachedUserKey);
     if (jsonString != null) {
       try {
         return UserModel.fromJson(json.decode(jsonString));
@@ -31,11 +31,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> cacheUser(UserModel user) async {
     final jsonString = json.encode(user.toJson());
-    await sharedPreferences.setString(CACHED_USER_KEY, jsonString);
+    await sharedPreferences.setString(cachedUserKey, jsonString);
   }
 
   @override
   Future<void> clearUser() async {
-    await sharedPreferences.remove(CACHED_USER_KEY);
+    await sharedPreferences.remove(cachedUserKey);
   }
 }

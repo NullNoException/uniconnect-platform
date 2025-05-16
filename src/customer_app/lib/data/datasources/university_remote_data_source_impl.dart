@@ -1,4 +1,3 @@
-import '../../core/errors/exceptions.dart';
 import '../../core/network/api_client.dart';
 import '../models/university_model.dart';
 import 'university_remote_data_source.dart';
@@ -38,8 +37,8 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
       return (response['data'] as List)
           .map((json) => UniversityModel.fromJson(json))
           .toList();
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 
@@ -48,8 +47,8 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
     try {
       final response = await apiClient.get('/universities/$id');
       return UniversityModel.fromJson(response['data']);
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 
@@ -60,8 +59,8 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
       return (response['data'] as List)
           .map((json) => UniversityModel.fromJson(json))
           .toList();
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 
@@ -72,8 +71,8 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
       return (response['data'] as List)
           .map((json) => UniversityModel.fromJson(json))
           .toList();
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 
@@ -85,8 +84,8 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
         data: {'university_id': universityId},
       );
       return response['bookmarked'] as bool;
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 }

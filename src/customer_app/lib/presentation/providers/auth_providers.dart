@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/usecases/auth_usecases.dart';
+import '../../core/data/mock_auth_repository.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 // Auth repository and use cases providers will be defined elsewhere
 
@@ -191,7 +193,6 @@ final isAuthenticatedUseCaseProvider = Provider<IsAuthenticatedUseCase>((ref) {
 
 // Mock repository provider
 // Will be replaced with a real implementation
-final authRepositoryProvider = Provider((ref) {
-  // Return a mock implementation for now
-  throw UnimplementedError('Auth repository not yet implemented');
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return MockAuthRepository();
 });

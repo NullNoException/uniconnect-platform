@@ -313,24 +313,16 @@ class MockApplicationRemoteDataSource implements ApplicationRemoteDataSource {
   }
 
   String _getStatusDescription(ApplicationStatus status) {
-    switch (status) {
-      case ApplicationStatus.draft:
-        return 'Draft';
-      case ApplicationStatus.submitted:
-        return 'Submitted';
-      case ApplicationStatus.underReview:
-        return 'Under Review';
-      case ApplicationStatus.documentRequired:
-        return 'Document Required';
-      case ApplicationStatus.interviewScheduled:
-        return 'Interview Scheduled';
-      case ApplicationStatus.accepted:
-        return 'Accepted';
-      case ApplicationStatus.rejected:
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
+    const statusDescriptions = {
+      ApplicationStatus.draft: 'Draft',
+      ApplicationStatus.submitted: 'Submitted',
+      ApplicationStatus.underReview: 'Under Review',
+      ApplicationStatus.documentRequired: 'Document Required',
+      ApplicationStatus.interviewScheduled: 'Interview Scheduled',
+      ApplicationStatus.accepted: 'Accepted',
+      ApplicationStatus.rejected: 'Rejected',
+    };
+    return statusDescriptions[status] ?? 'Unknown';
   }
 
   @override
@@ -434,22 +426,6 @@ class MockApplicationRemoteDataSource implements ApplicationRemoteDataSource {
       'dueDate': updatedTask.dueDate.toIso8601String(),
       'isCompleted': true,
     };
-  }
-
-  // Helper method to map document status string to enum
-  DocumentStatus _mapDocumentStatusFromString(String status) {
-    switch (status.toLowerCase()) {
-      case 'required':
-        return DocumentStatus.required;
-      case 'submitted':
-        return DocumentStatus.submitted;
-      case 'verified':
-        return DocumentStatus.verified;
-      case 'rejected':
-        return DocumentStatus.rejected;
-      default:
-        return DocumentStatus.required;
-    }
   }
 
   // Helper method to map application status string to enum
@@ -568,13 +544,14 @@ class MockApplicationLocalDataSource implements ApplicationLocalDataSource {
     }
 
     // Convert string status to enum using pattern matching
-    final docStatus = switch (status.toLowerCase()) {
-      'required' => DocumentStatus.required,
-      'submitted' => DocumentStatus.submitted,
-      'verified' => DocumentStatus.verified,
-      'rejected' => DocumentStatus.rejected,
-      _ => DocumentStatus.required,
-    };
+    final docStatus =
+        {
+          'required': DocumentStatus.required,
+          'submitted': DocumentStatus.submitted,
+          'verified': DocumentStatus.verified,
+          'rejected': DocumentStatus.rejected,
+        }[status.toLowerCase()] ??
+        DocumentStatus.required;
 
     final oldDoc = documents[documentIndex];
     documents[documentIndex] = ApplicationDocumentModel(

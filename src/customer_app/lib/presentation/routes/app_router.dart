@@ -91,13 +91,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       if (!isAuthenticated) {
         return AppConstants.loginRoute;
       }
-
-      // Redirect to home if already logged in and trying to access login/signup
-      if (isAuthenticated && (isLoggingIn || isSigningUp)) {
-        return AppConstants.homeRoute;
-      }
-
-      return null; // No redirection needed
     },
   );
 });

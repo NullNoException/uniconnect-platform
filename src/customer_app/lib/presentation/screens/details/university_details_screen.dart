@@ -121,7 +121,7 @@ class _UniversityDetailsScreenState
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withAlpha((0.4 * 255).round()),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.arrow_back, color: Colors.white),
@@ -133,7 +133,7 @@ class _UniversityDetailsScreenState
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withAlpha((0.4 * 255).round()),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -162,7 +162,7 @@ class _UniversityDetailsScreenState
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withAlpha((0.4 * 255).round()),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.share, color: Colors.white),
@@ -178,7 +178,9 @@ class _UniversityDetailsScreenState
           children: [
             // Placeholder for university image
             Container(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withAlpha((0.8 * 255).round()),
               child: const Center(
                 child: Icon(
                   Icons.account_balance,
@@ -193,7 +195,10 @@ class _UniversityDetailsScreenState
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withAlpha((0.7 * 255).round()),
+                  ],
                   stops: const [0.6, 1.0],
                 ),
               ),
@@ -366,7 +371,7 @@ class _UniversityDetailsScreenState
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Center(
                 child: Column(
@@ -524,7 +529,7 @@ class _UniversityDetailsScreenState
           leading: CircleAvatar(
             backgroundColor: Theme.of(
               context,
-            ).colorScheme.primary.withOpacity(0.1),
+            ).colorScheme.primary.withAlpha((0.1 * 255).round()),
             child: Icon(
               _getFacilityIcon(facility),
               color: Theme.of(context).colorScheme.primary,

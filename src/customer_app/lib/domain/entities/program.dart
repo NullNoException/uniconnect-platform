@@ -103,39 +103,26 @@ class Program {
   }
 
   String get levelText {
-    switch (level) {
-      case ProgramLevel.certificate:
-        return 'Certificate';
-      case ProgramLevel.diploma:
-        return 'Diploma';
-      case ProgramLevel.associate:
-        return 'Associate Degree';
-      case ProgramLevel.bachelor:
-        return 'Bachelor\'s Degree';
-      case ProgramLevel.master:
-        return 'Master\'s Degree';
-      case ProgramLevel.doctoral:
-        return 'Doctoral Degree';
-      case ProgramLevel.postDoctoral:
-        return 'Post-Doctoral';
-      default:
-        return 'Unknown';
-    }
+    const levelMap = {
+      ProgramLevel.certificate: 'Certificate',
+      ProgramLevel.diploma: 'Diploma',
+      ProgramLevel.associate: 'Associate Degree',
+      ProgramLevel.bachelor: 'Bachelor\'s Degree',
+      ProgramLevel.master: 'Master\'s Degree',
+      ProgramLevel.doctoral: 'Doctoral Degree',
+      ProgramLevel.postDoctoral: 'Post-Doctoral',
+    };
+    return levelMap[level] ?? 'Unknown';
   }
 
   String get studyModeText {
-    switch (studyMode) {
-      case StudyMode.fullTime:
-        return 'Full-time';
-      case StudyMode.partTime:
-        return 'Part-time';
-      case StudyMode.online:
-        return 'Online';
-      case StudyMode.blended:
-        return 'Blended Learning';
-      default:
-        return 'Unknown';
-    }
+    const modeMap = {
+      StudyMode.fullTime: 'Full-time',
+      StudyMode.partTime: 'Part-time',
+      StudyMode.online: 'Online',
+      StudyMode.blended: 'Blended Learning',
+    };
+    return modeMap[studyMode] ?? 'Unknown';
   }
 
   String? get formattedTuitionFee {

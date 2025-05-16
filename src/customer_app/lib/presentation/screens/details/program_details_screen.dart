@@ -1,3 +1,4 @@
+import 'package:customer_app/core/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -152,7 +153,7 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withPreciseOpacity(0.4),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.arrow_back, color: Colors.white),
@@ -164,7 +165,7 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withPreciseOpacity(0.4),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -193,7 +194,7 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withPreciseOpacity(0.4),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.share, color: Colors.white),
@@ -215,7 +216,9 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
                   end: Alignment.bottomRight,
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withPreciseOpacity(0.8),
                   ],
                 ),
               ),
@@ -226,7 +229,10 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withPreciseOpacity(0.7),
+                  ],
                   stops: const [0.6, 1.0],
                 ),
               ),

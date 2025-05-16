@@ -2,28 +2,17 @@ import '../../domain/entities/application.dart';
 
 class ApplicationModel extends Application {
   ApplicationModel({
-    required String id,
-    required String programId,
-    required String programName,
-    required String universityId,
-    required String universityName,
-    required ApplicationStatus status,
-    required DateTime submissionDate,
-    required List<ApplicationDocument> documents,
-    required List<ApplicationTimeline> timeline,
-    required List<ApplicationTask> tasks,
-  }) : super(
-         id: id,
-         programId: programId,
-         programName: programName,
-         universityId: universityId,
-         universityName: universityName,
-         status: status,
-         submissionDate: submissionDate,
-         documents: documents,
-         timeline: timeline,
-         tasks: tasks,
-       );
+    required super.id,
+    required super.programId,
+    required super.programName,
+    required super.universityId,
+    required super.universityName,
+    required super.status,
+    required super.submissionDate,
+    required super.documents,
+    required super.timeline,
+    required super.tasks,
+  });
 
   factory ApplicationModel.fromJson(Map<String, dynamic> json) {
     return ApplicationModel(
@@ -140,41 +129,27 @@ class ApplicationModel extends Application {
   }
 
   static String _applicationStatusToString(ApplicationStatus status) {
-    switch (status) {
-      case ApplicationStatus.draft:
-        return 'draft';
-      case ApplicationStatus.submitted:
-        return 'submitted';
-      case ApplicationStatus.underReview:
-        return 'under_review';
-      case ApplicationStatus.documentRequired:
-        return 'document_required';
-      case ApplicationStatus.interviewScheduled:
-        return 'interview_scheduled';
-      case ApplicationStatus.accepted:
-        return 'accepted';
-      case ApplicationStatus.rejected:
-        return 'rejected';
-      default:
-        return 'submitted';
-    }
+    const statusMap = {
+      ApplicationStatus.draft: 'draft',
+      ApplicationStatus.submitted: 'submitted',
+      ApplicationStatus.underReview: 'under_review',
+      ApplicationStatus.documentRequired: 'document_required',
+      ApplicationStatus.interviewScheduled: 'interview_scheduled',
+      ApplicationStatus.accepted: 'accepted',
+      ApplicationStatus.rejected: 'rejected',
+    };
+    return statusMap[status] ?? 'submitted';
   }
 }
 
 class ApplicationDocumentModel extends ApplicationDocument {
   ApplicationDocumentModel({
-    required String id,
-    required String name,
-    required DocumentStatus status,
-    String? fileUrl,
-    DateTime? submissionDate,
-  }) : super(
-         id: id,
-         name: name,
-         status: status,
-         fileUrl: fileUrl,
-         submissionDate: submissionDate,
-       );
+    required super.id,
+    required super.name,
+    required super.status,
+    super.fileUrl,
+    super.submissionDate,
+  });
 
   factory ApplicationDocumentModel.fromJson(Map<String, dynamic> json) {
     return ApplicationDocumentModel(
@@ -210,42 +185,35 @@ class ApplicationDocumentModel extends ApplicationDocument {
   }
 
   static DocumentStatus _parseDocumentStatus(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'required':
-        return DocumentStatus.required;
-      case 'submitted':
-        return DocumentStatus.submitted;
-      case 'verified':
-        return DocumentStatus.verified;
-      case 'rejected':
-        return DocumentStatus.rejected;
-      default:
-        return DocumentStatus.required;
-    }
+    final statusMap = {
+      'required': DocumentStatus.required,
+      'submitted': DocumentStatus.submitted,
+      'verified': DocumentStatus.verified,
+      'rejected': DocumentStatus.rejected,
+    };
+    final key = status?.toLowerCase();
+    return statusMap.containsKey(key)
+        ? statusMap[key]!
+        : DocumentStatus.required;
   }
 
   static String _documentStatusToString(DocumentStatus status) {
-    switch (status) {
-      case DocumentStatus.required:
-        return 'required';
-      case DocumentStatus.submitted:
-        return 'submitted';
-      case DocumentStatus.verified:
-        return 'verified';
-      case DocumentStatus.rejected:
-        return 'rejected';
-      default:
-        return 'required';
-    }
+    const statusMap = {
+      DocumentStatus.required: 'required',
+      DocumentStatus.submitted: 'submitted',
+      DocumentStatus.verified: 'verified',
+      DocumentStatus.rejected: 'rejected',
+    };
+    return statusMap[status] ?? 'required';
   }
 }
 
 class ApplicationTimelineModel extends ApplicationTimeline {
   ApplicationTimelineModel({
-    required ApplicationStatus status,
-    required DateTime date,
-    required String description,
-  }) : super(status: status, date: date, description: description);
+    required super.status,
+    required super.date,
+    required super.description,
+  });
 
   factory ApplicationTimelineModel.fromJson(Map<String, dynamic> json) {
     return ApplicationTimelineModel(
@@ -274,18 +242,12 @@ class ApplicationTimelineModel extends ApplicationTimeline {
 
 class ApplicationTaskModel extends ApplicationTask {
   ApplicationTaskModel({
-    required String id,
-    required String title,
-    required String description,
-    required DateTime dueDate,
-    required bool isCompleted,
-  }) : super(
-         id: id,
-         title: title,
-         description: description,
-         dueDate: dueDate,
-         isCompleted: isCompleted,
-       );
+    required super.id,
+    required super.title,
+    required super.description,
+    required super.dueDate,
+    required super.isCompleted,
+  });
 
   factory ApplicationTaskModel.fromJson(Map<String, dynamic> json) {
     return ApplicationTaskModel(

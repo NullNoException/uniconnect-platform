@@ -6,7 +6,7 @@ import '../../domain/entities/application.dart';
 import '../models/application_model.dart';
 import 'application_local_data_source.dart';
 
-const CACHED_APPLICATIONS = 'CACHED_APPLICATIONS';
+const cachedApplications = 'cachedApplications';
 
 class ApplicationLocalDataSourceImpl implements ApplicationLocalDataSource {
   final SharedPreferences sharedPreferences;
@@ -15,7 +15,7 @@ class ApplicationLocalDataSourceImpl implements ApplicationLocalDataSource {
 
   @override
   Future<List<ApplicationModel>> getApplications() async {
-    final jsonString = sharedPreferences.getString(CACHED_APPLICATIONS);
+    final jsonString = sharedPreferences.getString(cachedApplications);
     if (jsonString != null) {
       try {
         final List<dynamic> jsonList = json.decode(jsonString);
@@ -42,7 +42,7 @@ class ApplicationLocalDataSourceImpl implements ApplicationLocalDataSource {
   Future<void> cacheApplications(List<ApplicationModel> applications) async {
     final jsonList = applications.map((app) => app.toJson()).toList();
     await sharedPreferences.setString(
-      CACHED_APPLICATIONS,
+      cachedApplications,
       json.encode(jsonList),
     );
   }

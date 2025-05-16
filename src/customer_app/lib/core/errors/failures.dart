@@ -8,42 +8,35 @@ abstract class Failure {
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure(String message, {String? code})
-    : super(message, code: code);
+  const NetworkFailure(super.message, {super.code});
 }
 
 class ServerFailure extends Failure {
   final int? statusCode;
 
-  const ServerFailure(String message, {this.statusCode, String? code})
-    : super(message, code: code);
+  const ServerFailure(super.message, {this.statusCode, super.code});
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure(String message, {String? code})
-    : super(message, code: code);
+  const CacheFailure(super.message, {super.code});
 }
 
 class ValidationFailure extends Failure {
   final Map<String, List<String>>? fieldErrors;
 
-  const ValidationFailure(String message, {this.fieldErrors, String? code})
-    : super(message, code: code);
+  const ValidationFailure(super.message, {this.fieldErrors, super.code});
 }
 
 class AuthenticationFailure extends Failure {
-  const AuthenticationFailure(String message, {String? code})
-    : super(message, code: code);
+  const AuthenticationFailure(super.message, {super.code});
 }
 
 class PermissionFailure extends Failure {
-  const PermissionFailure(String message, {String? code})
-    : super(message, code: code);
+  const PermissionFailure(super.message, {super.code});
 }
 
 class NotFoundFailure extends Failure {
-  const NotFoundFailure(String message, {String? code})
-    : super(message, code: code);
+  const NotFoundFailure(super.message, {super.code});
 }
 
 // Helper function to map exceptions to failures

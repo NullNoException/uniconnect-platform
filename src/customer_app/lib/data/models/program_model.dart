@@ -2,42 +2,24 @@ import '../../domain/entities/program.dart';
 
 class ProgramModel extends Program {
   ProgramModel({
-    required String id,
-    required String name,
-    required String universityId,
-    String? universityName,
-    required ProgramLevel level,
-    required StudyMode studyMode,
-    required int durationMonths,
-    required String language,
-    double? tuitionFee,
-    String? currency,
-    String? description,
-    DateTime? applicationDeadline,
-    DateTime? startDate,
-    List<String>? requirements,
-    List<Map<String, dynamic>>? curriculum,
-    List<String>? careerOpportunities,
-    double? applicationFee,
-  }) : super(
-         id: id,
-         name: name,
-         universityId: universityId,
-         universityName: universityName,
-         level: level,
-         studyMode: studyMode,
-         durationMonths: durationMonths,
-         language: language,
-         tuitionFee: tuitionFee,
-         currency: currency,
-         description: description,
-         applicationDeadline: applicationDeadline,
-         startDate: startDate,
-         requirements: requirements,
-         curriculum: curriculum,
-         careerOpportunities: careerOpportunities,
-         applicationFee: applicationFee,
-       );
+    required super.id,
+    required super.name,
+    required super.universityId,
+    super.universityName,
+    required super.level,
+    required super.studyMode,
+    required super.durationMonths,
+    required super.language,
+    super.tuitionFee,
+    super.currency,
+    super.description,
+    super.applicationDeadline,
+    super.startDate,
+    super.requirements,
+    super.curriculum,
+    super.careerOpportunities,
+    super.applicationFee,
+  });
 
   factory ProgramModel.fromJson(Map<String, dynamic> json) {
     return ProgramModel(
@@ -49,8 +31,7 @@ class ProgramModel extends Program {
       studyMode: _parseStudyMode(json['study_mode']),
       durationMonths: json['duration_months'],
       language: json['language'],
-      tuitionFee:
-          json['tuition_fee'] != null ? json['tuition_fee'].toDouble() : null,
+      tuitionFee: json['tuition_fee']?.toDouble(),
       currency: json['currency'],
       description: json['description'],
       applicationDeadline:
@@ -77,10 +58,7 @@ class ProgramModel extends Program {
           json['career_opportunities'] != null
               ? List<String>.from(json['career_opportunities'])
               : null,
-      applicationFee:
-          json['application_fee'] != null
-              ? json['application_fee'].toDouble()
-              : null,
+      applicationFee: json['application_fee']?.toDouble(),
     );
   }
 
@@ -150,55 +128,37 @@ class ProgramModel extends Program {
   }
 
   static String _programLevelToString(ProgramLevel level) {
-    switch (level) {
-      case ProgramLevel.certificate:
-        return 'certificate';
-      case ProgramLevel.diploma:
-        return 'diploma';
-      case ProgramLevel.associate:
-        return 'associate';
-      case ProgramLevel.bachelor:
-        return 'bachelor';
-      case ProgramLevel.master:
-        return 'master';
-      case ProgramLevel.doctoral:
-        return 'doctoral';
-      case ProgramLevel.postDoctoral:
-        return 'postdoctoral';
-      default:
-        return 'bachelor';
-    }
+    const levelMap = {
+      ProgramLevel.certificate: 'certificate',
+      ProgramLevel.diploma: 'diploma',
+      ProgramLevel.associate: 'associate',
+      ProgramLevel.bachelor: 'bachelor',
+      ProgramLevel.master: 'master',
+      ProgramLevel.doctoral: 'doctoral',
+      ProgramLevel.postDoctoral: 'postdoctoral',
+    };
+    return levelMap[level] ?? 'bachelor';
   }
 
   static StudyMode _parseStudyMode(String? mode) {
-    switch (mode?.toLowerCase()) {
-      case 'full-time':
-      case 'fulltime':
-        return StudyMode.fullTime;
-      case 'part-time':
-      case 'parttime':
-        return StudyMode.partTime;
-      case 'online':
-        return StudyMode.online;
-      case 'blended':
-        return StudyMode.blended;
-      default:
-        return StudyMode.fullTime;
-    }
+    final modeMap = {
+      'full-time': StudyMode.fullTime,
+      'fulltime': StudyMode.fullTime,
+      'part-time': StudyMode.partTime,
+      'parttime': StudyMode.partTime,
+      'online': StudyMode.online,
+      'blended': StudyMode.blended,
+    };
+    return modeMap[mode?.toLowerCase()] ?? StudyMode.fullTime;
   }
 
   static String _studyModeToString(StudyMode mode) {
-    switch (mode) {
-      case StudyMode.fullTime:
-        return 'full-time';
-      case StudyMode.partTime:
-        return 'part-time';
-      case StudyMode.online:
-        return 'online';
-      case StudyMode.blended:
-        return 'blended';
-      default:
-        return 'full-time';
-    }
+    const modeMap = {
+      StudyMode.fullTime: 'full-time',
+      StudyMode.partTime: 'part-time',
+      StudyMode.online: 'online',
+      StudyMode.blended: 'blended',
+    };
+    return modeMap[mode] ?? 'full-time';
   }
 }

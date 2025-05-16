@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/utils/color_utils.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -80,7 +81,7 @@ class AppTextField extends StatelessWidget {
               readOnly || !enabled
                   ? Theme.of(
                     context,
-                  ).colorScheme.surfaceVariant.withOpacity(0.3)
+                  ).colorScheme.surfaceContainerHighest.withPreciseOpacity(0.3)
                   : null,
         ),
       ),

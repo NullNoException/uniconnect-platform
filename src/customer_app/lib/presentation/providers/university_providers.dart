@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/data/mock_university_repository.dart';
 import '../../domain/entities/university.dart';
+import '../../domain/repositories/university_repository.dart';
 import '../../domain/usecases/university_usecases.dart';
 
 // University search state
@@ -165,7 +167,6 @@ final toggleUniversityBookmarkUseCaseProvider =
 
 // Mock repository provider
 // Will be replaced with a real implementation
-final universityRepositoryProvider = Provider((ref) {
-  // Return a mock implementation for now
-  throw UnimplementedError('University repository not yet implemented');
+final universityRepositoryProvider = Provider<UniversityRepository>((ref) {
+  return MockUniversityRepository();
 });

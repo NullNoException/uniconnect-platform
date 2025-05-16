@@ -11,8 +11,7 @@ abstract class AppException implements Exception {
 }
 
 class NetworkException extends AppException {
-  const NetworkException(String message, {String? code, Exception? cause})
-    : super(message, code: code, cause: cause);
+  const NetworkException(super.message, {super.code, super.cause});
 }
 
 class ServerException extends AppException {
@@ -42,27 +41,21 @@ class ValidationException extends AppException {
   final Map<String, List<String>>? fieldErrors;
 
   const ValidationException(
-    String message, {
+    super.message, {
     this.fieldErrors,
-    String? code,
-    Exception? cause,
-  }) : super(message, code: code, cause: cause);
+    super.code,
+    super.cause,
+  });
 }
 
 class AuthenticationException extends AppException {
-  const AuthenticationException(
-    String message, {
-    String? code,
-    Exception? cause,
-  }) : super(message, code: code, cause: cause);
+  const AuthenticationException(super.message, {super.code, super.cause});
 }
 
 class PermissionException extends AppException {
-  const PermissionException(String message, {String? code, Exception? cause})
-    : super(message, code: code, cause: cause);
+  const PermissionException(super.message, {super.code, super.cause});
 }
 
 class NotFoundException extends AppException {
-  const NotFoundException(String message, {String? code, Exception? cause})
-    : super(message, code: code, cause: cause);
+  const NotFoundException(super.message, {super.code, super.cause});
 }

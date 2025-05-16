@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/utils/color_utils.dart';
 
 // Mock data models for UI development
 class BookmarkedItem {
@@ -145,7 +146,9 @@ class BookmarksScreen extends ConsumerWidget {
                 child: Container(
                   width: 60,
                   height: 60,
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withPreciseOpacity(0.1),
                   child: Center(
                     child: Icon(
                       item.type == 'university'

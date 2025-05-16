@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/color_utils.dart';
 
 // Sample data models for UI development
 class University {
@@ -305,7 +306,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withPreciseOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -318,7 +319,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // University image placeholder
             Container(
               height: 120,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withPreciseOpacity(0.1),
               child: Center(
                 child: Icon(
                   Icons.account_balance,
@@ -400,7 +403,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withPreciseOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

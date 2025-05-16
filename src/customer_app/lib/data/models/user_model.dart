@@ -2,24 +2,15 @@ import '../../domain/entities/user.dart';
 
 class UserModel extends User {
   UserModel({
-    required String id,
-    required String email,
-    required String firstName,
-    required String lastName,
-    String? profileImage,
-    String? phoneNumber,
-    required DateTime createdAt,
-    required bool isEmailVerified,
-  }) : super(
-         id: id,
-         email: email,
-         firstName: firstName,
-         lastName: lastName,
-         profileImage: profileImage,
-         phoneNumber: phoneNumber,
-         createdAt: createdAt,
-         isEmailVerified: isEmailVerified,
-       );
+    required super.id,
+    required super.email,
+    required super.firstName,
+    required super.lastName,
+    super.profileImage,
+    super.phoneNumber,
+    required super.createdAt,
+    required super.isEmailVerified,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

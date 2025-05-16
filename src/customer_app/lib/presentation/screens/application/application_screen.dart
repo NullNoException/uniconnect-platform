@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../domain/entities/application.dart';
+import '../../../core/utils/color_utils.dart';
 import '../../providers/application_providers.dart';
 
 // Use application detail provider from application_providers.dart
@@ -130,7 +131,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withPreciseOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -216,7 +217,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                     height: 70,
                     color: Theme.of(
                       context,
-                    ).colorScheme.primary.withOpacity(0.3),
+                    ).colorScheme.primary.withPreciseOpacity(0.3),
                   ),
               ],
             ),
@@ -295,7 +296,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                             decoration: BoxDecoration(
                               color: _getDocumentStatusColor(
                                 document.status,
-                              ).withOpacity(0.1),
+                              ).withPreciseOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -460,7 +461,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                   size: 64,
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                  ).colorScheme.onSurfaceVariant.withPreciseOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -587,7 +588,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.primary.withOpacity(0.1),
+                      ).colorScheme.primary.withPreciseOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -608,7 +609,7 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.error.withOpacity(0.1),
+                      ).colorScheme.error.withPreciseOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -742,12 +743,14 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
       }
       return false;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error uploading document: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error uploading document: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return false;
     }
   }

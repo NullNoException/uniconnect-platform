@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../../core/utils/color_utils.dart';
 
 import '../../../domain/entities/application.dart';
 import '../../providers/application_providers.dart';
@@ -10,8 +11,7 @@ import '../../providers/application_providers.dart';
 class ApplicationScreen extends ConsumerWidget {
   final String applicationId;
 
-  const ApplicationScreen({Key? key, required this.applicationId})
-    : super(key: key);
+  const ApplicationScreen({super.key, required this.applicationId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,8 +53,7 @@ class ApplicationScreen extends ConsumerWidget {
 class ApplicationDetailView extends ConsumerWidget {
   final Application application;
 
-  const ApplicationDetailView({Key? key, required this.application})
-    : super(key: key);
+  const ApplicationDetailView({super.key, required this.application});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -162,7 +161,7 @@ class ApplicationDetailView extends ConsumerWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      backgroundColor: chipColor.withOpacity(0.2),
+      backgroundColor: chipColor.withPreciseOpacity(0.2),
       side: BorderSide(color: chipColor),
       padding: const EdgeInsets.symmetric(horizontal: 8),
     );
@@ -361,7 +360,7 @@ class ApplicationDetailView extends ConsumerWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: dueDateColor.withOpacity(0.1),
+                        color: dueDateColor.withAlpha((0.1 * 255).round()),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(color: dueDateColor),
                       ),
@@ -416,7 +415,7 @@ class ApplicationDetailView extends ConsumerWidget {
         actions.add(
           ElevatedButton(
             onPressed: () {
-              DefaultTabController.of(context)?.animateTo(1);
+              DefaultTabController.of(context).animateTo(1);
             },
             child: const Text('View Required Documents'),
           ),

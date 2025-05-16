@@ -61,25 +61,18 @@ class Application {
     );
   }
 
+  static const Map<ApplicationStatus, String> _statusTextMap = {
+    ApplicationStatus.draft: 'Draft',
+    ApplicationStatus.submitted: 'Submitted',
+    ApplicationStatus.underReview: 'Under Review',
+    ApplicationStatus.documentRequired: 'Document Required',
+    ApplicationStatus.interviewScheduled: 'Interview Scheduled',
+    ApplicationStatus.accepted: 'Accepted',
+    ApplicationStatus.rejected: 'Rejected',
+  };
+
   String get statusText {
-    switch (status) {
-      case ApplicationStatus.draft:
-        return 'Draft';
-      case ApplicationStatus.submitted:
-        return 'Submitted';
-      case ApplicationStatus.underReview:
-        return 'Under Review';
-      case ApplicationStatus.documentRequired:
-        return 'Document Required';
-      case ApplicationStatus.interviewScheduled:
-        return 'Interview Scheduled';
-      case ApplicationStatus.accepted:
-        return 'Accepted';
-      case ApplicationStatus.rejected:
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
+    return _statusTextMap[status] ?? 'Unknown';
   }
 
   int get completionPercentage {
@@ -132,19 +125,15 @@ class ApplicationDocument {
     );
   }
 
+  static const Map<DocumentStatus, String> _statusTextMap = {
+    DocumentStatus.required: 'Required',
+    DocumentStatus.submitted: 'Submitted',
+    DocumentStatus.verified: 'Verified',
+    DocumentStatus.rejected: 'Rejected',
+  };
+
   String get statusText {
-    switch (status) {
-      case DocumentStatus.required:
-        return 'Required';
-      case DocumentStatus.submitted:
-        return 'Submitted';
-      case DocumentStatus.verified:
-        return 'Verified';
-      case DocumentStatus.rejected:
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
+    return _statusTextMap[status] ?? 'Unknown';
   }
 }
 
@@ -171,25 +160,18 @@ class ApplicationTimeline {
     );
   }
 
+  static const Map<ApplicationStatus, String> _statusTextMap = {
+    ApplicationStatus.draft: 'Draft',
+    ApplicationStatus.submitted: 'Submitted',
+    ApplicationStatus.underReview: 'Under Review',
+    ApplicationStatus.documentRequired: 'Document Required',
+    ApplicationStatus.interviewScheduled: 'Interview Scheduled',
+    ApplicationStatus.accepted: 'Accepted',
+    ApplicationStatus.rejected: 'Rejected',
+  };
+
   String get statusText {
-    switch (status) {
-      case ApplicationStatus.draft:
-        return 'Draft';
-      case ApplicationStatus.submitted:
-        return 'Submitted';
-      case ApplicationStatus.underReview:
-        return 'Under Review';
-      case ApplicationStatus.documentRequired:
-        return 'Document Required';
-      case ApplicationStatus.interviewScheduled:
-        return 'Interview Scheduled';
-      case ApplicationStatus.accepted:
-        return 'Accepted';
-      case ApplicationStatus.rejected:
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
+    return _statusTextMap[status] ?? 'Unknown';
   }
 }
 

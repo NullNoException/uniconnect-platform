@@ -6,7 +6,6 @@ import '../../domain/entities/application.dart';
 import '../../domain/repositories/application_repository.dart';
 import '../datasources/application_remote_data_source.dart';
 import '../datasources/application_local_data_source.dart';
-import '../models/application_model.dart';
 
 class ApplicationRepositoryImpl implements ApplicationRepository {
   final ApplicationRemoteDataSource remoteDataSource;
@@ -185,38 +184,25 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
 
   // Helper methods to map enum values to strings and back
   String _mapApplicationStatusToString(ApplicationStatus status) {
-    switch (status) {
-      case ApplicationStatus.draft:
-        return 'draft';
-      case ApplicationStatus.submitted:
-        return 'submitted';
-      case ApplicationStatus.underReview:
-        return 'under_review';
-      case ApplicationStatus.documentRequired:
-        return 'document_required';
-      case ApplicationStatus.interviewScheduled:
-        return 'interview_scheduled';
-      case ApplicationStatus.accepted:
-        return 'accepted';
-      case ApplicationStatus.rejected:
-        return 'rejected';
-      default:
-        return 'draft';
-    }
+    final statusMap = {
+      ApplicationStatus.draft: 'draft',
+      ApplicationStatus.submitted: 'submitted',
+      ApplicationStatus.underReview: 'under_review',
+      ApplicationStatus.documentRequired: 'document_required',
+      ApplicationStatus.interviewScheduled: 'interview_scheduled',
+      ApplicationStatus.accepted: 'accepted',
+      ApplicationStatus.rejected: 'rejected',
+    };
+    return statusMap[status] ?? 'draft';
   }
 
   DocumentStatus _mapDocumentStatusFromString(String status) {
-    switch (status.toLowerCase()) {
-      case 'required':
-        return DocumentStatus.required;
-      case 'submitted':
-        return DocumentStatus.submitted;
-      case 'verified':
-        return DocumentStatus.verified;
-      case 'rejected':
-        return DocumentStatus.rejected;
-      default:
-        return DocumentStatus.required;
-    }
+    final statusMap = {
+      'required': DocumentStatus.required,
+      'submitted': DocumentStatus.submitted,
+      'verified': DocumentStatus.verified,
+      'rejected': DocumentStatus.rejected,
+    };
+    return statusMap[status.toLowerCase()] ?? DocumentStatus.required;
   }
 }

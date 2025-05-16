@@ -2,34 +2,20 @@ import '../../domain/entities/university.dart';
 
 class UniversityModel extends University {
   UniversityModel({
-    required String id,
-    required String name,
-    required String country,
-    required String city,
-    String? logoUrl,
-    String? coverImageUrl,
-    int? foundedYear,
-    String? description,
-    Map<String, dynamic>? ranking,
-    List<String>? facilities,
-    String? websiteUrl,
-    String? contactEmail,
-    String? contactPhone,
-  }) : super(
-         id: id,
-         name: name,
-         country: country,
-         city: city,
-         logoUrl: logoUrl,
-         coverImageUrl: coverImageUrl,
-         foundedYear: foundedYear,
-         description: description,
-         ranking: ranking,
-         facilities: facilities,
-         websiteUrl: websiteUrl,
-         contactEmail: contactEmail,
-         contactPhone: contactPhone,
-       );
+    required super.id,
+    required super.name,
+    required super.country,
+    required super.city,
+    super.logoUrl,
+    super.coverImageUrl,
+    super.foundedYear,
+    super.description,
+    super.ranking,
+    super.facilities,
+    super.websiteUrl,
+    super.contactEmail,
+    super.contactPhone,
+  });
 
   factory UniversityModel.fromJson(Map<String, dynamic> json) {
     return UniversityModel(
