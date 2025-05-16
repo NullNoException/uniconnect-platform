@@ -85,14 +85,32 @@ cd uniconnect-platform
 
 ### 2. Configure Git Hooks
 
-Set up pre-commit hooks to enforce code quality:
+Set up Git hooks using Husky to enforce code quality:
 
 ```bash
-# Install pre-commit
-pip install pre-commit
+# Git hooks are already configured in the .husky directory
+# The configuration is automatically applied when you clone the repository
+```
 
-# Set up hooks
-pre-commit install
+Git hooks that are enabled:
+
+1. **Pre-commit Hook**: Runs before each commit to ensure code quality
+
+   - Formats and lints Dart/Flutter code
+   - Formats C# code with dotnet format
+   - Runs Python pre-commit hooks for Python files
+
+2. **Commit Message Hook**: Enforces conventional commit message format
+   - Format: `type(scope): subject`
+   - Example: `feat(api): add user authentication endpoint`
+   - Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+To bypass hooks temporarily (not recommended):
+
+```bash
+git commit -m "message" --no-verify
+# or
+HUSKY=0 git push
 ```
 
 ### 3. Branch Naming Convention
@@ -101,6 +119,12 @@ pre-commit install
 - Bug fixes: `fix/description`
 - Releases: `release/version`
 - Hotfixes: `hotfix/description`
+
+### 4. Commit Message Guidelines
+
+- Use the format: `type(scope): subject`
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- Example: `feat(api): add user authentication endpoint`
 
 ## Contribution Workflow
 
@@ -178,8 +202,10 @@ The repository includes GitHub Actions workflows for:
 
 2. **Code Scanning**
 
-   - Set up automated code scanning with CodeQL
-   - Address security alerts promptly
+   - Automated code scanning with CodeQL is set up via `.github/workflows/codeql-analysis.yml`
+   - CodeQL analyzes JavaScript, Python, C#, and Dart code
+   - Scans run automatically on push to main, PRs to main, and weekly on Sunday
+   - Address security alerts promptly via the Security tab
 
 3. **Dependency Management**
    - Keep dependencies updated

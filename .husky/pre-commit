@@ -1,0 +1,27 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run Python checks (if Python files are changed)
+if git diff --cached --name-only | grep -E '\.py$'; then
+  echo "Running Python checks..."
+  pip install pre-commit >/dev/null 2>&1
+  pre-commit run --hook-stage pre-commit --files $(git diff --cached --name-only | grep -E '\.py$')
+fi
+
+# Run Flutter formatting check (if Flutter/Dart files are changed)
+if git diff --cached --name-only | grep -E '\.dart$'; then
+    echo "Running Flutter format check..."
+    (cd src/customer_app && dart format --set-exit-if-changed .)
+
+    echo "Running Flutter analysis (warnings allowed for initial commit)..."
+    (cd src/customer_app && dart analyze --no-fatal-infos --no-fatal-warnings)
+
+    echo "Running Flutter tests..."
+    (cd src/customer_app && flutter test || true)
+fi
+
+# Run dotnet format (if C# files are changed)
+if git diff --cached --name-only | grep -E '\.cs$'; then
+    echo "Running dotnet format..."
+    (cd src/core-api && dotnet format)
+fi
