@@ -14,7 +14,7 @@ if git diff --cached --name-only | grep -E '\.dart$'; then
     (cd src/customer_app && dart format --set-exit-if-changed .)
 
     echo "Running Flutter analysis (warnings allowed for initial commit)..."
-    (cd src/customer_app && dart analyze --no-fatal-infos --no-fatal-warnings)
+    (cd src/customer_app && dart analyze --fatal-infos --no-fatal-warnings)
 
     echo "Running Flutter tests..."
     (cd src/customer_app && flutter test || true)
