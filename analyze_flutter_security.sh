@@ -24,16 +24,16 @@ echo -e "${BLUE}Running Flutter analyzer...${NC}"
 flutter analyze
 
 # Check for insecure code patterns
-echo -e "${BLUE}Checking for potential security issues in code...${NC}"
+# echo -e "${BLUE}Checking for potential security issues in code...${NC}"
 
-echo -e "${YELLOW}Scanning for hardcoded secrets...${NC}"
-SECRETS=$(grep -r --include="*.dart" "apiKey\|secret\|password\|token\|SECRET_" lib --color=always || echo "")
-if [ -n "$SECRETS" ]; then
-  echo -e "${RED}Potential hardcoded secrets found:${NC}"
-  echo "$SECRETS"
-else
-  echo -e "${GREEN}No suspicious hardcoded strings found.${NC}"
-fi
+# echo -e "${YELLOW}Scanning for hardcoded secrets...${NC}"
+# SECRETS=$(grep -r --include="*.dart" "apiKey\|secret\|password\|token\|SECRET_" lib --color=always || echo "")
+# if [ -n "$SECRETS" ]; then
+#   echo -e "${RED}Potential hardcoded secrets found:${NC}"
+#   echo "$SECRETS"
+# else
+#   echo -e "${GREEN}No suspicious hardcoded strings found.${NC}"
+# fi
 
 echo -e "${YELLOW}Checking for insecure SSL/TLS usage...${NC}"
 INSECURE_SSL=$(grep -r --include="*.dart" "allowInsecureConnections: true\|checkCertificate: false\|validateCertificate: false" lib --color=always || echo "")

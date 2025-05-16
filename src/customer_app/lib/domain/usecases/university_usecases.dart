@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../entities/university.dart';
-import '../repositories/university_repository.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/university.dart';
+import 'package:customer_app/domain/repositories/university_repository.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 class GetUniversitiesUseCase {
   final UniversityRepository repository;

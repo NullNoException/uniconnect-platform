@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../entities/user.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/user.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 abstract class AuthRepository {
   /// Check if the user is authenticated

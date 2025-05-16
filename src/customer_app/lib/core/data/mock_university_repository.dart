@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../domain/entities/university.dart';
-import '../../domain/repositories/university_repository.dart';
-import '../errors/failures.dart';
+import 'package:customer_app/domain/entities/university.dart';
+import 'package:customer_app/domain/repositories/university_repository.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 class MockUniversityRepository implements UniversityRepository {
   final List<University> _universities = [

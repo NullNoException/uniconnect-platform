@@ -2,13 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
-import '../core/network/network_info.dart';
-import '../core/network/api_client.dart';
-import '../domain/repositories/application_repository.dart';
-import '../data/repositories/application_repository_impl.dart';
-import '../data/datasources/application_remote_data_source.dart';
-import '../data/datasources/application_local_data_source.dart';
-import '../data/datasources/mock_application_data_source.dart';
+import 'package:customer_app/core/network/network_info.dart';
+import 'package:customer_app/core/network/api_client.dart';
+import 'package:customer_app/domain/repositories/application_repository.dart';
+import 'package:customer_app/data/repositories/application_repository_impl.dart';
+import 'package:customer_app/data/datasources/application_remote_data_source.dart';
+import 'package:customer_app/data/datasources/application_local_data_source.dart';
+import 'package:customer_app/data/datasources/mock_application_data_source.dart';
 
 // Network Info Provider
 final networkInfoProvider = Provider<NetworkInfo>((ref) {

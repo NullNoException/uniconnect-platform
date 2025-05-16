@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../entities/program.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/program.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 abstract class ProgramRepository {
   /// Get a list of programs with optional filters

@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '../../../domain/entities/application.dart';
-import '../../../core/utils/color_utils.dart';
-import '../../providers/application_providers.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/core/utils/color_utils.dart';
+import 'package:customer_app/presentation/providers/application_providers.dart';
 
 // Use application detail provider from application_providers.dart
 final applicationProvider = applicationDetailProvider;

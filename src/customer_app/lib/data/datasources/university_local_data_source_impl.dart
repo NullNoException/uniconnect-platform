@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import '../../core/errors/exceptions.dart';
-import '../local/app_database.dart';
-import '../models/university_model.dart';
-import 'university_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/data/local/app_database.dart';
+import 'package:customer_app/data/models/university_model.dart';
+import 'package:customer_app/data/datasources/university_local_data_source.dart';
 
 class UniversityLocalDataSourceImpl implements UniversityLocalDataSource {
   final AppDatabase database;

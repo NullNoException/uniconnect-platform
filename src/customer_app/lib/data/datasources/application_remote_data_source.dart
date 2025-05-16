@@ -1,4 +1,4 @@
-import '../models/application_model.dart';
+import 'package:customer_app/data/models/application_model.dart';
 
 abstract class ApplicationRemoteDataSource {
   /// Get a list of applications for the current user

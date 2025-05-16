@@ -1,4 +1,4 @@
-import '../../domain/entities/program.dart';
+import 'package:customer_app/domain/entities/program.dart';
 
 class ProgramModel extends Program {
   ProgramModel({
@@ -31,7 +31,10 @@ class ProgramModel extends Program {
       studyMode: _parseStudyMode(json['study_mode']),
       durationMonths: json['duration_months'],
       language: json['language'],
-      tuitionFee: json['tuition_fee']?.toDouble(),
+      tuitionFee:
+          (json['tuition_fee'] is num)
+              ? (json['tuition_fee'] as num).toDouble()
+              : null,
       currency: json['currency'],
       description: json['description'],
       applicationDeadline:
@@ -49,8 +52,9 @@ class ProgramModel extends Program {
       curriculum:
           json['curriculum'] != null
               ? List<Map<String, dynamic>>.from(
-                json['curriculum'].map(
-                  (item) => Map<String, dynamic>.from(item),
+                (json['curriculum'] as List<dynamic>).map(
+                  (item) =>
+                      Map<String, dynamic>.from(item as Map<dynamic, dynamic>),
                 ),
               )
               : null,
@@ -58,7 +62,10 @@ class ProgramModel extends Program {
           json['career_opportunities'] != null
               ? List<String>.from(json['career_opportunities'])
               : null,
-      applicationFee: json['application_fee']?.toDouble(),
+      applicationFee:
+          (json['application_fee'] is num)
+              ? (json['application_fee'] as num).toDouble()
+              : null,
     );
   }
 

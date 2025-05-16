@@ -1,4 +1,4 @@
-import '../models/university_model.dart';
+import 'package:customer_app/data/models/university_model.dart';
 
 abstract class UniversityLocalDataSource {
   /// Get cached universities from last API call

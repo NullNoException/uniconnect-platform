@@ -1,4 +1,4 @@
-import '../models/university_model.dart';
+import 'package:customer_app/data/models/university_model.dart';
 
 abstract class UniversityRemoteDataSource {
   /// Get a list of universities with optional filters

@@ -400,14 +400,14 @@ class _UniversityDetailsScreenState
   }
 
   Widget _buildProgramsTab() {
-    final programs = _universityData['programs'] as List;
+    final programs = _universityData['programs'] as List<dynamic>;
 
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: programs.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final program = programs[index];
+        final program = programs[index] as Map<String, dynamic>;
         return Card(
           child: InkWell(
             onTap: () {
@@ -420,7 +420,7 @@ class _UniversityDetailsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    program['name'],
+                    program['name'] as String,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
@@ -439,7 +439,7 @@ class _UniversityDetailsScreenState
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              program['degreeLevel'],
+                              program['degreeLevel'] as String,
                               style: Theme.of(
                                 context,
                               ).textTheme.bodySmall?.copyWith(
@@ -465,7 +465,7 @@ class _UniversityDetailsScreenState
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              program['duration'],
+                              program['duration'] as String,
                               style: Theme.of(
                                 context,
                               ).textTheme.bodySmall?.copyWith(

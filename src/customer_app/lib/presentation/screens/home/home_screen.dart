@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/utils/color_utils.dart';
+import 'package:customer_app/core/constants/app_constants.dart';
+import 'package:customer_app/core/utils/color_utils.dart';
 
 // Sample data models for UI development
 class University {

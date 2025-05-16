@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'color_schemes.dart';
-import 'text_themes.dart';
+import 'package:customer_app/core/theme/color_schemes.dart';
+import 'package:customer_app/core/theme/text_themes.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(

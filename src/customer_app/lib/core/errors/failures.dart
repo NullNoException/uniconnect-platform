@@ -1,4 +1,4 @@
-import 'exceptions.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
 
 abstract class Failure {
   final String message;

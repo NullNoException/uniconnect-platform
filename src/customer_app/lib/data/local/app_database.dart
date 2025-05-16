@@ -4,10 +4,10 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'tables/universities_table.dart';
-import 'tables/programs_table.dart';
-import 'tables/bookmarks_table.dart';
-import 'tables/user_table.dart';
+import 'package:customer_app/data/local/tables/universities_table.dart';
+import 'package:customer_app/data/local/tables/programs_table.dart';
+import 'package:customer_app/data/local/tables/bookmarks_table.dart';
+import 'package:customer_app/data/local/tables/user_table.dart';
 
 part 'app_database.g.dart';
 

@@ -1,4 +1,4 @@
-import '../../domain/entities/application.dart';
+import 'package:customer_app/domain/entities/application.dart';
 
 class ApplicationModel extends Application {
   ApplicationModel({
@@ -26,24 +26,30 @@ class ApplicationModel extends Application {
       documents:
           json['documents'] != null
               ? List<ApplicationDocument>.from(
-                json['documents'].map(
-                  (doc) => ApplicationDocumentModel.fromJson(doc),
+                (json['documents'] as List<dynamic>).map(
+                  (doc) => ApplicationDocumentModel.fromJson(
+                    doc as Map<String, dynamic>,
+                  ),
                 ),
               )
               : [],
       timeline:
           json['timeline'] != null
               ? List<ApplicationTimeline>.from(
-                json['timeline'].map(
-                  (event) => ApplicationTimelineModel.fromJson(event),
+                (json['timeline'] as List<dynamic>).map(
+                  (event) => ApplicationTimelineModel.fromJson(
+                    event as Map<String, dynamic>,
+                  ),
                 ),
               )
               : [],
       tasks:
           json['tasks'] != null
               ? List<ApplicationTask>.from(
-                json['tasks'].map(
-                  (task) => ApplicationTaskModel.fromJson(task),
+                (json['tasks'] as List<dynamic>).map(
+                  (task) => ApplicationTaskModel.fromJson(
+                    task as Map<String, dynamic>,
+                  ),
                 ),
               )
               : [],
@@ -61,7 +67,7 @@ class ApplicationModel extends Application {
       'submission_date': submissionDate.toIso8601String(),
       'documents':
           documents
-              .map(
+              .map<Map<String, dynamic>>(
                 (doc) =>
                     doc is ApplicationDocumentModel
                         ? doc.toJson()
@@ -70,7 +76,7 @@ class ApplicationModel extends Application {
               .toList(),
       'timeline':
           timeline
-              .map(
+              .map<Map<String, dynamic>>(
                 (event) =>
                     event is ApplicationTimelineModel
                         ? event.toJson()
@@ -79,7 +85,7 @@ class ApplicationModel extends Application {
               .toList(),
       'tasks':
           tasks
-              .map(
+              .map<Map<String, dynamic>>(
                 (task) =>
                     task is ApplicationTaskModel
                         ? task.toJson()

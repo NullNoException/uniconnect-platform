@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../domain/entities/user.dart';
-import '../../domain/repositories/auth_repository.dart';
-import '../errors/failures.dart';
+import 'package:customer_app/domain/entities/user.dart';
+import 'package:customer_app/domain/repositories/auth_repository.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 class MockAuthRepository implements AuthRepository {
   User? _currentUser;

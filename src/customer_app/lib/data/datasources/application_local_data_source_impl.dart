@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../core/errors/exceptions.dart';
-import '../../domain/entities/application.dart';
-import '../models/application_model.dart';
-import 'application_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/data/models/application_model.dart';
+import 'package:customer_app/data/datasources/application_local_data_source.dart';
 
 const cachedApplications = 'cachedApplications';
 

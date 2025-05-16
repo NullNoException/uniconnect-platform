@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../entities/program.dart';
-import '../repositories/program_repository.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/program.dart';
+import 'package:customer_app/domain/repositories/program_repository.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 class GetProgramsUseCase {
   final ProgramRepository repository;

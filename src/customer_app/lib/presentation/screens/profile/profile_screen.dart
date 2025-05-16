@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/utils/color_utils.dart';
+import 'package:customer_app/core/constants/app_constants.dart';
+import 'package:customer_app/core/utils/color_utils.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -66,7 +66,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 context,
               ).colorScheme.primary.withPreciseOpacity(0.1),
               child: Text(
-                '${_userData['firstName'][0]}${_userData['lastName'][0]}',
+                '${(_userData['firstName'] as String)[0]}${(_userData['lastName'] as String)[0]}',
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),

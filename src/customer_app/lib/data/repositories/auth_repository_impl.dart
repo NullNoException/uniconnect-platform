@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failures.dart';
-import '../../core/network/network_info.dart';
-import '../../domain/entities/user.dart';
-import '../../domain/repositories/auth_repository.dart';
-import '../datasources/auth_remote_data_source.dart';
-import '../datasources/auth_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/core/errors/failures.dart';
+import 'package:customer_app/core/network/network_info.dart';
+import 'package:customer_app/domain/entities/user.dart';
+import 'package:customer_app/domain/repositories/auth_repository.dart';
+import 'package:customer_app/data/datasources/auth_remote_data_source.dart';
+import 'package:customer_app/data/datasources/auth_local_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;

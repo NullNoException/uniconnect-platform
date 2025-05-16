@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'di/dependency_injection.dart';
-import 'presentation/routes/app_router.dart';
-import 'core/theme/app_theme.dart';
+import 'package:customer_app/di/dependency_injection.dart';
+import 'package:customer_app/presentation/routes/app_router.dart';
+import 'package:customer_app/core/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

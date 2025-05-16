@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../entities/application.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 abstract class ApplicationRepository {
   /// Get a list of applications for the current user

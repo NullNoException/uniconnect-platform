@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import '../../core/errors/exceptions.dart';
-import '../models/user_model.dart';
-import 'auth_remote_data_source.dart';
-import 'auth_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/data/models/user_model.dart';
+import 'package:customer_app/data/datasources/auth_remote_data_source.dart';
+import 'package:customer_app/data/datasources/auth_local_data_source.dart';
 
 class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   // Mock user data

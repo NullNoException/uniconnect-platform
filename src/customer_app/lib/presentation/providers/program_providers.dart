@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/data/mock_program_repository.dart';
-import '../../domain/entities/program.dart';
-import '../../domain/repositories/program_repository.dart';
-import '../../domain/usecases/program_usecases.dart';
+import 'package:customer_app/core/data/mock_program_repository.dart';
+import 'package:customer_app/domain/entities/program.dart';
+import 'package:customer_app/domain/repositories/program_repository.dart';
+import 'package:customer_app/domain/usecases/program_usecases.dart';
 
 // Program search state
 final programSearchQueryProvider = StateProvider<String>((ref) => '');

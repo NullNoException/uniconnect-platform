@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/network/api_client.dart';
-import '../models/user_model.dart';
-import 'auth_remote_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/core/network/api_client.dart';
+import 'package:customer_app/data/models/user_model.dart';
+import 'package:customer_app/data/datasources/auth_remote_data_source.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient client;
@@ -15,15 +15,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
   }) async {
     try {
-      final response = await client.post(
+      final Response<dynamic> response = await client.post(
         '/auth/login',
         data: {'email': email, 'password': password},
       );
 
-      return UserModel.fromJson(response.data['user']);
+      final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      return UserModel.fromJson(data['user'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to sign in',
+        message: errorData?['message'] ?? 'Failed to sign in',
       );
     }
   }
@@ -36,7 +41,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String lastName,
   }) async {
     try {
-      final response = await client.post(
+      final Response<dynamic> response = await client.post(
         '/auth/register',
         data: {
           'email': email,
@@ -46,10 +51,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         },
       );
 
-      return UserModel.fromJson(response.data['user']);
+      final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      return UserModel.fromJson(data['user'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to sign up',
+        message: errorData?['message'] ?? 'Failed to sign up',
       );
     }
   }
@@ -57,10 +67,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> signOut() async {
     try {
-      await client.post('/auth/logout');
+      final Response<dynamic> _ = await client.post('/auth/logout');
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to sign out',
+        message: errorData?['message'] ?? 'Failed to sign out',
       );
     }
   }
@@ -68,12 +82,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await client.post('/auth/password-reset', data: {'email': email});
+      final Response<dynamic> _ = await client.post(
+        '/auth/password-reset',
+        data: {'email': email},
+      );
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message:
-            e.response?.data?['message'] ??
-            'Failed to send password reset email',
+        message: errorData?['message'] ?? 'Failed to send password reset email',
       );
     }
   }
@@ -93,12 +112,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
       if (profileImage != null) data['profileImage'] = profileImage;
 
-      final response = await client.patch('/user/profile', data: data);
+      final Response<dynamic> response = await client.patch(
+        '/user/profile',
+        data: data,
+      );
 
-      return UserModel.fromJson(response.data['user']);
+      final Map<String, dynamic> respData =
+          response.data as Map<String, dynamic>;
+      return UserModel.fromJson(respData['user'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to update profile',
+        message: errorData?['message'] ?? 'Failed to update profile',
       );
     }
   }
@@ -109,13 +137,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String newPassword,
   }) async {
     try {
-      await client.post(
+      final Response<dynamic> _ = await client.post(
         '/auth/change-password',
         data: {'currentPassword': currentPassword, 'newPassword': newPassword},
       );
     } on DioException catch (e) {
+      final Map<String, dynamic>? errorData =
+          e.response?.data is Map<String, dynamic>
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to change password',
+        message: errorData?['message'] ?? 'Failed to change password',
       );
     }
   }

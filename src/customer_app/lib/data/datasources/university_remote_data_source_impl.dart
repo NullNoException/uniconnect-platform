@@ -1,6 +1,6 @@
-import '../../core/network/api_client.dart';
-import '../models/university_model.dart';
-import 'university_remote_data_source.dart';
+import 'package:customer_app/core/network/api_client.dart';
+import 'package:customer_app/data/models/university_model.dart';
+import 'package:customer_app/data/datasources/university_remote_data_source.dart';
 
 class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
   final ApiClient apiClient;
@@ -29,13 +29,13 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
         queryParams['offset'] = offset.toString();
       }
 
-      final response = await apiClient.get(
+      final Map<String, dynamic> response = await apiClient.get(
         '/universities',
         queryParameters: queryParams,
       );
 
-      return (response['data'] as List)
-          .map((json) => UniversityModel.fromJson(json))
+      return (response['data'] as List<dynamic>)
+          .map((json) => UniversityModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on Exception {
       rethrow;
@@ -45,8 +45,10 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
   @override
   Future<UniversityModel> getUniversity(String id) async {
     try {
-      final response = await apiClient.get('/universities/$id');
-      return UniversityModel.fromJson(response['data']);
+      final Map<String, dynamic> response = await apiClient.get(
+        '/universities/$id',
+      );
+      return UniversityModel.fromJson(response['data'] as Map<String, dynamic>);
     } on Exception {
       rethrow;
     }
@@ -55,9 +57,11 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
   @override
   Future<List<UniversityModel>> getFeaturedUniversities() async {
     try {
-      final response = await apiClient.get('/universities/featured');
-      return (response['data'] as List)
-          .map((json) => UniversityModel.fromJson(json))
+      final Map<String, dynamic> response = await apiClient.get(
+        '/universities/featured',
+      );
+      return (response['data'] as List<dynamic>)
+          .map((json) => UniversityModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on Exception {
       rethrow;
@@ -67,9 +71,11 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
   @override
   Future<List<UniversityModel>> getBookmarkedUniversities() async {
     try {
-      final response = await apiClient.get('/bookmarks/universities');
-      return (response['data'] as List)
-          .map((json) => UniversityModel.fromJson(json))
+      final Map<String, dynamic> response = await apiClient.get(
+        '/bookmarks/universities',
+      );
+      return (response['data'] as List<dynamic>)
+          .map((json) => UniversityModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on Exception {
       rethrow;
@@ -79,7 +85,7 @@ class UniversityRemoteDataSourceImpl implements UniversityRemoteDataSource {
   @override
   Future<bool> toggleBookmark(String universityId) async {
     try {
-      final response = await apiClient.post(
+      final Map<String, dynamic> response = await apiClient.post(
         '/bookmarks/universities',
         data: {'university_id': universityId},
       );

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../entities/university.dart';
-import '../../core/errors/failures.dart';
+import 'package:customer_app/domain/entities/university.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 abstract class UniversityRepository {
   /// Get a list of universities with optional filters

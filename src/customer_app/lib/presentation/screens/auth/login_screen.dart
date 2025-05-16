@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_constants.dart';
+import 'package:customer_app/core/constants/app_constants.dart';
+import 'package:customer_app/presentation/providers/auth_providers.dart';
+import 'package:customer_app/core/errors/failures.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -26,16 +29,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
 
-      // Simulate login delay
-      await Future.delayed(const Duration(seconds: 1));
+      try {
+        final loginNotifier = ref.read(loginStateProvider.notifier);
+        final success = await loginNotifier.login(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
 
-      // TODO: Implement actual login logic with error handling
-
-      setState(() => _isLoading = false);
-      if (mounted) {
-        context.go(AppConstants.homeRoute);
+        if (success && mounted) {
+          context.go(AppConstants.homeRoute);
+        } else if (mounted) {
+          // Handle login failure from the state
+          final loginState = ref.read(loginStateProvider);
+          loginState.whenOrNull(
+            error: (error, stackTrace) {
+              if (error is ServerFailure) {
+                setState(() => _errorMessage = error.message);
+              } else if (error is NetworkFailure) {
+                setState(() => _errorMessage = error.message);
+              } else {
+                setState(
+                  () => _errorMessage = 'Login failed. Please try again.',
+                );
+              }
+            },
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(
+            () =>
+                _errorMessage =
+                    'An unexpected error occurred. Please try again.',
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -126,6 +162,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: const Text('Forgot Password?'),
                   ),
                 ),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      _errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _login,

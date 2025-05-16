@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/user.dart';
-import '../../domain/usecases/auth_usecases.dart';
-import '../../core/data/mock_auth_repository.dart';
-import '../../domain/repositories/auth_repository.dart';
+import 'package:customer_app/domain/entities/user.dart';
+import 'package:customer_app/domain/usecases/auth_usecases.dart';
+import 'package:customer_app/core/data/mock_auth_repository.dart';
+import 'package:customer_app/domain/repositories/auth_repository.dart';
 
 // Auth repository and use cases providers will be defined elsewhere
 

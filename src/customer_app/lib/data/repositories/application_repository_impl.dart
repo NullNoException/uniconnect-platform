@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failures.dart';
-import '../../core/network/network_info.dart';
-import '../../domain/entities/application.dart';
-import '../../domain/repositories/application_repository.dart';
-import '../datasources/application_remote_data_source.dart';
-import '../datasources/application_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/core/errors/failures.dart';
+import 'package:customer_app/core/network/network_info.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/domain/repositories/application_repository.dart';
+import 'package:customer_app/data/datasources/application_remote_data_source.dart';
+import 'package:customer_app/data/datasources/application_local_data_source.dart';
 
 class ApplicationRepositoryImpl implements ApplicationRepository {
   final ApplicationRemoteDataSource remoteDataSource;

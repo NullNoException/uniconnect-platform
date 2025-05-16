@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/data/mock_university_repository.dart';
-import '../../domain/entities/university.dart';
-import '../../domain/repositories/university_repository.dart';
-import '../../domain/usecases/university_usecases.dart';
+import 'package:customer_app/core/data/mock_university_repository.dart';
+import 'package:customer_app/domain/entities/university.dart';
+import 'package:customer_app/domain/repositories/university_repository.dart';
+import 'package:customer_app/domain/usecases/university_usecases.dart';
 
 // University search state
 final universitySearchQueryProvider = StateProvider<String>((ref) => '');

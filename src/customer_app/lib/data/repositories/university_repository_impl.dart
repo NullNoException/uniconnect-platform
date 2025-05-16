@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failures.dart';
-import '../../core/network/network_info.dart';
-import '../../domain/entities/university.dart';
-import '../../domain/repositories/university_repository.dart';
-import '../datasources/university_local_data_source.dart';
-import '../datasources/university_remote_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/core/errors/failures.dart';
+import 'package:customer_app/core/network/network_info.dart';
+import 'package:customer_app/domain/entities/university.dart';
+import 'package:customer_app/domain/repositories/university_repository.dart';
+import 'package:customer_app/data/datasources/university_local_data_source.dart';
+import 'package:customer_app/data/datasources/university_remote_data_source.dart';
 
 class UniversityRepositoryImpl implements UniversityRepository {
   final UniversityRemoteDataSource remoteDataSource;

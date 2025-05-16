@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:math';
 import 'package:path/path.dart' as path;
 
-import '../../core/errors/exceptions.dart';
-import '../../domain/entities/application.dart';
-import '../models/application_model.dart';
-import 'application_remote_data_source.dart';
-import 'application_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/data/models/application_model.dart';
+import 'package:customer_app/data/datasources/application_remote_data_source.dart';
+import 'package:customer_app/data/datasources/application_local_data_source.dart';
 
 class MockApplicationRemoteDataSource implements ApplicationRemoteDataSource {
   // Mock storage for applications
@@ -212,10 +212,13 @@ class MockApplicationRemoteDataSource implements ApplicationRemoteDataSource {
     final id = (_applications.length + 1).toString();
     final now = DateTime.now();
 
+    // Use secure random for better security practices
+    final secureRandom = Random.secure();
+
     // Fetch program and university info (in real app would be from API)
-    final programName = 'Mock Program ${Random().nextInt(100)}';
-    final universityId = Random().nextInt(10).toString();
-    final universityName = 'Mock University ${Random().nextInt(100)}';
+    final programName = 'Mock Program ${secureRandom.nextInt(100)}';
+    final universityId = secureRandom.nextInt(10).toString();
+    final universityName = 'Mock University ${secureRandom.nextInt(100)}';
 
     final newApplication = ApplicationModel(
       id: id,

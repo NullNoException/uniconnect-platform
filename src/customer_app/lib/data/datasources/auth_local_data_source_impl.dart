@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../core/errors/exceptions.dart';
-import '../models/user_model.dart';
-import 'auth_local_data_source.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
+import 'package:customer_app/data/models/user_model.dart';
+import 'package:customer_app/data/datasources/auth_local_data_source.dart';
 
 const cachedUserKey = 'CACHED_USER';
 

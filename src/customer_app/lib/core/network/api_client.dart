@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import '../constants/app_constants.dart';
-import '../errors/exceptions.dart';
+import 'package:customer_app/core/constants/app_constants.dart';
+import 'package:customer_app/core/errors/exceptions.dart';
 
 class ApiClient {
   final Dio _dio;

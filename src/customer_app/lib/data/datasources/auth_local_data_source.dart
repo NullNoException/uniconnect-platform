@@ -1,4 +1,4 @@
-import '../models/user_model.dart';
+import 'package:customer_app/data/models/user_model.dart';
 
 abstract class AuthLocalDataSource {
   /// Gets the cached user data

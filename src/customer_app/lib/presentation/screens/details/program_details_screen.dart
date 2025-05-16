@@ -264,7 +264,7 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
                           radius: 12,
                           backgroundColor: Colors.white,
                           child: Text(
-                            _programData['universityName'][0],
+                            (_programData['universityName'] as String)[0],
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -414,8 +414,9 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
       padding: const EdgeInsets.all(16),
       itemCount: curriculum.length,
       itemBuilder: (context, index) {
-        final yearData = curriculum[index];
-        final courses = yearData['courses'] as List;
+        final Map<String, dynamic> yearData =
+            curriculum[index] as Map<String, dynamic>;
+        final List<dynamic> courses = yearData['courses'] as List<dynamic>;
 
         return Card(
           margin: const EdgeInsets.only(bottom: 16),

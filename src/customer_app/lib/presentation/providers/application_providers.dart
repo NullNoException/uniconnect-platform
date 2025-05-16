@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/application.dart';
-import '../../domain/usecases/application_usecases.dart';
-import '../../di/dependency_injection.dart';
+import 'package:customer_app/domain/entities/application.dart';
+import 'package:customer_app/domain/usecases/application_usecases.dart';
+import 'package:customer_app/di/dependency_injection.dart';
 
 // Application list provider
 final applicationListProvider = FutureProvider<List<Application>>((ref) {

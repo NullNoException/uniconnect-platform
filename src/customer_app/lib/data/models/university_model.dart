@@ -1,4 +1,4 @@
-import '../../domain/entities/university.dart';
+import 'package:customer_app/domain/entities/university.dart';
 
 class UniversityModel extends University {
   UniversityModel({

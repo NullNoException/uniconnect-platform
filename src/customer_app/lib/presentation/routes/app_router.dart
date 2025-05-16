@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_constants.dart';
-import '../screens/splash/splash_screen.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/auth/signup_screen.dart';
-import '../screens/home/home_screen.dart';
-import '../screens/profile/profile_screen.dart';
-import '../screens/settings/settings_screen.dart';
-import '../screens/details/university_details_screen.dart';
-import '../screens/details/program_details_screen.dart';
-import '../screens/bookmarks/bookmarks_screen.dart';
-import '../screens/application/application_screen_new.dart' as new_app_screen;
+import 'package:customer_app/core/constants/app_constants.dart';
+import 'package:customer_app/presentation/screens/splash/splash_screen.dart';
+import 'package:customer_app/presentation/screens/auth/login_screen.dart';
+import 'package:customer_app/presentation/screens/auth/signup_screen.dart';
+import 'package:customer_app/presentation/screens/home/home_screen.dart';
+import 'package:customer_app/presentation/screens/profile/profile_screen.dart';
+import 'package:customer_app/presentation/screens/settings/settings_screen.dart';
+import 'package:customer_app/presentation/screens/details/university_details_screen.dart';
+import 'package:customer_app/presentation/screens/details/program_details_screen.dart';
+import 'package:customer_app/presentation/screens/bookmarks/bookmarks_screen.dart';
+import 'package:customer_app/presentation/screens/application/application_screen_new.dart' as new_app_screen;
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
