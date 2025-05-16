@@ -24,12 +24,12 @@
   </ItemGroup>
   
   <!-- Uncomment these once your project structure is set up -->
-  <!--
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\UniConnect.Application\UniConnect.Application.csproj" />
     <ProjectReference Include="..\..\src\UniConnect.Domain\UniConnect.Domain.csproj" />
   </ItemGroup>
-  -->
+ 
   
 
 </Project>

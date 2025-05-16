@@ -1,0 +1,87 @@
+name: 'Flutter Security Analysis'
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'src/customer_app/**'
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'src/customer_app/**'
+  schedule:
+    - cron: '0 0 * * 0' # Run once a week at midnight on Sunday
+
+jobs:
+  flutter-security-scan:
+    name: Flutter Security Scan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/customer_app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v3
+        with:
+          flutter-version: '3.29.3'
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter static analysis
+        run: flutter analyze
+
+      - name: Install security analysis tools
+        run: |
+          dart pub global activate dependency_validator
+          dart pub global activate dart_code_metrics
+
+      - name: Check dependencies for known vulnerabilities
+        run: |
+          dart pub global run dependency_validator:dependency_validator
+          flutter pub outdated
+
+      - name: Run code metrics analysis
+        run: |
+          dart pub global run dart_code_metrics:metrics analyze lib \
+            --fatal-style \
+            --fatal-performance \
+            --fatal-warnings \
+            --reporter=github
+
+      - name: Check for insecure code patterns
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          grep -r --include="*.dart" "apiKey|secret|password|token" lib || echo "No suspicious hardcoded strings found"
+
+          echo "Checking for insecure SSL/TLS usage..."
+          grep -r --include="*.dart" "allowInsecureConnections: true" lib || echo "No insecure connections found"
+
+          echo "Checking for insecure random number generation..."
+          grep -r --include="*.dart" "Random()" lib || echo "No insecure random generators found"
+
+      - name: Analyze injection vulnerabilities
+        run: |
+          echo "Checking for SQL injection risks..."
+          grep -r --include="*.dart" "rawQuery|rawInsert|rawUpdate|rawDelete" lib || echo "No raw SQL usage found"
+
+          echo "Checking for command injection risks..."
+          grep -r --include="*.dart" "Process.run|Process.start" lib || echo "No process execution found"
+
+      - name: Export security analysis report
+        run: |
+          mkdir -p security-reports
+          flutter analyze --write=security-reports/analysis-report.txt
+          echo "Security scan completed. Check security-reports directory for details."
+
+      - name: Upload security analysis results
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter-security-scan-results
+          path: |
+            src/customer_app/security-reports/
