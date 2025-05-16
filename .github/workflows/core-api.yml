@@ -1,0 +1,95 @@
+name: Core API CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/core-api/**'
+      - '.github/workflows/core-api.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/core-api/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/core-api/UniConnect.sln
+
+      - name: Build
+        run: dotnet build src/core-api/UniConnect.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test src/core-api/UniConnect.sln --no-build --configuration Release --verbosity normal
+
+  analyze:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: src/core-api
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.CONTAINER_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: src/core-api
+          file: src/core-api/prod.Dockerfile
+          push: true
+          tags: ${{ secrets.CONTAINER_REGISTRY }}/uniconnect/api:${{ github.sha }},${{ secrets.CONTAINER_REGISTRY }}/uniconnect/api:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: publish
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Install Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Set Kubernetes context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/uniconnect-api uniconnect-api=${{ secrets.CONTAINER_REGISTRY }}/uniconnect/api:${{ github.sha }}
+          kubectl rollout status deployment/uniconnect-api

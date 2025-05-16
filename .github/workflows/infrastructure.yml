@@ -1,0 +1,210 @@
+name: Infrastructure Deployment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infrastructure.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      cloud_provider:
+        description: 'Cloud provider to deploy to'
+        required: true
+        default: 'azure'
+        type: choice
+        options:
+          - azure
+          - gcp
+          - both
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.5'
+
+      - name: Terraform Format Check - Azure
+        run: cd infra/azure && terraform fmt -check -recursive
+
+      - name: Terraform Format Check - GCP
+        run: cd infra/gcp && terraform fmt -check -recursive
+
+      - name: Terraform Validate - Azure
+        run: |
+          cd infra/azure
+          terraform init -backend=false
+          terraform validate
+
+      - name: Terraform Validate - GCP
+        run: |
+          cd infra/gcp
+          terraform init -backend=false
+          terraform validate
+
+  plan-azure:
+    needs: validate
+    if: github.event_name == 'pull_request' || inputs.cloud_provider == 'azure' || inputs.cloud_provider == 'both'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.5'
+
+      - name: Setup Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: |
+          cd infra/azure
+          terraform init -backend-config="environment=${{ github.event.inputs.environment || 'dev' }}"
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Terraform Plan
+        run: |
+          cd infra/azure
+          terraform plan -var-file="environments/${{ github.event.inputs.environment || 'dev' }}.tfvars" -out=tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-terraform-plan
+          path: infra/azure/tfplan
+
+  plan-gcp:
+    needs: validate
+    if: github.event_name == 'pull_request' || inputs.cloud_provider == 'gcp' || inputs.cloud_provider == 'both'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.5'
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Terraform Init
+        run: |
+          cd infra/gcp
+          terraform init -backend-config="prefix=${{ github.event.inputs.environment || 'dev' }}"
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Terraform Plan
+        run: |
+          cd infra/gcp
+          terraform plan -var-file="environments/${{ github.event.inputs.environment || 'dev' }}.tfvars" -out=tfplan
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcp-terraform-plan
+          path: infra/gcp/tfplan
+
+  apply-azure:
+    needs: plan-azure
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.5'
+
+      - name: Setup Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: azure-terraform-plan
+          path: infra/azure
+
+      - name: Terraform Apply
+        run: |
+          cd infra/azure
+          terraform apply -auto-approve tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+  apply-gcp:
+    needs: plan-gcp
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.5'
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: gcp-terraform-plan
+          path: infra/gcp
+
+      - name: Terraform Apply
+        run: |
+          cd infra/gcp
+          terraform apply -auto-approve tfplan
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}

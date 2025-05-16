@@ -1,0 +1,354 @@
+name: UniConnect CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - '**/*.md'
+      - 'business-analyst/**'
+      - 'docs/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths-ignore:
+      - '**/*.md'
+      - 'business-analyst/**'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  FLUTTER_VERSION: '3.19.x'
+  NODE_VERSION: '20.x'
+  AZURE_RESOURCE_GROUP: 'uniconnect-${{ github.event.inputs.deploy_environment || 'dev' }}'
+  GCP_PROJECT_ID: 'uniconnect-${{ github.event.inputs.deploy_environment || 'dev' }}'
+
+jobs:
+  # Determine which components have changed
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      core-api: ${{ steps.filter.outputs.core-api }}
+      customer-app: ${{ steps.filter.outputs.customer-app }}
+      admin-panel: ${{ steps.filter.outputs.admin-panel }}
+      infra-azure: ${{ steps.filter.outputs.infra-azure }}
+      infra-gcp: ${{ steps.filter.outputs.infra-gcp }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            core-api:
+              - 'src/core-api/**'
+            customer-app:
+              - 'src/customer_app/**'
+            admin-panel:
+              - 'src/admin-panel/**'
+            infra-azure:
+              - 'infra/azure/**'
+            infra-gcp:
+              - 'infra/gcp/**'
+
+  # Build and test Core API
+  core-api:
+    needs: changes
+    if: ${{ needs.changes.outputs.core-api == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          
+      - name: Restore dependencies
+        run: |
+          cd src/core-api
+          dotnet restore
+          
+      - name: Build
+        run: |
+          cd src/core-api
+          dotnet build --configuration Release --no-restore
+          
+      - name: Test
+        run: |
+          cd src/core-api
+          dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+          
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-core-api
+          path: src/core-api/coverage
+          
+      - name: Build Docker image
+        if: github.event_name != 'pull_request'
+        run: |
+          cd src/core-api
+          docker build -f prod.Dockerfile -t uniconnect/core-api:${{ github.sha }} -t uniconnect/core-api:latest .
+          
+      - name: Login to Azure Container Registry
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        uses: docker/login-action@v3
+        with:
+          registry: uniconnect.azurecr.io
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
+          password: ${{ secrets.AZURE_ACR_PASSWORD }}
+          
+      - name: Push Docker image to ACR
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          docker tag uniconnect/core-api:${{ github.sha }} uniconnect.azurecr.io/uniconnect/core-api:${{ github.sha }}
+          docker tag uniconnect/core-api:latest uniconnect.azurecr.io/uniconnect/core-api:latest
+          docker push uniconnect.azurecr.io/uniconnect/core-api:${{ github.sha }}
+          docker push uniconnect.azurecr.io/uniconnect/core-api:latest
+
+  # Build and test Customer App
+  customer-app:
+    needs: changes
+    if: ${{ needs.changes.outputs.customer-app == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          
+      - name: Install dependencies
+        run: |
+          cd src/customer_app
+          flutter pub get
+          
+      - name: Analyze
+        run: |
+          cd src/customer_app
+          flutter analyze
+          
+      - name: Run tests
+        run: |
+          cd src/customer_app
+          flutter test --coverage
+          
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-customer-app
+          path: src/customer_app/coverage/lcov.info
+          
+      - name: Build Android APK
+        if: github.event_name != 'pull_request'
+        run: |
+          cd src/customer_app
+          flutter build apk --release
+          
+      - name: Upload Android APK
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: src/customer_app/build/app/outputs/flutter-apk/app-release.apk
+          
+      # Add iOS build step for production releases
+      - name: Build web
+        if: github.event_name != 'pull_request'
+        run: |
+          cd src/customer_app
+          flutter build web --release
+          
+      - name: Upload web build
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-customer-app
+          path: src/customer_app/build/web
+
+  # Build and test Admin Panel
+  admin-panel:
+    needs: changes
+    if: ${{ needs.changes.outputs.admin-panel == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          
+      - name: Install dependencies
+        run: |
+          cd src/admin-panel
+          flutter pub get
+          
+      - name: Analyze
+        run: |
+          cd src/admin-panel
+          flutter analyze
+          
+      - name: Run tests
+        run: |
+          cd src/admin-panel
+          flutter test --coverage
+          
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-admin-panel
+          path: src/admin-panel/coverage/lcov.info
+          
+      - name: Build web
+        if: github.event_name != 'pull_request'
+        run: |
+          cd src/admin-panel
+          flutter build web --release
+          
+      - name: Upload web build
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-admin-panel
+          path: src/admin-panel/build/web
+
+  # Deploy Azure infrastructure
+  deploy-azure:
+    needs: changes
+    if: ${{ needs.changes.outputs.infra-azure == 'true' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.deploy_environment || 'dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.6"
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Terraform Init
+        run: |
+          cd infra/azure
+          terraform init \
+            -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="access_key=${{ secrets.AZURE_STORAGE_ACCESS_KEY }}"
+            
+      - name: Terraform Plan
+        run: |
+          cd infra/azure
+          terraform plan \
+            -var="environment=${{ github.event.inputs.deploy_environment || 'dev' }}" \
+            -var="resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}" \
+            -out=tfplan
+            
+      - name: Terraform Apply
+        run: |
+          cd infra/azure
+          terraform apply -auto-approve tfplan
+
+  # Deploy GCP infrastructure
+  deploy-gcp:
+    needs: changes
+    if: ${{ needs.changes.outputs.infra-gcp == 'true' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.deploy_environment || 'dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.6"
+          
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          
+      - name: Terraform Init
+        run: |
+          cd infra/gcp
+          terraform init \
+            -backend-config="bucket=${{ secrets.GCP_BUCKET }}" \
+            -backend-config="prefix=terraform/state"
+            
+      - name: Terraform Plan
+        run: |
+          cd infra/gcp
+          terraform plan \
+            -var="project_id=${{ env.GCP_PROJECT_ID }}" \
+            -var="environment=${{ github.event.inputs.deploy_environment || 'dev' }}" \
+            -out=tfplan
+            
+      - name: Terraform Apply
+        run: |
+          cd infra/gcp
+          terraform apply -auto-approve tfplan
+
+  # Deploy applications if infrastructure changes or application changes
+  deploy-applications:
+    needs: [core-api, customer-app, admin-panel, deploy-azure, deploy-gcp]
+    if: |
+      always() && 
+      (needs.core-api.result == 'success' || needs.core-api.result == 'skipped') && 
+      (needs.customer-app.result == 'success' || needs.customer-app.result == 'skipped') && 
+      (needs.admin-panel.result == 'success' || needs.admin-panel.result == 'skipped') && 
+      (needs.deploy-azure.result == 'success' || needs.deploy-azure.result == 'skipped') && 
+      (needs.deploy-gcp.result == 'success' || needs.deploy-gcp.result == 'skipped') &&
+      github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.deploy_environment || 'dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        
+      - name: Deploy Core API to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: uniconnect-api-${{ github.event.inputs.deploy_environment || 'dev' }}
+          images: 'uniconnect.azurecr.io/uniconnect/core-api:${{ github.sha }}'
+          
+      - name: Setup Firebase CLI
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: ${{ env.GCP_PROJECT_ID }}
+          
+      - name: Deploy Customer App to Firebase
+        run: |
+          cp -r web-customer-app/* public/
+          firebase deploy --only hosting:customer
+          
+      - name: Deploy Admin Panel to Firebase
+        run: |
+          cp -r web-admin-panel/* public/
+          firebase deploy --only hosting:admin

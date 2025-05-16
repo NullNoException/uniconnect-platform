@@ -1,0 +1,140 @@
+name: Flutter Apps CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/customer_app/**'
+      - 'src/admin-panel/**'
+      - '.github/workflows/flutter-apps.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/customer_app/**'
+      - 'src/admin-panel/**'
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        app: [customer_app, admin-panel]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: cd src/${{ matrix.app }} && flutter pub get
+
+      - name: Analyze code
+        run: cd src/${{ matrix.app }} && flutter analyze
+
+      - name: Run tests
+        run: cd src/${{ matrix.app }} && flutter test
+
+      - name: Build web
+        if: github.event_name == 'push'
+        run: cd src/${{ matrix.app }} && flutter build web
+
+      - name: Upload web build
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-web-build
+          path: src/${{ matrix.app }}/build/web/
+
+  build-android:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    strategy:
+      matrix:
+        app: [customer_app, admin-panel]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: cd src/${{ matrix.app }} && flutter pub get
+
+      - name: Build APK
+        run: cd src/${{ matrix.app }} && flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-android-build
+          path: src/${{ matrix.app }}/build/app/outputs/flutter-apk/app-release.apk
+
+  build-ios:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    strategy:
+      matrix:
+        app: [customer_app, admin-panel]
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: cd src/${{ matrix.app }} && flutter pub get
+
+      - name: Build iOS
+        run: cd src/${{ matrix.app }} && flutter build ios --release --no-codesign
+
+      - name: Archive iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-ios-build
+          path: src/${{ matrix.app }}/build/ios/iphoneos
+
+  deploy-web:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    strategy:
+      matrix:
+        app: [customer_app, admin-panel]
+        include:
+          - app: customer_app
+            firebase_target: customer-app
+          - app: admin-panel
+            firebase_target: admin-panel
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download web build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.app }}-web-build
+          path: web-build
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: uniconnect
+          channelId: live
+          target: ${{ matrix.firebase_target }}
+          entryPoint: web-build
