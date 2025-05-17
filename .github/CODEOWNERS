@@ -1,0 +1,37 @@
+# This file defines code owners for different parts of the repository
+
+# Code owners will be automatically requested for review when a PR is opened
+
+# Learn more: https://docs.github.com/en/repositories/managing-your-repository-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything
+
+-       @admin-team
+
+# Business requirements and specifications
+
+/business-analyst/ @product-team
+
+# Infrastructure as Code
+
+/infra/ @devops-team
+
+# Core API (C#/.NET)
+
+/src/core-api/ @backend-team
+
+# Customer App (Flutter)
+
+/src/customer_app/ @mobile-team
+
+# Admin Panel
+
+/src/admin-panel/ @frontend-team
+
+# CI/CD workflows
+
+/.github/ @devops-team
+
+# Documentation
+
+/docs/ @tech-writers

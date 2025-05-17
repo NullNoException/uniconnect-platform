@@ -54,6 +54,19 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 See the README.md file for detailed setup instructions.
 
+### Local Development Setup
+
+1. Clone the repository
+2. Set up Git hooks by running the setup script:
+
+   ```bash
+   ./setup-husky.sh
+   ```
+
+   This will ensure all code quality checks are run before each commit.
+
+3. Follow the project structure and coding standards
+
 ## Coding Standards
 
 - Follow the established code style of the project

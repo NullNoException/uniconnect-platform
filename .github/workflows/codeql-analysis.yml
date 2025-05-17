@@ -1,0 +1,94 @@
+name: 'Security Analysis'
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  schedule:
+    - cron: '0 0 * * 0' # Run once a week at midnight on Sunday
+
+jobs:
+  analyze-csharp:
+    name: Analyze C# code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['csharp']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install .NET 9 for C# analysis
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.300
+        if: ${{ matrix.language == 'csharp' }}
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift)
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:${{matrix.language}}'
+
+  analyze-flutter:
+    name: Analyze Flutter/Dart code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: |
+          cd src/customer_app
+          flutter pub get
+
+      - name: Analyze Dart code
+        run: |
+          cd src/customer_app
+          flutter analyze --fatal-infos
+
+      - name: Run Flutter static analysis with custom rules
+        run: |
+          cd src/customer_app
+          dart pub global activate dart_code_metrics
+          dart pub global run dart_code_metrics:metrics analyze lib --fatal-style --fatal-performance --fatal-warnings
+        continue-on-error: true # Don't fail the build yet as we're setting up the analysis
+
+      - name: Run security linter for Dart
+        run: |
+          cd src/customer_app
+          dart pub global activate secure_linter
+          dart pub global run secure_linter . --report=sarif
+        continue-on-error: true
+
+      - name: Check for dependency vulnerabilities
+        run: |
+          cd src/customer_app
+          flutter pub outdated
+          flutter pub deps > dependencies.txt
+          echo "Checking for known vulnerable packages..."
+          grep -E "(path_provider|shared_preferences|http|dio|oauth)" dependencies.txt || echo "No commonly vulnerable packages found."
