@@ -72,9 +72,8 @@ class BookmarksScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookmarks = ref.watch(bookmarksProvider);
-    final universities = bookmarks
-        .where((item) => item.type == 'university')
-        .toList();
+    final universities =
+        bookmarks.where((item) => item.type == 'university').toList();
     final programs = bookmarks.where((item) => item.type == 'program').toList();
 
     return DefaultTabController(
@@ -191,10 +190,11 @@ class BookmarksScreen extends ConsumerWidget {
                         const SizedBox(width: 4),
                         Text(
                           item.type == 'university' ? 'University' : 'Program',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ],
                     ),

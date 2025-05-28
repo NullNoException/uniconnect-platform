@@ -51,8 +51,9 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
           return _buildContent(application);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) =>
-            Center(child: Text('Error: ${error.toString()}')),
+        error:
+            (error, stackTrace) =>
+                Center(child: Text('Error: ${error.toString()}')),
       ),
     );
   }
@@ -195,14 +196,20 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: isLast
-                        ? _getStatusColor(event.status)
-                        : Theme.of(context).colorScheme.primary,
+                    color:
+                        isLast
+                            ? _getStatusColor(event.status)
+                            : Theme.of(context).colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: isLast
-                      ? const Icon(Icons.check, size: 14, color: Colors.white)
-                      : null,
+                  child:
+                      isLast
+                          ? const Icon(
+                            Icons.check,
+                            size: 14,
+                            color: Colors.white,
+                          )
+                          : null,
                 ),
                 if (!isLast)
                   Container(
@@ -222,9 +229,10 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                   Text(
                     event.statusText,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: isLast
-                          ? _getStatusColor(event.status)
-                          : Theme.of(context).colorScheme.onSurface,
+                      color:
+                          isLast
+                              ? _getStatusColor(event.status)
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -293,25 +301,26 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                             ),
                             child: Text(
                               document.statusText,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: _getDocumentStatusColor(
-                                      document.status,
-                                    ),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color: _getDocumentStatusColor(document.status),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           if (document.submissionDate != null) ...[
                             const SizedBox(width: 8),
                             Text(
                               'Submitted: ${_formatDate(document.submissionDate!)}',
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: Theme.of(
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color:
+                                    Theme.of(
                                       context,
                                     ).colorScheme.onSurfaceVariant,
-                                  ),
+                              ),
                             ),
                           ],
                         ],
@@ -345,9 +354,8 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                           icon: const Icon(Icons.upload_file),
                           label: const Text('Upload'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.primary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
                             foregroundColor: Colors.white,
                           ),
                         )
@@ -416,12 +424,10 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
   }
 
   Widget _buildTasksTab(Application application) {
-    final completedTasks = application.tasks
-        .where((task) => task.isCompleted)
-        .toList();
-    final pendingTasks = application.tasks
-        .where((task) => !task.isCompleted)
-        .toList();
+    final completedTasks =
+        application.tasks.where((task) => task.isCompleted).toList();
+    final pendingTasks =
+        application.tasks.where((task) => !task.isCompleted).toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -497,9 +503,8 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                   child: Text(
                     task.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      decoration: isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration:
+                          isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
                 ),
@@ -544,9 +549,10 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
             Text(
               task.description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: isCompleted
-                    ? Theme.of(context).colorScheme.onSurfaceVariant
-                    : null,
+                color:
+                    isCompleted
+                        ? Theme.of(context).colorScheme.onSurfaceVariant
+                        : null,
               ),
             ),
             const SizedBox(height: 8),
@@ -555,20 +561,21 @@ class _ApplicationScreenState extends ConsumerState<ApplicationScreen>
                 Icon(
                   Icons.calendar_today,
                   size: 16,
-                  color: isOverdue && !isCompleted
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color:
+                      isOverdue && !isCompleted
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   'Due: ${_formatDate(task.dueDate)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: isOverdue && !isCompleted
-                        ? Theme.of(context).colorScheme.error
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: isOverdue && !isCompleted
-                        ? FontWeight.bold
-                        : null,
+                    color:
+                        isOverdue && !isCompleted
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight:
+                        isOverdue && !isCompleted ? FontWeight.bold : null,
                   ),
                 ),
                 if (!isCompleted && !isOverdue) ...[

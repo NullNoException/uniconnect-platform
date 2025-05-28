@@ -196,8 +196,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       ),
                       onPressed: () {
                         setState(
-                          () => _obscureConfirmPassword =
-                              !_obscureConfirmPassword,
+                          () =>
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword,
                         );
                       },
                     ),
@@ -253,16 +254,17 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text('Create Account'),
+                  child:
+                      _isLoading
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                          : const Text('Create Account'),
                 ),
                 const SizedBox(height: 24),
                 Row(

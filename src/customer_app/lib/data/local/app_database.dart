@@ -50,9 +50,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<List<University>> getFeaturedUniversities() {
-    return (select(
-      universities,
-    )..where((u) => u.isFeatured.equals(true))).get();
+    return (select(universities)
+      ..where((u) => u.isFeatured.equals(true))).get();
   }
 
   // Bookmark methods
@@ -61,11 +60,9 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<bool> isBookmarked(String itemId, String type) async {
-    final count =
-        await (select(bookmarks)
-              ..where((b) => b.itemId.equals(itemId) & b.itemType.equals(type)))
-            .get()
-            .then((value) => value.length);
+    final count = await (select(bookmarks)..where(
+      (b) => b.itemId.equals(itemId) & b.itemType.equals(type),
+    )).get().then((value) => value.length);
     return count > 0;
   }
 
@@ -74,9 +71,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<int> removeBookmark(String itemId, String type) {
-    return (delete(
-      bookmarks,
-    )..where((b) => b.itemId.equals(itemId) & b.itemType.equals(type))).go();
+    return (delete(bookmarks)
+      ..where((b) => b.itemId.equals(itemId) & b.itemType.equals(type))).go();
   }
 
   // Program methods
@@ -87,9 +83,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<List<Program>> getProgramsByUniversity(String universityId) {
-    return (select(
-      programs,
-    )..where((p) => p.universityId.equals(universityId))).get();
+    return (select(programs)
+      ..where((p) => p.universityId.equals(universityId))).get();
   }
 
   Future<int> insertProgram(ProgramsCompanion program) {

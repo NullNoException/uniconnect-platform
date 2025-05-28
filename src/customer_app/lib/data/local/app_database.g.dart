@@ -326,22 +326,26 @@ class $UniversitiesTable extends Universities
   University map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return University(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      country: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}country'],
-      )!,
-      city: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}city'],
-      )!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}id'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
+      country:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}country'],
+          )!,
+      city:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}city'],
+          )!,
       logoUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}logo_url'],
@@ -378,14 +382,16 @@ class $UniversitiesTable extends Universities
         DriftSqlType.string,
         data['${effectivePrefix}contact_phone'],
       ),
-      isFeatured: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_featured'],
-      )!,
-      lastUpdated: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_updated'],
-      )!,
+      isFeatured:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.bool,
+            data['${effectivePrefix}is_featured'],
+          )!,
+      lastUpdated:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}last_updated'],
+          )!,
     );
   }
 
@@ -473,33 +479,42 @@ class University extends DataClass implements Insertable<University> {
       name: Value(name),
       country: Value(country),
       city: Value(city),
-      logoUrl: logoUrl == null && nullToAbsent
-          ? const Value.absent()
-          : Value(logoUrl),
-      coverImageUrl: coverImageUrl == null && nullToAbsent
-          ? const Value.absent()
-          : Value(coverImageUrl),
-      foundedYear: foundedYear == null && nullToAbsent
-          ? const Value.absent()
-          : Value(foundedYear),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-      ranking: ranking == null && nullToAbsent
-          ? const Value.absent()
-          : Value(ranking),
-      facilities: facilities == null && nullToAbsent
-          ? const Value.absent()
-          : Value(facilities),
-      websiteUrl: websiteUrl == null && nullToAbsent
-          ? const Value.absent()
-          : Value(websiteUrl),
-      contactEmail: contactEmail == null && nullToAbsent
-          ? const Value.absent()
-          : Value(contactEmail),
-      contactPhone: contactPhone == null && nullToAbsent
-          ? const Value.absent()
-          : Value(contactPhone),
+      logoUrl:
+          logoUrl == null && nullToAbsent
+              ? const Value.absent()
+              : Value(logoUrl),
+      coverImageUrl:
+          coverImageUrl == null && nullToAbsent
+              ? const Value.absent()
+              : Value(coverImageUrl),
+      foundedYear:
+          foundedYear == null && nullToAbsent
+              ? const Value.absent()
+              : Value(foundedYear),
+      description:
+          description == null && nullToAbsent
+              ? const Value.absent()
+              : Value(description),
+      ranking:
+          ranking == null && nullToAbsent
+              ? const Value.absent()
+              : Value(ranking),
+      facilities:
+          facilities == null && nullToAbsent
+              ? const Value.absent()
+              : Value(facilities),
+      websiteUrl:
+          websiteUrl == null && nullToAbsent
+              ? const Value.absent()
+              : Value(websiteUrl),
+      contactEmail:
+          contactEmail == null && nullToAbsent
+              ? const Value.absent()
+              : Value(contactEmail),
+      contactPhone:
+          contactPhone == null && nullToAbsent
+              ? const Value.absent()
+              : Value(contactPhone),
       isFeatured: Value(isFeatured),
       lastUpdated: Value(lastUpdated),
     );
@@ -572,9 +587,8 @@ class University extends DataClass implements Insertable<University> {
     country: country ?? this.country,
     city: city ?? this.city,
     logoUrl: logoUrl.present ? logoUrl.value : this.logoUrl,
-    coverImageUrl: coverImageUrl.present
-        ? coverImageUrl.value
-        : this.coverImageUrl,
+    coverImageUrl:
+        coverImageUrl.present ? coverImageUrl.value : this.coverImageUrl,
     foundedYear: foundedYear.present ? foundedYear.value : this.foundedYear,
     description: description.present ? description.value : this.description,
     ranking: ranking.present ? ranking.value : this.ranking,
@@ -592,34 +606,31 @@ class University extends DataClass implements Insertable<University> {
       country: data.country.present ? data.country.value : this.country,
       city: data.city.present ? data.city.value : this.city,
       logoUrl: data.logoUrl.present ? data.logoUrl.value : this.logoUrl,
-      coverImageUrl: data.coverImageUrl.present
-          ? data.coverImageUrl.value
-          : this.coverImageUrl,
-      foundedYear: data.foundedYear.present
-          ? data.foundedYear.value
-          : this.foundedYear,
-      description: data.description.present
-          ? data.description.value
-          : this.description,
+      coverImageUrl:
+          data.coverImageUrl.present
+              ? data.coverImageUrl.value
+              : this.coverImageUrl,
+      foundedYear:
+          data.foundedYear.present ? data.foundedYear.value : this.foundedYear,
+      description:
+          data.description.present ? data.description.value : this.description,
       ranking: data.ranking.present ? data.ranking.value : this.ranking,
-      facilities: data.facilities.present
-          ? data.facilities.value
-          : this.facilities,
-      websiteUrl: data.websiteUrl.present
-          ? data.websiteUrl.value
-          : this.websiteUrl,
-      contactEmail: data.contactEmail.present
-          ? data.contactEmail.value
-          : this.contactEmail,
-      contactPhone: data.contactPhone.present
-          ? data.contactPhone.value
-          : this.contactPhone,
-      isFeatured: data.isFeatured.present
-          ? data.isFeatured.value
-          : this.isFeatured,
-      lastUpdated: data.lastUpdated.present
-          ? data.lastUpdated.value
-          : this.lastUpdated,
+      facilities:
+          data.facilities.present ? data.facilities.value : this.facilities,
+      websiteUrl:
+          data.websiteUrl.present ? data.websiteUrl.value : this.websiteUrl,
+      contactEmail:
+          data.contactEmail.present
+              ? data.contactEmail.value
+              : this.contactEmail,
+      contactPhone:
+          data.contactPhone.present
+              ? data.contactPhone.value
+              : this.contactPhone,
+      isFeatured:
+          data.isFeatured.present ? data.isFeatured.value : this.isFeatured,
+      lastUpdated:
+          data.lastUpdated.present ? data.lastUpdated.value : this.lastUpdated,
     );
   }
 
@@ -1304,38 +1315,45 @@ class $ProgramsTable extends Programs with TableInfo<$ProgramsTable, Program> {
   Program map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Program(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      universityId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}university_id'],
-      )!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}id'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
+      universityId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}university_id'],
+          )!,
       universityName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}university_name'],
       ),
-      level: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}level'],
-      )!,
-      studyMode: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}study_mode'],
-      )!,
-      durationMonths: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}duration_months'],
-      )!,
-      language: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}language'],
-      )!,
+      level:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}level'],
+          )!,
+      studyMode:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}study_mode'],
+          )!,
+      durationMonths:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}duration_months'],
+          )!,
+      language:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}language'],
+          )!,
       tuitionFee: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}tuition_fee'],
@@ -1372,14 +1390,16 @@ class $ProgramsTable extends Programs with TableInfo<$ProgramsTable, Program> {
         DriftSqlType.double,
         data['${effectivePrefix}application_fee'],
       ),
-      isFeatured: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_featured'],
-      )!,
-      lastUpdated: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_updated'],
-      )!,
+      isFeatured:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.bool,
+            data['${effectivePrefix}is_featured'],
+          )!,
+      lastUpdated:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}last_updated'],
+          )!,
     );
   }
 
@@ -1480,40 +1500,50 @@ class Program extends DataClass implements Insertable<Program> {
       id: Value(id),
       name: Value(name),
       universityId: Value(universityId),
-      universityName: universityName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(universityName),
+      universityName:
+          universityName == null && nullToAbsent
+              ? const Value.absent()
+              : Value(universityName),
       level: Value(level),
       studyMode: Value(studyMode),
       durationMonths: Value(durationMonths),
       language: Value(language),
-      tuitionFee: tuitionFee == null && nullToAbsent
-          ? const Value.absent()
-          : Value(tuitionFee),
-      currency: currency == null && nullToAbsent
-          ? const Value.absent()
-          : Value(currency),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-      applicationDeadline: applicationDeadline == null && nullToAbsent
-          ? const Value.absent()
-          : Value(applicationDeadline),
-      startDate: startDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(startDate),
-      requirements: requirements == null && nullToAbsent
-          ? const Value.absent()
-          : Value(requirements),
-      curriculum: curriculum == null && nullToAbsent
-          ? const Value.absent()
-          : Value(curriculum),
-      careerOpportunities: careerOpportunities == null && nullToAbsent
-          ? const Value.absent()
-          : Value(careerOpportunities),
-      applicationFee: applicationFee == null && nullToAbsent
-          ? const Value.absent()
-          : Value(applicationFee),
+      tuitionFee:
+          tuitionFee == null && nullToAbsent
+              ? const Value.absent()
+              : Value(tuitionFee),
+      currency:
+          currency == null && nullToAbsent
+              ? const Value.absent()
+              : Value(currency),
+      description:
+          description == null && nullToAbsent
+              ? const Value.absent()
+              : Value(description),
+      applicationDeadline:
+          applicationDeadline == null && nullToAbsent
+              ? const Value.absent()
+              : Value(applicationDeadline),
+      startDate:
+          startDate == null && nullToAbsent
+              ? const Value.absent()
+              : Value(startDate),
+      requirements:
+          requirements == null && nullToAbsent
+              ? const Value.absent()
+              : Value(requirements),
+      curriculum:
+          curriculum == null && nullToAbsent
+              ? const Value.absent()
+              : Value(curriculum),
+      careerOpportunities:
+          careerOpportunities == null && nullToAbsent
+              ? const Value.absent()
+              : Value(careerOpportunities),
+      applicationFee:
+          applicationFee == null && nullToAbsent
+              ? const Value.absent()
+              : Value(applicationFee),
       isFeatured: Value(isFeatured),
       lastUpdated: Value(lastUpdated),
     );
@@ -1600,9 +1630,8 @@ class Program extends DataClass implements Insertable<Program> {
     id: id ?? this.id,
     name: name ?? this.name,
     universityId: universityId ?? this.universityId,
-    universityName: universityName.present
-        ? universityName.value
-        : this.universityName,
+    universityName:
+        universityName.present ? universityName.value : this.universityName,
     level: level ?? this.level,
     studyMode: studyMode ?? this.studyMode,
     durationMonths: durationMonths ?? this.durationMonths,
@@ -1610,18 +1639,19 @@ class Program extends DataClass implements Insertable<Program> {
     tuitionFee: tuitionFee.present ? tuitionFee.value : this.tuitionFee,
     currency: currency.present ? currency.value : this.currency,
     description: description.present ? description.value : this.description,
-    applicationDeadline: applicationDeadline.present
-        ? applicationDeadline.value
-        : this.applicationDeadline,
+    applicationDeadline:
+        applicationDeadline.present
+            ? applicationDeadline.value
+            : this.applicationDeadline,
     startDate: startDate.present ? startDate.value : this.startDate,
     requirements: requirements.present ? requirements.value : this.requirements,
     curriculum: curriculum.present ? curriculum.value : this.curriculum,
-    careerOpportunities: careerOpportunities.present
-        ? careerOpportunities.value
-        : this.careerOpportunities,
-    applicationFee: applicationFee.present
-        ? applicationFee.value
-        : this.applicationFee,
+    careerOpportunities:
+        careerOpportunities.present
+            ? careerOpportunities.value
+            : this.careerOpportunities,
+    applicationFee:
+        applicationFee.present ? applicationFee.value : this.applicationFee,
     isFeatured: isFeatured ?? this.isFeatured,
     lastUpdated: lastUpdated ?? this.lastUpdated,
   );
@@ -1629,47 +1659,49 @@ class Program extends DataClass implements Insertable<Program> {
     return Program(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      universityId: data.universityId.present
-          ? data.universityId.value
-          : this.universityId,
-      universityName: data.universityName.present
-          ? data.universityName.value
-          : this.universityName,
+      universityId:
+          data.universityId.present
+              ? data.universityId.value
+              : this.universityId,
+      universityName:
+          data.universityName.present
+              ? data.universityName.value
+              : this.universityName,
       level: data.level.present ? data.level.value : this.level,
       studyMode: data.studyMode.present ? data.studyMode.value : this.studyMode,
-      durationMonths: data.durationMonths.present
-          ? data.durationMonths.value
-          : this.durationMonths,
+      durationMonths:
+          data.durationMonths.present
+              ? data.durationMonths.value
+              : this.durationMonths,
       language: data.language.present ? data.language.value : this.language,
-      tuitionFee: data.tuitionFee.present
-          ? data.tuitionFee.value
-          : this.tuitionFee,
+      tuitionFee:
+          data.tuitionFee.present ? data.tuitionFee.value : this.tuitionFee,
       currency: data.currency.present ? data.currency.value : this.currency,
-      description: data.description.present
-          ? data.description.value
-          : this.description,
-      applicationDeadline: data.applicationDeadline.present
-          ? data.applicationDeadline.value
-          : this.applicationDeadline,
+      description:
+          data.description.present ? data.description.value : this.description,
+      applicationDeadline:
+          data.applicationDeadline.present
+              ? data.applicationDeadline.value
+              : this.applicationDeadline,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
-      requirements: data.requirements.present
-          ? data.requirements.value
-          : this.requirements,
-      curriculum: data.curriculum.present
-          ? data.curriculum.value
-          : this.curriculum,
-      careerOpportunities: data.careerOpportunities.present
-          ? data.careerOpportunities.value
-          : this.careerOpportunities,
-      applicationFee: data.applicationFee.present
-          ? data.applicationFee.value
-          : this.applicationFee,
-      isFeatured: data.isFeatured.present
-          ? data.isFeatured.value
-          : this.isFeatured,
-      lastUpdated: data.lastUpdated.present
-          ? data.lastUpdated.value
-          : this.lastUpdated,
+      requirements:
+          data.requirements.present
+              ? data.requirements.value
+              : this.requirements,
+      curriculum:
+          data.curriculum.present ? data.curriculum.value : this.curriculum,
+      careerOpportunities:
+          data.careerOpportunities.present
+              ? data.careerOpportunities.value
+              : this.careerOpportunities,
+      applicationFee:
+          data.applicationFee.present
+              ? data.applicationFee.value
+              : this.applicationFee,
+      isFeatured:
+          data.isFeatured.present ? data.isFeatured.value : this.isFeatured,
+      lastUpdated:
+          data.lastUpdated.present ? data.lastUpdated.value : this.lastUpdated,
     );
   }
 
@@ -2112,22 +2144,26 @@ class $BookmarksTable extends Bookmarks
   Bookmark map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Bookmark(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      itemId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}item_id'],
-      )!,
-      itemType: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}item_type'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      itemId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}item_id'],
+          )!,
+      itemType:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}item_type'],
+          )!,
+      createdAt:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}created_at'],
+          )!,
     );
   }
 
@@ -2540,22 +2576,26 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   User map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return User(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      email: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}email'],
-      )!,
-      firstName: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}first_name'],
-      )!,
-      lastName: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}last_name'],
-      )!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}id'],
+          )!,
+      email:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}email'],
+          )!,
+      firstName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}first_name'],
+          )!,
+      lastName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}last_name'],
+          )!,
       profileImage: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}profile_image'],
@@ -2564,22 +2604,25 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
         DriftSqlType.string,
         data['${effectivePrefix}phone_number'],
       ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      isEmailVerified: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_email_verified'],
-      )!,
+      createdAt:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}created_at'],
+          )!,
+      isEmailVerified:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.bool,
+            data['${effectivePrefix}is_email_verified'],
+          )!,
       authToken: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}auth_token'],
       ),
-      lastLoggedIn: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_logged_in'],
-      )!,
+      lastLoggedIn:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}last_logged_in'],
+          )!,
     );
   }
 
@@ -2640,17 +2683,20 @@ class User extends DataClass implements Insertable<User> {
       email: Value(email),
       firstName: Value(firstName),
       lastName: Value(lastName),
-      profileImage: profileImage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(profileImage),
-      phoneNumber: phoneNumber == null && nullToAbsent
-          ? const Value.absent()
-          : Value(phoneNumber),
+      profileImage:
+          profileImage == null && nullToAbsent
+              ? const Value.absent()
+              : Value(profileImage),
+      phoneNumber:
+          phoneNumber == null && nullToAbsent
+              ? const Value.absent()
+              : Value(phoneNumber),
       createdAt: Value(createdAt),
       isEmailVerified: Value(isEmailVerified),
-      authToken: authToken == null && nullToAbsent
-          ? const Value.absent()
-          : Value(authToken),
+      authToken:
+          authToken == null && nullToAbsent
+              ? const Value.absent()
+              : Value(authToken),
       lastLoggedIn: Value(lastLoggedIn),
     );
   }
@@ -2719,20 +2765,22 @@ class User extends DataClass implements Insertable<User> {
       email: data.email.present ? data.email.value : this.email,
       firstName: data.firstName.present ? data.firstName.value : this.firstName,
       lastName: data.lastName.present ? data.lastName.value : this.lastName,
-      profileImage: data.profileImage.present
-          ? data.profileImage.value
-          : this.profileImage,
-      phoneNumber: data.phoneNumber.present
-          ? data.phoneNumber.value
-          : this.phoneNumber,
+      profileImage:
+          data.profileImage.present
+              ? data.profileImage.value
+              : this.profileImage,
+      phoneNumber:
+          data.phoneNumber.present ? data.phoneNumber.value : this.phoneNumber,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      isEmailVerified: data.isEmailVerified.present
-          ? data.isEmailVerified.value
-          : this.isEmailVerified,
+      isEmailVerified:
+          data.isEmailVerified.present
+              ? data.isEmailVerified.value
+              : this.isEmailVerified,
       authToken: data.authToken.present ? data.authToken.value : this.authToken,
-      lastLoggedIn: data.lastLoggedIn.present
-          ? data.lastLoggedIn.value
-          : this.lastLoggedIn,
+      lastLoggedIn:
+          data.lastLoggedIn.present
+              ? data.lastLoggedIn.value
+              : this.lastLoggedIn,
     );
   }
 
@@ -3263,12 +3311,13 @@ class $$UniversitiesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$UniversitiesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UniversitiesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UniversitiesTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer:
+              () => $$UniversitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$UniversitiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () =>
+                  $$UniversitiesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -3341,9 +3390,16 @@ class $$UniversitiesTableTableManager
                 lastUpdated: lastUpdated,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -3734,12 +3790,12 @@ class $$ProgramsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$ProgramsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ProgramsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ProgramsTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer:
+              () => $$ProgramsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$ProgramsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$ProgramsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -3828,9 +3884,16 @@ class $$ProgramsTableTableManager
                 lastUpdated: lastUpdated,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -3967,12 +4030,12 @@ class $$BookmarksTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$BookmarksTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BookmarksTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BookmarksTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer:
+              () => $$BookmarksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$BookmarksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$BookmarksTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -3997,9 +4060,16 @@ class $$BookmarksTableTableManager
                 itemType: itemType,
                 createdAt: createdAt,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -4235,12 +4305,12 @@ class $$UsersTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$UsersTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UsersTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UsersTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer:
+              () => $$UsersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$UsersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$UsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -4293,9 +4363,16 @@ class $$UsersTableTableManager
                 lastLoggedIn: lastLoggedIn,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: null,
         ),
       );

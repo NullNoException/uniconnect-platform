@@ -21,10 +21,11 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
     } on DioException catch (e) {
       final dynamic responseData = e.response?.data;
       throw ServerException(
-        message: responseData is Map
-            ? (responseData['message'] as String?) ??
-                  'Failed to get applications'
-            : 'Failed to get applications',
+        message:
+            responseData is Map
+                ? (responseData['message'] as String?) ??
+                    'Failed to get applications'
+                : 'Failed to get applications',
       );
     }
   }
@@ -40,9 +41,11 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
       );
     } on DioException catch (e) {
       final dynamic responseData = e.response?.data;
-      final String errorMessage = responseData is Map
-          ? (responseData['message'] as String?) ?? 'Failed to get application'
-          : 'Failed to get application';
+      final String errorMessage =
+          responseData is Map
+              ? (responseData['message'] as String?) ??
+                  'Failed to get application'
+              : 'Failed to get application';
       throw ServerException(message: errorMessage);
     }
   }
@@ -62,8 +65,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? responseData =
           e.response?.data is Map<String, dynamic>
-          ? e.response?.data as Map<String, dynamic>
-          : null;
+              ? e.response?.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: responseData?['message'] ?? 'Failed to create application',
       );
@@ -89,8 +92,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? responseData =
           e.response?.data is Map<String, dynamic>
-          ? e.response?.data as Map<String, dynamic>
-          : null;
+              ? e.response?.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message:
             responseData?['message'] ?? 'Failed to update application status',
@@ -119,8 +122,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? responseData =
           e.response?.data is Map<String, dynamic>
-          ? e.response?.data as Map<String, dynamic>
-          : null;
+              ? e.response?.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: responseData?['message'] ?? 'Failed to upload document',
       );
@@ -144,8 +147,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? responseData =
           e.response?.data is Map<String, dynamic>
-          ? e.response?.data as Map<String, dynamic>
-          : null;
+              ? e.response?.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: responseData?['message'] ?? 'Failed to complete task',
       );

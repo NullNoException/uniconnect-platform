@@ -31,34 +31,41 @@ class ProgramModel extends Program {
       studyMode: _parseStudyMode(json['study_mode']),
       durationMonths: json['duration_months'],
       language: json['language'],
-      tuitionFee: (json['tuition_fee'] is num)
-          ? (json['tuition_fee'] as num).toDouble()
-          : null,
+      tuitionFee:
+          (json['tuition_fee'] is num)
+              ? (json['tuition_fee'] as num).toDouble()
+              : null,
       currency: json['currency'],
       description: json['description'],
-      applicationDeadline: json['application_deadline'] != null
-          ? DateTime.parse(json['application_deadline'])
-          : null,
-      startDate: json['start_date'] != null
-          ? DateTime.parse(json['start_date'])
-          : null,
-      requirements: json['requirements'] != null
-          ? List<String>.from(json['requirements'])
-          : null,
-      curriculum: json['curriculum'] != null
-          ? List<Map<String, dynamic>>.from(
-              (json['curriculum'] as List<dynamic>).map(
-                (item) =>
-                    Map<String, dynamic>.from(item as Map<dynamic, dynamic>),
-              ),
-            )
-          : null,
-      careerOpportunities: json['career_opportunities'] != null
-          ? List<String>.from(json['career_opportunities'])
-          : null,
-      applicationFee: (json['application_fee'] is num)
-          ? (json['application_fee'] as num).toDouble()
-          : null,
+      applicationDeadline:
+          json['application_deadline'] != null
+              ? DateTime.parse(json['application_deadline'])
+              : null,
+      startDate:
+          json['start_date'] != null
+              ? DateTime.parse(json['start_date'])
+              : null,
+      requirements:
+          json['requirements'] != null
+              ? List<String>.from(json['requirements'])
+              : null,
+      curriculum:
+          json['curriculum'] != null
+              ? List<Map<String, dynamic>>.from(
+                (json['curriculum'] as List<dynamic>).map(
+                  (item) =>
+                      Map<String, dynamic>.from(item as Map<dynamic, dynamic>),
+                ),
+              )
+              : null,
+      careerOpportunities:
+          json['career_opportunities'] != null
+              ? List<String>.from(json['career_opportunities'])
+              : null,
+      applicationFee:
+          (json['application_fee'] is num)
+              ? (json['application_fee'] as num).toDouble()
+              : null,
     );
   }
 

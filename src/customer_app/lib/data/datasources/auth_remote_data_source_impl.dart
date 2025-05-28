@@ -25,8 +25,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to sign in',
       );
@@ -56,8 +56,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to sign up',
       );
@@ -71,8 +71,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to sign out',
       );
@@ -89,8 +89,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to send password reset email',
       );
@@ -123,8 +123,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to update profile',
       );
@@ -144,8 +144,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       final Map<String, dynamic>? errorData =
           e.response?.data is Map<String, dynamic>
-          ? e.response!.data as Map<String, dynamic>
-          : null;
+              ? e.response!.data as Map<String, dynamic>
+              : null;
       throw ServerException(
         message: errorData?['message'] ?? 'Failed to change password',
       );

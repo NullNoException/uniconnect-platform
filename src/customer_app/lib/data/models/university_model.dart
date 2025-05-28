@@ -27,12 +27,14 @@ class UniversityModel extends University {
       coverImageUrl: json['cover_image_url'],
       foundedYear: json['founded_year'],
       description: json['description'],
-      ranking: json['ranking'] != null
-          ? Map<String, dynamic>.from(json['ranking'])
-          : null,
-      facilities: json['facilities'] != null
-          ? List<String>.from(json['facilities'])
-          : null,
+      ranking:
+          json['ranking'] != null
+              ? Map<String, dynamic>.from(json['ranking'])
+              : null,
+      facilities:
+          json['facilities'] != null
+              ? List<String>.from(json['facilities'])
+              : null,
       websiteUrl: json['website_url'],
       contactEmail: json['contact_email'],
       contactPhone: json['contact_phone'],

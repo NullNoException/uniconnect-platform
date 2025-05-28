@@ -26,9 +26,10 @@ class UniversityLocalDataSourceImpl implements UniversityLocalDataSource {
   @override
   Future<void> cacheUniversities(List<UniversityModel> universities) async {
     try {
-      final dbUniversities = universities
-          .map((university) => _modelToDbUniversity(university))
-          .toList();
+      final dbUniversities =
+          universities
+              .map((university) => _modelToDbUniversity(university))
+              .toList();
       await database.insertUniversities(dbUniversities);
     } catch (e) {
       throw CacheException(message: 'Failed to cache universities');
@@ -71,9 +72,10 @@ class UniversityLocalDataSourceImpl implements UniversityLocalDataSource {
     List<UniversityModel> universities,
   ) async {
     try {
-      final dbUniversities = universities.map((university) {
-        return _modelToDbUniversity(university, isFeatured: true);
-      }).toList();
+      final dbUniversities =
+          universities.map((university) {
+            return _modelToDbUniversity(university, isFeatured: true);
+          }).toList();
       await database.insertUniversities(dbUniversities);
     } catch (e) {
       throw CacheException(message: 'Failed to cache featured universities');
@@ -114,9 +116,8 @@ class UniversityLocalDataSourceImpl implements UniversityLocalDataSource {
       await cacheUniversities(universities);
 
       // Remove existing bookmarks that might be outdated
-      await (database.delete(
-        database.bookmarks,
-      )..where((b) => b.itemType.equals('university'))).go();
+      await (database.delete(database.bookmarks)
+        ..where((b) => b.itemType.equals('university'))).go();
 
       // Add new bookmarks as a batch operation
       await database.batch((batch) {
@@ -176,12 +177,14 @@ class UniversityLocalDataSourceImpl implements UniversityLocalDataSource {
       coverImageUrl: dbUniversity.coverImageUrl,
       foundedYear: dbUniversity.foundedYear,
       description: dbUniversity.description,
-      ranking: dbUniversity.ranking != null
-          ? jsonDecode(dbUniversity.ranking!)
-          : null,
-      facilities: dbUniversity.facilities != null
-          ? List<String>.from(jsonDecode(dbUniversity.facilities!))
-          : null,
+      ranking:
+          dbUniversity.ranking != null
+              ? jsonDecode(dbUniversity.ranking!)
+              : null,
+      facilities:
+          dbUniversity.facilities != null
+              ? List<String>.from(jsonDecode(dbUniversity.facilities!))
+              : null,
       websiteUrl: dbUniversity.websiteUrl,
       contactEmail: dbUniversity.contactEmail,
       contactPhone: dbUniversity.contactPhone,
