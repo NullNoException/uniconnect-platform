@@ -102,3 +102,6 @@ terraform.rc
 .dockerignore
 src/control_panel/.fvmrc
 *.fvm/
+
+# FVM Version Cache
+.fvm/
