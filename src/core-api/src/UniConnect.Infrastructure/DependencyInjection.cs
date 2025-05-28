@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using Nest;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Repositories;
 using UniConnect.Domain.Services;
@@ -15,6 +16,8 @@ using UniConnect.Infrastructure.Persistence;
 using UniConnect.Infrastructure.Persistence.Interceptors;
 using UniConnect.Infrastructure.Persistence.Repositories;
 using UniConnect.Infrastructure.Services;
+using UniConnect.Infrastructure.Telemetry;
+using HealthChecks.Uris;
 
 namespace UniConnect.Infrastructure;
 
@@ -53,7 +56,7 @@ public static class DependencyInjection
                 tags: new[] { "database", "sql", "postgresql" });
 
         // Register repositories
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(Domain.Repositories.IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Configure Redis
@@ -65,7 +68,8 @@ public static class DependencyInjection
 
         // Register services
         services.AddTransient<IDateTime, DateTimeService>();
-        services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IIdentityService, KeycloakAuthService>();
+        services.AddTransient<ITokenService, TokenService>();
 
         // Configure Email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
@@ -74,6 +78,12 @@ public static class DependencyInjection
         services.AddTransient<IStorageService, MinioStorageService>();
         services.AddTransient<ICacheService, RedisCacheService>();
         services.AddTransient<IPaymentService, PaymentService>();
+
+        // Configure Elasticsearch
+        ConfigureElasticsearch(services, configuration);
+
+        // Configure OpenTelemetry with Jaeger
+        services.AddOpenTelemetryServices(configuration);
 
         // Configure JWT authentication
         var jwtSettings = configuration.GetSection("JwtSettings");
@@ -104,5 +114,42 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+
+    private static void ConfigureElasticsearch(IServiceCollection services, IConfiguration configuration)
+    {
+        var elasticsearchUrl = configuration["Elasticsearch:Url"];
+
+        if (string.IsNullOrEmpty(elasticsearchUrl))
+        {
+            elasticsearchUrl = configuration["Elasticsearch:DefaultUrl"] ?? "http://elasticsearch:9200";
+        }
+
+        var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
+            .DefaultMappingFor<Domain.Entities.Service>(m => m
+                .IndexName("services"))
+            .DefaultMappingFor<Domain.Entities.ServiceProvider>(m => m
+                .IndexName("serviceproviders"))
+            .DefaultMappingFor<Domain.Entities.University>(m => m
+                .IndexName("universities"))
+            .DefaultMappingFor<Domain.Entities.FieldOfStudy>(m => m
+                .IndexName("fieldsofstudy"))
+            .DefaultMappingFor<Domain.Entities.ServiceCategory>(m => m
+                .IndexName("servicecategories"))
+            .EnableDebugMode()
+            .PrettyJson()
+            .RequestTimeout(TimeSpan.FromSeconds(30));
+
+        var client = new ElasticClient(settings);
+        services.AddSingleton<IElasticClient>(client);
+        services.AddScoped<ISearchService, ElasticsearchService>();
+
+        // Register health check for Elasticsearch
+        services.AddHealthChecks()
+            .AddUrlGroup(
+                new Uri(elasticsearchUrl),
+                name: "elasticsearch",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "elasticsearch" });
     }
 }

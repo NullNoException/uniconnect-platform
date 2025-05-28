@@ -132,10 +132,9 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
             name: documentData['name'],
             status: _mapDocumentStatusFromString(documentData['status']),
             fileUrl: documentData['fileUrl'],
-            submissionDate:
-                documentData['submissionDate'] != null
-                    ? DateTime.parse(documentData['submissionDate'])
-                    : DateTime.now(),
+            submissionDate: documentData['submissionDate'] != null
+                ? DateTime.parse(documentData['submissionDate'])
+                : DateTime.now(),
           ),
         );
       } on ServerException catch (e) {

@@ -52,8 +52,9 @@ class ApplicationLocalDataSourceImpl implements ApplicationLocalDataSource {
     final applications = await getApplications();
 
     // Remove the application if it exists
-    final updatedApps =
-        applications.where((app) => app.id != application.id).toList();
+    final updatedApps = applications
+        .where((app) => app.id != application.id)
+        .toList();
 
     // Add the new or updated application
     updatedApps.add(application);
@@ -124,10 +125,9 @@ class ApplicationLocalDataSourceImpl implements ApplicationLocalDataSource {
       name: oldDocument.name,
       status: docStatus,
       fileUrl: fileUrl ?? oldDocument.fileUrl,
-      submissionDate:
-          docStatus == DocumentStatus.submitted
-              ? DateTime.now()
-              : oldDocument.submissionDate,
+      submissionDate: docStatus == DocumentStatus.submitted
+          ? DateTime.now()
+          : oldDocument.submissionDate,
     );
 
     final updatedApp = app.copyWith(documents: documents) as ApplicationModel;

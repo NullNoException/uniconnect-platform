@@ -17,6 +17,7 @@ The UniConnect Admin Panel serves as the management interface for both platform 
 3. Ensure compliance with regulatory requirements and platform policies
 4. Generate insights through comprehensive reporting and analytics
 5. Streamline operations through workflow automation and notifications
+6. Support management of university programs and associated service pricing
 
 ## Stakeholders
 
@@ -25,6 +26,7 @@ The UniConnect Admin Panel serves as the management interface for both platform 
 - **Customer Support Team**: Staff handling user inquiries and issue resolution
 - **Finance Team**: Personnel managing payment processing and financial reporting
 - **IT Operations**: Team responsible for platform technical operations
+- **University Liaisons**: Staff who maintain relationships with partner universities
 
 ## Business Requirements
 
@@ -98,6 +100,17 @@ The UniConnect Admin Panel serves as the management interface for both platform 
 - **BR-2.5.3**: Providers must be able to issue refunds and manage disputes
 - **BR-2.5.4**: Providers must be able to view and download invoices and tax documents
 
+#### 2.6 University Program Management
+
+- **BR-2.6.1**: Providers must be able to add and manage universities they work with
+- **BR-2.6.2**: Providers must be able to specify academic levels (bachelor's, master's, PhD) for each university
+- **BR-2.6.3**: Providers must be able to add majors/programs offered by each university
+- **BR-2.6.4**: Providers must be able to specify tuition fees for each university program
+- **BR-2.6.5**: Providers must be able to set their service prices for each university program per semester
+- **BR-2.6.6**: Providers must be able to activate or deactivate university program offerings
+- **BR-2.6.7**: Providers must be able to import university program data via Excel spreadsheets
+- **BR-2.6.8**: Providers must be able to export their university program data to Excel
+
 ### 3. Reporting and Analytics
 
 #### 3.1 Business Intelligence
@@ -149,6 +162,10 @@ The UniConnect Admin Panel serves as the management interface for both platform 
 - **Rule-4**: All financial transactions must be processed through the platform
 - **Rule-5**: Communications between providers and customers must be recorded
 - **Rule-6**: Document retention policies must comply with legal requirements
+- **Rule-7**: Service providers can only manage universities and programs they are authorized to work with
+- **Rule-8**: University program data must include the specific semester for which the pricing applies
+- **Rule-9**: Service providers must keep program pricing current for each active semester
+- **Rule-10**: When importing university data, validation must ensure all required fields are present and data formats are correct
 
 ## Assumptions and Constraints
 

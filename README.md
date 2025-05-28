@@ -127,3 +127,14 @@ Please read our [Contributing Guidelines](.github/CONTRIBUTING.md) and [Code of 
 ## License
 
 [Specify your license here]
+Service providers feature
+Services management feature
+Service requests feature
+Transactions feature
+Universities management feature
+Academic levels management feature
+Majors management feature
+University programs feature
+Analytics feature
+Settings feature
+Or if you're referring to

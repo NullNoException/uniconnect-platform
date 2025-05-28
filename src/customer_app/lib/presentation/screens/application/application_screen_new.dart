@@ -36,9 +36,8 @@ class ApplicationScreen extends ConsumerWidget {
       ),
       body: applicationAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error:
-            (error, stackTrace) =>
-                Center(child: Text('Error loading application: $error')),
+        error: (error, stackTrace) =>
+            Center(child: Text('Error loading application: $error')),
         data: (application) {
           if (application == null) {
             return const Center(child: Text('Application not found'));
@@ -156,8 +155,9 @@ class ApplicationDetailView extends ConsumerWidget {
       label: Text(
         application.statusText,
         style: TextStyle(
-          color:
-              chipColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+          color: chipColor.computeLuminance() > 0.5
+              ? Colors.black
+              : Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -264,8 +264,9 @@ class ApplicationDetailView extends ConsumerWidget {
   }
 
   Widget _buildTasksList(BuildContext context, WidgetRef ref) {
-    final pendingTasks =
-        application.tasks.where((task) => !task.isCompleted).toList();
+    final pendingTasks = application.tasks
+        .where((task) => !task.isCompleted)
+        .toList();
 
     return Card(
       margin: EdgeInsets.zero,
@@ -313,23 +314,22 @@ class ApplicationDetailView extends ConsumerWidget {
         children: [
           Checkbox(
             value: task.isCompleted,
-            onChanged:
-                isLoading
-                    ? null
-                    : (_) async {
-                      final success = await completeTaskNotifier.completeTask(
-                        applicationId: application.id,
-                        taskId: task.id,
-                      );
+            onChanged: isLoading
+                ? null
+                : (_) async {
+                    final success = await completeTaskNotifier.completeTask(
+                      applicationId: application.id,
+                      taskId: task.id,
+                    );
 
-                      if (success && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Task completed successfully'),
-                          ),
-                        );
-                      }
-                    },
+                    if (success && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Task completed successfully'),
+                        ),
+                      );
+                    }
+                  },
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -589,40 +589,38 @@ class ApplicationDetailView extends ConsumerWidget {
           ),
           if (document.status == DocumentStatus.required)
             ElevatedButton(
-              onPressed:
-                  isLoading
-                      ? null
-                      : () async {
-                        // Use a file picker to let the user select a file
-                        final result = await FilePicker.platform.pickFiles(
-                          type: FileType.any,
-                        );
-                        if (result == null || result.files.isEmpty) return;
-                        final filePath = result.files.single.path;
-                        if (filePath == null) return;
-                        final success = await uploadDocumentNotifier
-                            .uploadDocument(
-                              applicationId: application.id,
-                              documentId: document.id,
-                              filePath: '/path/to/file',
-                            );
-
-                        if (success && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Document uploaded successfully'),
-                            ),
+              onPressed: isLoading
+                  ? null
+                  : () async {
+                      // Use a file picker to let the user select a file
+                      final result = await FilePicker.platform.pickFiles(
+                        type: FileType.any,
+                      );
+                      if (result == null || result.files.isEmpty) return;
+                      final filePath = result.files.single.path;
+                      if (filePath == null) return;
+                      final success = await uploadDocumentNotifier
+                          .uploadDocument(
+                            applicationId: application.id,
+                            documentId: document.id,
+                            filePath: '/path/to/file',
                           );
-                        }
-                      },
-              child:
-                  isLoading
-                      ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                      : const Text('Upload'),
+
+                      if (success && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Document uploaded successfully'),
+                          ),
+                        );
+                      }
+                    },
+              child: isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Upload'),
             )
           else if (document.fileUrl != null)
             IconButton(

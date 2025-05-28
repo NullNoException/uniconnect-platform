@@ -19,10 +19,14 @@ public static class DependencyInjection
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        services.AddSingleton<ITracingService, TracingService>();
 
         services.AddHttpContextAccessor();
 
         services.AddHealthChecks();
+
+        // Add background services
+        services.AddHostedService<ElasticsearchIndexInitializer>();
 
         // Database health checks will be registered in the Infrastructure layer
         // where the DbContext is defined

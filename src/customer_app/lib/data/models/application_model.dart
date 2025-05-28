@@ -23,36 +23,32 @@ class ApplicationModel extends Application {
       universityName: json['university_name'],
       status: _parseApplicationStatus(json['status']),
       submissionDate: DateTime.parse(json['submission_date']),
-      documents:
-          json['documents'] != null
-              ? List<ApplicationDocument>.from(
-                (json['documents'] as List<dynamic>).map(
-                  (doc) => ApplicationDocumentModel.fromJson(
-                    doc as Map<String, dynamic>,
-                  ),
+      documents: json['documents'] != null
+          ? List<ApplicationDocument>.from(
+              (json['documents'] as List<dynamic>).map(
+                (doc) => ApplicationDocumentModel.fromJson(
+                  doc as Map<String, dynamic>,
                 ),
-              )
-              : [],
-      timeline:
-          json['timeline'] != null
-              ? List<ApplicationTimeline>.from(
-                (json['timeline'] as List<dynamic>).map(
-                  (event) => ApplicationTimelineModel.fromJson(
-                    event as Map<String, dynamic>,
-                  ),
+              ),
+            )
+          : [],
+      timeline: json['timeline'] != null
+          ? List<ApplicationTimeline>.from(
+              (json['timeline'] as List<dynamic>).map(
+                (event) => ApplicationTimelineModel.fromJson(
+                  event as Map<String, dynamic>,
                 ),
-              )
-              : [],
-      tasks:
-          json['tasks'] != null
-              ? List<ApplicationTask>.from(
-                (json['tasks'] as List<dynamic>).map(
-                  (task) => ApplicationTaskModel.fromJson(
-                    task as Map<String, dynamic>,
-                  ),
-                ),
-              )
-              : [],
+              ),
+            )
+          : [],
+      tasks: json['tasks'] != null
+          ? List<ApplicationTask>.from(
+              (json['tasks'] as List<dynamic>).map(
+                (task) =>
+                    ApplicationTaskModel.fromJson(task as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 
@@ -65,33 +61,27 @@ class ApplicationModel extends Application {
       'university_name': universityName,
       'status': _applicationStatusToString(status),
       'submission_date': submissionDate.toIso8601String(),
-      'documents':
-          documents
-              .map<Map<String, dynamic>>(
-                (doc) =>
-                    doc is ApplicationDocumentModel
-                        ? doc.toJson()
-                        : ApplicationDocumentModel.fromEntity(doc).toJson(),
-              )
-              .toList(),
-      'timeline':
-          timeline
-              .map<Map<String, dynamic>>(
-                (event) =>
-                    event is ApplicationTimelineModel
-                        ? event.toJson()
-                        : ApplicationTimelineModel.fromEntity(event).toJson(),
-              )
-              .toList(),
-      'tasks':
-          tasks
-              .map<Map<String, dynamic>>(
-                (task) =>
-                    task is ApplicationTaskModel
-                        ? task.toJson()
-                        : ApplicationTaskModel.fromEntity(task).toJson(),
-              )
-              .toList(),
+      'documents': documents
+          .map<Map<String, dynamic>>(
+            (doc) => doc is ApplicationDocumentModel
+                ? doc.toJson()
+                : ApplicationDocumentModel.fromEntity(doc).toJson(),
+          )
+          .toList(),
+      'timeline': timeline
+          .map<Map<String, dynamic>>(
+            (event) => event is ApplicationTimelineModel
+                ? event.toJson()
+                : ApplicationTimelineModel.fromEntity(event).toJson(),
+          )
+          .toList(),
+      'tasks': tasks
+          .map<Map<String, dynamic>>(
+            (task) => task is ApplicationTaskModel
+                ? task.toJson()
+                : ApplicationTaskModel.fromEntity(task).toJson(),
+          )
+          .toList(),
     };
   }
 
@@ -163,10 +153,9 @@ class ApplicationDocumentModel extends ApplicationDocument {
       name: json['name'],
       status: _parseDocumentStatus(json['status']),
       fileUrl: json['file_url'],
-      submissionDate:
-          json['submission_date'] != null
-              ? DateTime.parse(json['submission_date'])
-              : null,
+      submissionDate: json['submission_date'] != null
+          ? DateTime.parse(json['submission_date'])
+          : null,
     );
   }
 

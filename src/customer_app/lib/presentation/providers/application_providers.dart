@@ -49,13 +49,16 @@ class ApplicationState {
 }
 
 // Create application state provider
-final createApplicationStateProvider = StateNotifierProvider.autoDispose<
-  CreateApplicationNotifier,
-  ApplicationState
->((ref) {
-  final createApplicationUseCase = ref.watch(createApplicationUseCaseProvider);
-  return CreateApplicationNotifier(createApplicationUseCase);
-});
+final createApplicationStateProvider =
+    StateNotifierProvider.autoDispose<
+      CreateApplicationNotifier,
+      ApplicationState
+    >((ref) {
+      final createApplicationUseCase = ref.watch(
+        createApplicationUseCaseProvider,
+      );
+      return CreateApplicationNotifier(createApplicationUseCase);
+    });
 
 class CreateApplicationNotifier extends StateNotifier<ApplicationState> {
   final CreateApplicationUseCase createApplicationUseCase;
@@ -134,13 +137,15 @@ class UploadDocumentNotifier extends StateNotifier<ApplicationState> {
 }
 
 // Complete task state provider
-final completeTaskStateProvider = StateNotifierProvider.autoDispose<
-  CompleteTaskNotifier,
-  ApplicationState
->((ref) {
-  final completeTaskUseCase = ref.watch(completeApplicationTaskUseCaseProvider);
-  return CompleteTaskNotifier(completeTaskUseCase, ref);
-});
+final completeTaskStateProvider =
+    StateNotifierProvider.autoDispose<CompleteTaskNotifier, ApplicationState>((
+      ref,
+    ) {
+      final completeTaskUseCase = ref.watch(
+        completeApplicationTaskUseCaseProvider,
+      );
+      return CompleteTaskNotifier(completeTaskUseCase, ref);
+    });
 
 class CompleteTaskNotifier extends StateNotifier<ApplicationState> {
   final CompleteApplicationTaskUseCase completeTaskUseCase;
@@ -178,13 +183,16 @@ class CompleteTaskNotifier extends StateNotifier<ApplicationState> {
 }
 
 // Update application status state provider
-final updateApplicationStatusStateProvider = StateNotifierProvider.autoDispose<
-  UpdateApplicationStatusNotifier,
-  ApplicationState
->((ref) {
-  final updateStatusUseCase = ref.watch(updateApplicationStatusUseCaseProvider);
-  return UpdateApplicationStatusNotifier(updateStatusUseCase, ref);
-});
+final updateApplicationStatusStateProvider =
+    StateNotifierProvider.autoDispose<
+      UpdateApplicationStatusNotifier,
+      ApplicationState
+    >((ref) {
+      final updateStatusUseCase = ref.watch(
+        updateApplicationStatusUseCaseProvider,
+      );
+      return UpdateApplicationStatusNotifier(updateStatusUseCase, ref);
+    });
 
 class UpdateApplicationStatusNotifier extends StateNotifier<ApplicationState> {
   final UpdateApplicationStatusUseCase updateStatusUseCase;

@@ -432,22 +432,19 @@ class _UniversityDetailsScreenState
                             Icon(
                               Icons.school_outlined,
                               size: 16,
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               program['degreeLevel'] as String,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(
-                                color:
-                                    Theme.of(
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(
                                       context,
                                     ).colorScheme.onSurfaceVariant,
-                              ),
+                                  ),
                             ),
                           ],
                         ),
@@ -458,22 +455,19 @@ class _UniversityDetailsScreenState
                             Icon(
                               Icons.access_time,
                               size: 16,
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               program['duration'] as String,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(
-                                color:
-                                    Theme.of(
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(
                                       context,
                                     ).colorScheme.onSurfaceVariant,
-                              ),
+                                  ),
                             ),
                           ],
                         ),
@@ -486,11 +480,10 @@ class _UniversityDetailsScreenState
                     children: [
                       Text(
                         '\$${program['tuitionFee']}/year',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ),
                       OutlinedButton(
                         onPressed: () {

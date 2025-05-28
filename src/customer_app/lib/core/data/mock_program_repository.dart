@@ -58,10 +58,9 @@ class MockProgramRepository implements ProgramRepository {
   }) async {
     var results = _programs;
     if (query != null && query.isNotEmpty) {
-      results =
-          results
-              .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
-              .toList();
+      results = results
+          .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
     if (universityId != null && universityId.isNotEmpty) {
       results = results.where((p) => p.universityId == universityId).toList();
@@ -92,8 +91,9 @@ class MockProgramRepository implements ProgramRepository {
   Future<Either<Failure, List<Program>>> getProgramsByUniversity(
     String universityId,
   ) async {
-    final results =
-        _programs.where((p) => p.universityId == universityId).toList();
+    final results = _programs
+        .where((p) => p.universityId == universityId)
+        .toList();
     return Right(results);
   }
 

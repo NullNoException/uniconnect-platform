@@ -240,25 +240,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               // Confirm logout
               showDialog(
                 context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: const Text('Log Out'),
-                      content: const Text('Are you sure you want to log out?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            // TODO: Implement logout logic
-                            context.go(AppConstants.loginRoute);
-                          },
-                          child: const Text('Log Out'),
-                        ),
-                      ],
+                builder: (context) => AlertDialog(
+                  title: const Text('Log Out'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
                     ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        // TODO: Implement logout logic
+                        context.go(AppConstants.loginRoute);
+                      },
+                      child: const Text('Log Out'),
+                    ),
+                  ],
+                ),
               );
             },
             textColor: Theme.of(context).colorScheme.error,

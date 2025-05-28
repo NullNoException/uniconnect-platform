@@ -100,3 +100,5 @@ terraform.rc
 
 # Docker
 .dockerignore
+src/control_panel/.fvmrc
+*.fvm/

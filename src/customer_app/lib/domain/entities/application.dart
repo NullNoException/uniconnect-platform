@@ -78,8 +78,9 @@ class Application {
   int get completionPercentage {
     // Calculate application completion percentage based on required documents and tasks
     final int totalDocuments = documents.length;
-    final int completedDocuments =
-        documents.where((doc) => doc.status != DocumentStatus.required).length;
+    final int completedDocuments = documents
+        .where((doc) => doc.status != DocumentStatus.required)
+        .length;
 
     final int totalTasks = tasks.length;
     final int completedTasks = tasks.where((task) => task.isCompleted).length;

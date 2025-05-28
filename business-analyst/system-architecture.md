@@ -382,3 +382,25 @@ The proposed modular architecture provides a solid foundation for the UniConnect
 8. Consider **progressive delivery** through canary releases
 
 This architecture supports the business requirements while providing flexibility for future growth and adaptation to changing market needs.
+
+## University Program Management
+
+The platform includes a comprehensive university program management system that enables service providers to:
+
+1. **University Catalog**: Maintain a database of universities they work with
+2. **Academic Programs**: Track programs (bachelor's, master's, PhD) and majors offered by each university
+3. **Semester-based Pricing**: Configure service pricing based on university, program, and semester
+4. **Data Management**: Import/export program data via Excel or manage through web interface
+
+### University Program Data Model
+
+The university program management module uses a normalized data model with the following key entities:
+
+- **Universities**: Institution profiles with basic information
+- **Academic Levels**: Degree levels (bachelor's, master's, PhD)
+- **Majors**: Fields of study offered within academic programs
+- **University Programs**: Junction of university, academic level, and major with tuition fees
+- **Semesters**: Academic periods with relevant dates
+- **Provider University Services**: Service provider offerings for specific university programs and semesters
+
+This modular design allows for flexible configuration while maintaining data integrity across the platform.

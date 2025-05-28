@@ -11,9 +11,20 @@ services:
       - "8443:443"
       - "5678:5678" # VS Code debugger
     depends_on:
-      - postgres
-      - redis
-      - minio
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+      jaeger:
+        condition: service_started
+      keycloak:
+        condition: service_started
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
@@ -33,19 +44,31 @@ services:
       - EmailSettings__EnableSsl=false
       - EmailSettings__FromEmail=noreply@uniconnect.com
       - EmailSettings__FromName=UniConnect
+      - Elasticsearch__Url=http://elasticsearch:9200
+      - MeilisearchSettings__Url=http://meilisearch:7700
+      - MeilisearchSettings__MasterKey=masterKey
+      - JaegerSettings__Host=jaeger
+      - JaegerSettings__Port=6831
+      - KeycloakSettings__Authority=http://keycloak:8080
+      - KeycloakSettings__Realm=uniconnect
+      - KeycloakSettings__ClientId=uniconnect-api
+      - KeycloakSettings__ClientSecret=your_client_secret
+      - KeycloakSettings__AdminUsername=admin
+      - KeycloakSettings__AdminPassword=admin
       - ASPNETCORE_URLS=http://+:80
     networks:
       - uniconnect-network
     volumes:
-      # Use correct path mapping based on your folder structure
-      - ./src/UniConnect.API:/app/src/UniConnect.API
-      - ./src/UniConnect.Application:/app/src/UniConnect.Application
-      - ./src/UniConnect.Domain:/app/src/UniConnect.Domain
-      - ./src/UniConnect.Infrastructure:/app/src/UniConnect.Infrastructure
-      - ./src/UniConnect.Identity:/app/src/UniConnect.Identity
-      - ./UniConnect.sln:/app/UniConnect.sln
+      - ./src:/app/src # Mount source for hot reload/debug
+      - ./tests:/app/tests # Mount tests for development
       - ./logs:/app/logs
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # PostgreSQL Database
   postgres:
@@ -62,6 +85,11 @@ services:
     networks:
       - uniconnect-network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uniconnect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Redis Cache
   redis:
@@ -75,6 +103,11 @@ services:
       - uniconnect-network
     restart: always
     command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # MinIO Object Storage
   minio:
@@ -92,6 +125,11 @@ services:
       - uniconnect-network
     command: server /data --console-address ":9001"
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
   # MailHog for Email Testing
   mailhog:
@@ -104,6 +142,93 @@ services:
       - uniconnect-network
     restart: always
 
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
+    container_name: uniconnect-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - uniconnect-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: uniconnect-meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=masterKey
+    volumes:
+      - meilisearch_data:/data.ms
+    networks:
+      - uniconnect-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: uniconnect-jaeger
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"  # Web UI
+      - "14268:14268"
+      - "14250:14250"
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=9411
+    networks:
+      - uniconnect-network
+    restart: always
+
+  # Keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    container_name: uniconnect-keycloak
+    ports:
+      - "8180:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=uniconnect
+      - KC_DB_PASSWORD=uniconnect_password
+    command: start-dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - uniconnect-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
+
 # Networks
 networks:
   uniconnect-network:
@@ -114,3 +239,5 @@ volumes:
   postgres_data:
   redis_data:
   minio_data:
+  elasticsearch_data:
+  meilisearch_data:

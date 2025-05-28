@@ -204,24 +204,23 @@ class SettingsScreen extends ConsumerWidget {
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children:
-                  languages
-                      .map(
-                        (language) => RadioListTile<String>(
-                          title: Text(language),
-                          value: language,
-                          groupValue: currentLanguage,
-                          onChanged: (value) {
-                            if (value != null) {
-                              ref
-                                  .read(settingsProvider.notifier)
-                                  .setLanguage(value);
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      )
-                      .toList(),
+              children: languages
+                  .map(
+                    (language) => RadioListTile<String>(
+                      title: Text(language),
+                      value: language,
+                      groupValue: currentLanguage,
+                      onChanged: (value) {
+                        if (value != null) {
+                          ref
+                              .read(settingsProvider.notifier)
+                              .setLanguage(value);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  )
+                  .toList(),
             ),
           ),
           actions: [

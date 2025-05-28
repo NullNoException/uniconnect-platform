@@ -81,8 +81,8 @@ class UniversityRepositoryImpl implements UniversityRepository {
       }
     } else {
       try {
-        final localUniversities =
-            await localDataSource.getFeaturedUniversities();
+        final localUniversities = await localDataSource
+            .getFeaturedUniversities();
         return Right(localUniversities);
       } on CacheException {
         return const Left(CacheFailure('No cached data available'));
@@ -102,8 +102,8 @@ class UniversityRepositoryImpl implements UniversityRepository {
       }
     } else {
       try {
-        final localUniversities =
-            await localDataSource.getBookmarkedUniversities();
+        final localUniversities = await localDataSource
+            .getBookmarkedUniversities();
         return Right(localUniversities);
       } on CacheException {
         return const Left(CacheFailure('No cached data available'));
