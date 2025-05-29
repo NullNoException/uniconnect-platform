@@ -123,7 +123,7 @@ public class EnhancedRedisCacheService : ICacheService
                 // Remove from tracking
                 foreach (var key in keys)
                 {
-                    await RemoveFromCacheTracking(key);
+                    await RemoveFromCacheTracking(key.ToString());
                 }
 
                 _logger.LogDebug("Successfully removed {Count} keys matching pattern: {Pattern}", keys.Length, pattern);
@@ -258,7 +258,7 @@ public class EnhancedRedisCacheService : ICacheService
                 {
                     try
                     {
-                        result[key] = JsonSerializer.Deserialize<T>(value);
+                        result[key] = JsonSerializer.Deserialize<T>(value.ToString());
                     }
                     catch (Exception ex)
                     {

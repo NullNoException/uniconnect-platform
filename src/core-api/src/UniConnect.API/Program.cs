@@ -33,7 +33,7 @@ try
     // Add Infrastructure layer services
     builder.Services.AddInfrastructure(builder.Configuration);
 
-    // Add controllers
+    // Add controllers with Areas support
     builder.Services.AddControllers();
 
     // Add API Explorer for Swagger
@@ -90,7 +90,17 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    // Map controllers with Areas support
     app.MapControllers();
+
+    // Map Areas routes explicitly for better routing
+    app.MapControllerRoute(
+        name: "areas",
+        pattern: "api/{area:exists}/v{version:int}/{controller=Home}/{action=Index}/{id?}");
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "api/v{version:int}/{controller}/{action=Index}/{id?}");
 
     // Map health checks endpoints
     app.MapHealthChecks("/health");
@@ -124,3 +134,6 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+// Make Program class accessible for integration tests
+public partial class Program { }

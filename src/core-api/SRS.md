@@ -724,526 +724,556 @@ erDiagram
 
 ### 4.1 Authentication Endpoints
 
-#### 4.1.1 Login
+The UniConnect Core API implements authentication endpoints that integrate with Keycloak for identity and access management. These endpoints handle user authentication, token validation, and user session management.
+
+#### 4.1.1 Authenticate User
 
 - **Endpoint**: POST /api/v1/auth/login
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Authenticates user with Keycloak and returns application tokens
 - **Request Body**:
   ```json
   {
-    "email": "string",
-    "password": "string"
+    "email": "john.doe@example.com",
+    "password": "userPassword123",
+    "clientId": "uniconnect-admin-panel",
+    "rememberMe": true
   }
   ```
 - **Response**:
   ```json
   {
-    "token": "string",
-    "refreshToken": "string",
-    "expiresAt": "datetime",
-    "userId": "guid",
-    "email": "string",
-    "roles": ["string"]
+    "success": true,
+    "data": {
+      "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "expiresIn": 3600,
+      "tokenType": "Bearer",
+      "user": {
+        "id": "user-uuid",
+        "email": "john.doe@example.com",
+        "firstName": "John",
+        "lastName": "Doe",
+        "userType": "Student",
+        "roles": ["student", "user"],
+        "isEmailVerified": true
+      }
+    }
   }
   ```
-- **Status Codes**: 200 OK, 401 Unauthorized
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 422 Unprocessable Entity
 
-#### 4.1.2 Refresh Token
+#### 4.1.2 OAuth Callback Handler
 
-- **Endpoint**: POST /api/v1/auth/refresh
+- **Endpoint**: POST /api/v1/auth/oauth/callback
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Handles OAuth callback from Keycloak and processes authorization code
 - **Request Body**:
   ```json
   {
-    "refreshToken": "string"
+    "code": "authorization_code_from_keycloak",
+    "state": "csrf_protection_state",
+    "clientId": "uniconnect-admin-panel",
+    "redirectUri": "https://admin.uniconnect.com/callback"
   }
   ```
-- **Response**: Same as login response
-- **Status Codes**: 200 OK, 401 Unauthorized
-
-#### 4.1.3 Forgot Password
-
-- **Endpoint**: POST /api/v1/auth/forgot-password
-- **Request Body**:
-  ```json
-  {
-    "email": "string"
-  }
-  ```
-- **Response**: Success message
-- **Status Codes**: 200 OK
-
-#### 4.1.4 Reset Password
-
-- **Endpoint**: POST /api/v1/auth/reset-password
-- **Request Body**:
-  ```json
-  {
-    "email": "string",
-    "token": "string",
-    "newPassword": "string",
-    "confirmPassword": "string"
-  }
-  ```
-- **Response**: Success message
-- **Status Codes**: 200 OK, 400 Bad Request
-
-#### 4.1.5 Change Password
-
-- **Endpoint**: POST /api/v1/auth/change-password
-- **Request Body**:
-  ```json
-  {
-    "currentPassword": "string",
-    "newPassword": "string",
-    "confirmPassword": "string"
-  }
-  ```
-- **Authorization**: JWT Bearer token required
-- **Response**: Success message
+- **Response**: Same as Authenticate User response
 - **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-### 4.2 User Management Endpoints
+#### 4.1.3 Refresh Access Token
 
-#### 4.2.1 Register User
-
-- **Endpoint**: POST /api/v1/users/register
+- **Endpoint**: POST /api/v1/auth/refresh
+- **Method**: POST
+- **Content-Type**: application/json
+- **Authorization**: Bearer refresh_token (or in request body)
+- **Description**: Refreshes access token using refresh token
 - **Request Body**:
   ```json
   {
-    "email": "string",
-    "password": "string",
-    "confirmPassword": "string",
-    "firstName": "string",
-    "lastName": "string",
-    "userType": "enum",
-    "phoneNumber": "string",
-    "preferredLanguage": "string"
+    "refreshToken": "refresh_token_value",
+    "clientId": "uniconnect-admin-panel"
   }
   ```
-- **Response**: User DTO
-- **Status Codes**: 200 OK, 400 Bad Request
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "accessToken": "new_access_token",
+      "refreshToken": "new_refresh_token",
+      "expiresIn": 3600,
+      "tokenType": "Bearer"
+    }
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-#### 4.2.2 Get User by ID
+#### 4.1.4 Validate Token
 
-- **Endpoint**: GET /api/v1/users/{id}
-- **Authorization**: JWT Bearer token required
-- **Response**: User DTO
-- **Status Codes**: 200 OK, 404 Not Found, 401 Unauthorized
+- **Endpoint**: POST /api/v1/auth/validate
+- **Method**: POST
+- **Content-Type**: application/json
+- **Authorization**: Bearer access_token
+- **Description**: Validates access token with Keycloak and returns user info
+- **Request Body**:
+  ```json
+  {
+    "token": "access_token_to_validate"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "isValid": true,
+      "user": {
+        "id": "user-uuid",
+        "email": "john.doe@example.com",
+        "firstName": "John",
+        "lastName": "Doe",
+        "userType": "Student",
+        "roles": ["student", "user"],
+        "permissions": ["read:profile", "write:profile"]
+      },
+      "expiresAt": "2024-01-01T12:00:00Z"
+    }
+  }
+  ```
+- **Status Codes**: 200 OK, 401 Unauthorized
 
-#### 4.2.3 Get Users (Paginated)
+#### 4.1.5 Get Current User
 
-- **Endpoint**: GET /api/v1/users
-- **Authorization**: JWT Bearer token with Admin role required
-- **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - searchString: string (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of User DTOs
-- **Status Codes**: 200 OK, 401 Unauthorized, 403 Forbidden
+- **Endpoint**: GET /api/v1/auth/me
+- **Method**: GET
+- **Authorization**: Bearer access_token required
+- **Description**: Returns current authenticated user information
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": "user-uuid",
+      "email": "john.doe@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "userType": "Student",
+      "status": "Active",
+      "roles": ["student", "user"],
+      "permissions": ["read:profile", "write:profile"],
+      "lastLoginDate": "2024-01-01T10:00:00Z",
+      "profilePictureUrl": "https://storage.uniconnect.com/avatars/user-uuid.jpg"
+    }
+  }
+  ```
+- **Status Codes**: 200 OK, 401 Unauthorized
 
-### 4.3 Service Management Endpoints
+#### 4.1.6 Logout User
 
-#### 4.3.1 Create Service
+- **Endpoint**: POST /api/v1/auth/logout
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Logs out user from Keycloak and invalidates tokens
+- **Request Body**:
+  ```json
+  {
+    "refreshToken": "refresh_token_value",
+    "logoutFromKeycloak": true
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "User logged out successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 401 Unauthorized
 
-- **Endpoint**: POST /api/v1/services
-- **Authorization**: JWT Bearer token with Provider role required
-- **Request Body**: Service creation details
-- **Response**: Service DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized
+#### 4.1.7 Register User
 
-#### 4.3.2 Get Service by ID
+- **Endpoint**: POST /api/v1/auth/register
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Registers new user in Keycloak and local database
+- **Request Body**:
+  ```json
+  {
+    "email": "john.doe@example.com",
+    "password": "userPassword123",
+    "confirmPassword": "userPassword123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "userType": "Student",
+    "phoneNumber": "+1234567890",
+    "preferredLanguage": "en",
+    "agreeToTerms": true
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "userId": "user-uuid",
+      "email": "john.doe@example.com",
+      "emailVerificationRequired": true,
+      "message": "Registration successful. Please check your email for verification."
+    }
+  }
+  ```
+- **Status Codes**: 201 Created, 400 Bad Request, 409 Conflict
 
-- **Endpoint**: GET /api/v1/services/{id}
-- **Authorization**: None required for public services
-- **Response**: Service DTO
+#### 4.1.8 Verify Email
+
+- **Endpoint**: POST /api/v1/auth/verify-email
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Verifies user email using verification token
+- **Request Body**:
+  ```json
+  {
+    "token": "email_verification_token",
+    "email": "john.doe@example.com"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Email verified successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 404 Not Found
+
+#### 4.1.9 Forgot Password
+
+- **Endpoint**: POST /api/v1/auth/forgot-password
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Initiates password reset process via Keycloak
+- **Request Body**:
+  ```json
+  {
+    "email": "john.doe@example.com",
+    "clientId": "uniconnect-admin-panel"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Password reset email sent successfully"
+  }
+  ```
 - **Status Codes**: 200 OK, 404 Not Found
 
-#### 4.3.3 Update Service
+#### 4.1.10 Reset Password
 
-- **Endpoint**: PUT /api/v1/services/{id}
-- **Authorization**: JWT Bearer token with Provider role required
-- **Request Body**: Service update details
-- **Response**: Updated Service DTO
-- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
-
-#### 4.3.4 Delete Service
-
-- **Endpoint**: DELETE /api/v1/services/{id}
-- **Authorization**: JWT Bearer token with Provider or Admin role required
-- **Response**: 204 No Content
-- **Status Codes**: 204 No Content, 401 Unauthorized, 403 Forbidden, 404 Not Found
-
-#### 4.3.5 Get Services (Paginated)
-
-- **Endpoint**: GET /api/v1/services
-- **Query Parameters**:
-  - categoryId: guid (optional)
-  - providerId: guid (optional)
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - searchString: string (optional)
-  - priceMin: decimal (optional)
-  - priceMax: decimal (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of Service DTOs
-- **Status Codes**: 200 OK
-
-### 4.4 Service Request Management Endpoints
-
-#### 4.4.1 Create Service Request
-
-- **Endpoint**: POST /api/v1/servicerequests
-- **Authorization**: JWT Bearer token with Student role required
-- **Request Body**: Service request creation details
-- **Response**: Service Request DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized
-
-#### 4.4.2 Get Service Request by ID
-
-- **Endpoint**: GET /api/v1/servicerequests/{id}
-- **Authorization**: JWT Bearer token with access to the request required
-- **Response**: Service Request DTO
-- **Status Codes**: 200 OK, 401 Unauthorized, 403 Forbidden, 404 Not Found
-
-#### 4.4.3 Update Service Request Status
-
-- **Endpoint**: PATCH /api/v1/servicerequests/{id}/status
-- **Authorization**: JWT Bearer token with access to the request required
+- **Endpoint**: POST /api/v1/auth/reset-password
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Resets user password using reset token
 - **Request Body**:
   ```json
   {
-    "status": "enum",
-    "notes": "string"
+    "token": "password_reset_token",
+    "newPassword": "newPassword123",
+    "confirmPassword": "newPassword123"
   }
   ```
-- **Response**: Updated Service Request DTO
-- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Password reset successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 404 Not Found
 
-#### 4.4.4 Get Service Requests (Paginated)
+#### 4.1.11 Change Password
 
-- **Endpoint**: GET /api/v1/servicerequests
-- **Authorization**: JWT Bearer token required
-- **Query Parameters**:
-  - userId: guid (optional)
-  - serviceId: guid (optional)
-  - status: string (optional)
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of Service Request DTOs
+- **Endpoint**: POST /api/v1/auth/change-password
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Changes user password (requires current password)
+- **Request Body**:
+  ```json
+  {
+    "currentPassword": "currentPassword123",
+    "newPassword": "newPassword123",
+    "confirmPassword": "newPassword123"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Password changed successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
+
+#### 4.1.12 Revoke Token
+
+- **Endpoint**: POST /api/v1/auth/revoke
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Revokes refresh token in Keycloak
+- **Request Body**:
+  ```json
+  {
+    "refreshToken": "refresh_token_to_revoke"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Token revoked successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
+
+#### 4.1.13 Get User Sessions
+
+- **Endpoint**: GET /api/v1/auth/sessions
+- **Method**: GET
+- **Authorization**: Bearer access_token required
+- **Description**: Returns active user sessions from Keycloak
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "sessionId": "session-uuid",
+        "clientId": "uniconnect-admin-panel",
+        "ipAddress": "192.168.1.1",
+        "userAgent": "Mozilla/5.0...",
+        "lastAccess": "2024-01-01T11:00:00Z",
+        "started": "2024-01-01T10:00:00Z",
+        "isCurrent": true
+      }
+    ]
+  }
+  ```
 - **Status Codes**: 200 OK, 401 Unauthorized
 
-### 4.5 Transaction Management Endpoints
+#### 4.1.14 Terminate Session
 
-#### 4.5.1 Create Transaction
+- **Endpoint**: DELETE /api/v1/auth/sessions/{sessionId}
+- **Method**: DELETE
+- **Authorization**: Bearer access_token required
+- **Description**: Terminates specific user session in Keycloak
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Session terminated successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 401 Unauthorized, 404 Not Found
 
-- **Endpoint**: POST /api/v1/transactions
-- **Authorization**: JWT Bearer token required
-- **Request Body**: Transaction creation details
-- **Response**: Transaction DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized
+#### 4.1.15 Enable Two-Factor Authentication
 
-#### 4.5.2 Get Transaction by ID
-
-- **Endpoint**: GET /api/v1/transactions/{id}
-- **Authorization**: JWT Bearer token with access to the transaction required
-- **Response**: Transaction DTO
-- **Status Codes**: 200 OK, 401 Unauthorized, 403 Forbidden, 404 Not Found
-
-#### 4.5.3 Update Transaction Status
-
-- **Endpoint**: PATCH /api/v1/transactions/{id}/status
-- **Authorization**: JWT Bearer token with Admin role required
+- **Endpoint**: POST /api/v1/auth/2fa/enable
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Enables 2FA for user account
 - **Request Body**:
   ```json
   {
-    "status": "string",
-    "notes": "string"
+    "password": "currentPassword123"
   }
   ```
-- **Response**: Updated Transaction DTO
-- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "qrCodeUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+      "secretKey": "JBSWY3DPEHPK3PXP",
+      "backupCodes": ["12345678", "87654321", "11111111"]
+    }
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-### 4.6 University Management Endpoints
+#### 4.1.16 Verify Two-Factor Authentication Setup
 
-#### 4.6.1 Create University
-
-- **Endpoint**: POST /api/v1/universities
-- **Authorization**: JWT Bearer token with Admin role required
+- **Endpoint**: POST /api/v1/auth/2fa/verify-setup
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Verifies 2FA setup with TOTP code
 - **Request Body**:
   ```json
   {
-    "name": "string",
-    "countryId": "guid",
-    "website": "string",
-    "description": "string",
-    "logoUrl": "string",
-    "address": {
-      "addressLine1": "string",
-      "addressLine2": "string",
-      "city": "string",
-      "stateProvince": "string",
-      "postalCode": "string",
-      "countryId": "guid"
-    },
-    "isActive": true
+    "totpCode": "123456"
   }
   ```
-- **Response**: University DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Two-factor authentication enabled successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-#### 4.6.2 Get University by ID
+#### 4.1.17 Disable Two-Factor Authentication
 
-- **Endpoint**: GET /api/v1/universities/{id}
-- **Authorization**: JWT Bearer token required
-- **Response**: University DTO
-- **Status Codes**: 200 OK, 404 Not Found, 401 Unauthorized
+- **Endpoint**: POST /api/v1/auth/2fa/disable
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Disables 2FA for user account
+- **Request Body**:
+  ```json
+  {
+    "password": "currentPassword123",
+    "totpCode": "123456"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Two-factor authentication disabled successfully"
+  }
+  ```
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-#### 4.6.3 Update University
+#### 4.1.18 Social Login Initiation
 
-- **Endpoint**: PUT /api/v1/universities/{id}
-- **Authorization**: JWT Bearer token with Admin role required
-- **Request Body**: Same as Create University
-- **Response**: Updated University DTO
-- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
-
-#### 4.6.4 Get Universities (Paginated)
-
-- **Endpoint**: GET /api/v1/universities
+- **Endpoint**: GET /api/v1/auth/social/{provider}
+- **Method**: GET
+- **Description**: Initiates social login flow (Google, Facebook, etc.)
+- **Path Parameters**:
+  - provider: string (google, facebook, github, linkedin)
 - **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - searchString: string (optional)
-  - countryId: guid (optional)
-  - isActive: boolean (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of University DTOs
-- **Status Codes**: 200 OK
+  - redirect_uri: string (optional)
+  - state: string (optional)
+- **Response**: 302 Redirect to social provider
+- **Status Codes**: 302 Found, 400 Bad Request
 
-### 4.7 Academic Level Management Endpoints
+#### 4.1.19 Social Login Callback
 
-#### 4.7.1 Create Academic Level
-
-- **Endpoint**: POST /api/v1/academiclevels
-- **Authorization**: JWT Bearer token with Admin role required
+- **Endpoint**: POST /api/v1/auth/social/{provider}/callback
+- **Method**: POST
+- **Content-Type**: application/json
+- **Description**: Handles social login callback
+- **Path Parameters**:
+  - provider: string (google, facebook, github, linkedin)
 - **Request Body**:
   ```json
   {
-    "name": "string",
-    "description": "string",
-    "sortOrder": 0
+    "code": "authorization_code_from_provider",
+    "state": "csrf_protection_state"
   }
   ```
-- **Response**: AcademicLevel DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+- **Response**: Same as Authenticate User response
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized
 
-#### 4.7.2 Get Academic Levels
+#### 4.1.20 Link Social Account
 
-- **Endpoint**: GET /api/v1/academiclevels
-- **Authorization**: JWT Bearer token required
-- **Response**: List of AcademicLevel DTOs
-- **Status Codes**: 200 OK, 401 Unauthorized
-
-### 4.8 Major Management Endpoints
-
-#### 4.8.1 Create Major
-
-- **Endpoint**: POST /api/v1/majors
-- **Authorization**: JWT Bearer token with Admin role required
+- **Endpoint**: POST /api/v1/auth/social/{provider}/link
+- **Method**: POST
+- **Authorization**: Bearer access_token required
+- **Content-Type**: application/json
+- **Description**: Links social account to existing user account
+- **Path Parameters**:
+  - provider: string (google, facebook, github, linkedin)
 - **Request Body**:
   ```json
   {
-    "name": "string",
-    "description": "string",
-    "fieldOfStudyId": "guid"
+    "code": "authorization_code_from_provider",
+    "state": "csrf_protection_state"
   }
   ```
-- **Response**: Major DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
-
-#### 4.8.2 Get Majors (Paginated)
-
-- **Endpoint**: GET /api/v1/majors
-- **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - searchString: string (optional)
-  - fieldOfStudyId: guid (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of Major DTOs
-- **Status Codes**: 200 OK
-
-### 4.9 University Program Management Endpoints
-
-#### 4.9.1 Create University Program
-
-- **Endpoint**: POST /api/v1/universityprograms
-- **Authorization**: JWT Bearer token with Admin role required
-- **Request Body**:
+- **Response**:
   ```json
   {
-    "universityId": "guid",
-    "majorId": "guid",
-    "academicLevelId": "guid",
-    "tuitionFee": 0,
-    "currencyId": "guid",
-    "isActive": true
+    "success": true,
+    "message": "Social account linked successfully"
   }
   ```
-- **Response**: UniversityProgram DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 409 Conflict
 
-#### 4.9.2 Get University Programs (Paginated)
+#### 4.1.21 Unlink Social Account
 
-- **Endpoint**: GET /api/v1/universityprograms
-- **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - universityId: guid (optional)
-  - majorId: guid (optional)
-  - academicLevelId: guid (optional)
-  - isActive: boolean (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of UniversityProgram DTOs
-- **Status Codes**: 200 OK
-
-### 4.10 Semester Management Endpoints
-
-#### 4.10.1 Create Semester
-
-- **Endpoint**: POST /api/v1/semesters
-- **Authorization**: JWT Bearer token with Admin role required
-- **Request Body**:
+- **Endpoint**: DELETE /api/v1/auth/social/{provider}
+- **Method**: DELETE
+- **Authorization**: Bearer access_token required
+- **Description**: Unlinks social account from user account
+- **Path Parameters**:
+  - provider: string (google, facebook, github, linkedin)
+- **Response**:
   ```json
   {
-    "name": "string",
-    "startDate": "datetime",
-    "endDate": "datetime",
-    "applicationDeadline": "datetime",
-    "isActive": true
+    "success": true,
+    "message": "Social account unlinked successfully"
   }
   ```
-- **Response**: Semester DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+- **Status Codes**: 200 OK, 401 Unauthorized, 404 Not Found
 
-#### 4.10.2 Get Semesters (Paginated)
+### 4.1.22 Keycloak Integration Configuration
 
-- **Endpoint**: GET /api/v1/semesters
-- **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - isActive: boolean (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of Semester DTOs
-- **Status Codes**: 200 OK
+#### Backend Service Configuration
 
-### 4.11 Provider University Program Endpoints
+- **Keycloak Server URL**: https://keycloak.uniconnect.com/auth
+- **Realm**: uniconnect
+- **Client ID**: uniconnect-core-api
+- **Client Secret**: Configured via environment variables
+- **Grant Types**: authorization_code, refresh_token, client_credentials
 
-#### 4.11.1 Create Provider University Program
+#### API Client Roles Mapping
 
-- **Endpoint**: POST /api/v1/providers/{providerId}/programs
-- **Authorization**: JWT Bearer token with Provider role or Admin role required
-- **Request Body**:
-  ```json
-  {
-    "universityProgramId": "guid",
-    "semesterId": "guid",
-    "servicePrice": 0,
-    "serviceDescription": "string",
-    "isActive": true
-  }
-  ```
-- **Response**: ProviderUniversityProgram DTO
-- **Status Codes**: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+- **admin**: Maps to Keycloak admin role
+- **service-provider**: Maps to Keycloak service-provider role
+- **provider-staff**: Maps to Keycloak provider-staff role
+- **student**: Maps to Keycloak student role
+- **moderator**: Maps to Keycloak moderator role
 
-#### 4.11.2 Get Provider University Programs (Paginated)
+#### Token Validation
 
-- **Endpoint**: GET /api/v1/providers/{providerId}/programs
-- **Query Parameters**:
-  - pageNumber: int (default: 1)
-  - pageSize: int (default: 10)
-  - universityId: guid (optional)
-  - majorId: guid (optional)
-  - academicLevelId: guid (optional)
-  - semesterId: guid (optional)
-  - isActive: boolean (optional)
-  - sortBy: string (optional)
-  - sortDescending: boolean (optional)
-- **Response**: Paginated list of ProviderUniversityProgram DTOs
-- **Status Codes**: 200 OK, 401 Unauthorized, 403 Forbidden
+- **JWT Signature Verification**: Using Keycloak's public keys (JWKS)
+- **Token Introspection**: For detailed token validation
+- **Role and Permission Mapping**: From Keycloak claims to application permissions
 
-#### 4.11.3 Import Provider University Programs
+#### Error Handling
 
-- **Endpoint**: POST /api/v1/providers/{providerId}/programs/import
-- **Authorization**: JWT Bearer token with Provider role or Admin role required
-- **Request Body**: Multipart form with Excel file
-- **Response**: Import results summary
-- **Status Codes**: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+All authentication endpoints follow consistent error response format:
 
-#### 4.11.4 Export Provider University Programs
+```json
+{
+  "success": false,
+  "error": {
+    "code": "AUTHENTICATION_FAILED",
+    "message": "Invalid credentials provided",
+    "details": {
+      "field": "password",
+      "reason": "Password does not meet requirements"
+    }
+  },
+  "timestamp": "2024-01-01T12:00:00Z",
+  "traceId": "trace-uuid"
+}
+```
 
-- **Endpoint**: GET /api/v1/providers/{providerId}/programs/export
-- **Authorization**: JWT Bearer token with Provider role or Admin role required
-- **Query Parameters**: Same as Get Provider University Programs
-- **Response**: Excel file download
-- **Status Codes**: 200 OK, 401 Unauthorized, 403 Forbidden
+#### Rate Limiting
 
-## 5. Authentication and Security
-
-### 5.1 JWT Authentication
-
-The system uses JSON Web Tokens (JWT) for authentication with the following characteristics:
-
-1. **Token Composition**:
-
-   - User ID claim
-   - Email claim
-   - Role claims
-   - JWT ID claim
-   - Issuer, Audience, and Expiration claims
-
-2. **Token Management**:
-
-   - Access tokens have configurable expiration (default 60 minutes)
-   - Refresh tokens valid for 30 days
-   - Refresh tokens are single-use and stored in the database
-   - Token revocation support
-
-3. **Security Measures**:
-   - HTTPS required in production
-   - Rate limiting for authentication attempts
-   - Secure cookie handling
-   - Password policies enforced
-
-### 5.2 Role-Based Access Control
-
-The system implements the following roles:
-
-1. **Student**: Can access and manage their own profile, place service requests
-2. **ServiceProvider**: Can manage their organization profile, services, and respond to requests
-3. **ProviderStaff**: Limited access to provider functions based on assigned permissions
-4. **Admin**: Full system access
-5. **Moderator**: Content moderation and limited administrative functions
-
-### 5.3 Data Protection
-
-1. **Encryption**:
-
-   - Passwords stored as hashes using ASP.NET Core Identity
-   - Sensitive data encrypted at rest
-   - All communications over HTTPS
-
-2. **API Security**:
-   - CSRF protection
-   - CORS properly configured
-   - Input validation and sanitization
+- **Login attempts**: 5 attempts per 15 minutes per IP
+- **Password reset**: 3 requests per hour per email
+- **Token refresh**: 10 requests per minute per user
+- **Registration**: 3 registrations per hour per IP
 
 ## 6. Integration Services
 

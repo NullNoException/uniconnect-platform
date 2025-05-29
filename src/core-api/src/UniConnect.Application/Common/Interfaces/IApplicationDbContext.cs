@@ -14,6 +14,13 @@ public interface IApplicationDbContext
     DbSet<Address> Addresses { get; }
     DbSet<Country> Countries { get; }
     DbSet<University> Universities { get; }
+    DbSet<UniversityContact> UniversityContacts { get; }
+    DbSet<UniversityAddress> UniversityAddresses { get; }
+    DbSet<AcademicProgram> AcademicPrograms { get; }
+    DbSet<AcademicLevel> AcademicLevels { get; }
+    DbSet<Major> Majors { get; }
+    DbSet<ProgramTuitionFee> ProgramTuitionFees { get; }
+    DbSet<ProviderProgramOffering> ProviderProgramOfferings { get; }
     DbSet<FieldOfStudy> FieldsOfStudy { get; }
     DbSet<ServiceCategory> ServiceCategories { get; }
     DbSet<Service> Services { get; }

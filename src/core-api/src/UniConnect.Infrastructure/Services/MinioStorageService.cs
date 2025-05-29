@@ -4,11 +4,12 @@ using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
+using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Services;
 
 namespace UniConnect.Infrastructure.Services;
 
-public class MinioStorageService : IStorageService
+public class MinioStorageService : IStorageService, IFileStorageService
 {
     private readonly MinioClient _minioClient;
     private readonly MinioSettings _minioSettings;
@@ -189,6 +190,142 @@ public class MinioStorageService : IStorageService
             ]
         }}";
     }
+
+    #region IFileStorageService Implementation
+
+    public async Task<string> UploadFileAsync(FileUploadRequest fileRequest, string folder, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Use folder as container/bucket name, but sanitize it
+            var container = SanitizeContainerName(folder);
+
+            var fileUrl = await UploadFileAsync(
+                fileRequest.FileStream,
+                fileRequest.FileName,
+                fileRequest.ContentType,
+                container,
+                cancellationToken);
+
+            _logger.LogInformation("File uploaded successfully to MinIO: {FileName} -> {FileUrl}",
+                fileRequest.FileName, fileUrl);
+
+            return fileUrl;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading file to MinIO: {FileName}", fileRequest.FileName);
+            throw;
+        }
+    }
+
+    // New implementation for IFileStorageService
+    async Task IFileStorageService.DeleteFileAsync(string fileUrl, CancellationToken cancellationToken)
+    {
+        try
+        {
+            bool success = await DeleteFileAsync(fileUrl, cancellationToken);
+
+            if (!success)
+            {
+                _logger.LogWarning("Failed to delete file from MinIO: {FileUrl}", fileUrl);
+                throw new InvalidOperationException($"Failed to delete file: {fileUrl}");
+            }
+
+            _logger.LogInformation("File deleted successfully from MinIO: {FileUrl}", fileUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting file from MinIO: {FileUrl}", fileUrl);
+            throw;
+        }
+    }
+
+    public string GetPublicUrl(string filePath)
+    {
+        // For MinIO, filePath is already a URL in format "container/objectName"
+        // We can either return it as-is or construct a full URL with the endpoint
+        if (_minioSettings.PublicBuckets.Any(bucket => filePath.StartsWith(bucket + "/")))
+        {
+            // For public buckets, return direct MinIO URL
+            var protocol = _minioSettings.UseSSL ? "https" : "http";
+            return $"{protocol}://{_minioSettings.Endpoint}/{filePath}";
+        }
+
+        // For private buckets, return the path as-is (will require signed URL for access)
+        return filePath;
+    }
+
+    public bool ValidateFile(string fileName, string contentType, long size, string[] allowedExtensions, long maxSizeInBytes)
+    {
+        if (string.IsNullOrEmpty(fileName) || size == 0)
+        {
+            _logger.LogWarning("File validation failed: Empty filename or zero size");
+            return false;
+        }
+
+        // Check file size
+        if (size > maxSizeInBytes)
+        {
+            _logger.LogWarning("File size exceeds limit: {FileSize} bytes (max: {MaxSize})", size, maxSizeInBytes);
+            return false;
+        }
+
+        // Check file extension
+        var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
+        {
+            _logger.LogWarning("Invalid file extension: {Extension}. Allowed: {AllowedExtensions}",
+                fileExtension, string.Join(", ", allowedExtensions));
+            return false;
+        }
+
+        // Check content type (basic validation)
+        if (string.IsNullOrEmpty(contentType))
+        {
+            _logger.LogWarning("Missing content type for file: {FileName}", fileName);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Sanitize container name to comply with MinIO bucket naming rules
+    /// </summary>
+    private static string SanitizeContainerName(string folder)
+    {
+        // MinIO bucket names must be between 3 and 63 characters long
+        // Must contain only lowercase letters, numbers, dots, and hyphens
+        // Must start and end with a letter or number
+        var sanitized = folder.ToLowerInvariant()
+            .Replace('/', '-')
+            .Replace('_', '-')
+            .Replace(' ', '-');
+
+        // Remove any invalid characters
+        sanitized = new string(sanitized.Where(c =>
+            char.IsLetterOrDigit(c) || c == '-' || c == '.').ToArray());
+
+        // Ensure it starts and ends with alphanumeric
+        sanitized = sanitized.Trim('-', '.');
+
+        // Ensure minimum length
+        if (sanitized.Length < 3)
+        {
+            sanitized = $"files-{sanitized}";
+        }
+
+        // Ensure maximum length
+        if (sanitized.Length > 63)
+        {
+            sanitized = sanitized.Substring(0, 63).TrimEnd('-', '.');
+        }
+
+        return sanitized;
+    }
+
+    #endregion
 }
 
 public class MinioSettings

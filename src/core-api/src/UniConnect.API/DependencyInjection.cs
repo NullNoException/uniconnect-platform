@@ -23,6 +23,32 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
+        // Add authorization policies
+        services.AddAuthorization(options =>
+        {
+            // Customer area policies
+            options.AddPolicy("CustomerPolicy", policy =>
+                policy.RequireRole("Student", "Customer"));
+
+            // Admin area policies
+            options.AddPolicy("AdminPolicy", policy =>
+                policy.RequireRole("Administrator", "Admin", "SuperAdmin"));
+
+            // Control panel policies (broader access)
+            options.AddPolicy("ControlPanelPolicy", policy =>
+                policy.RequireRole("Staff", "Moderator", "Administrator", "Admin", "SuperAdmin", "SystemAdmin"));
+
+            // Specific role policies
+            options.AddPolicy("SuperAdminOnly", policy =>
+                policy.RequireRole("SuperAdmin"));
+
+            options.AddPolicy("AdminOrAbove", policy =>
+                policy.RequireRole("Administrator", "Admin", "SuperAdmin"));
+
+            options.AddPolicy("StaffOrAbove", policy =>
+                policy.RequireRole("Staff", "Moderator", "Administrator", "Admin", "SuperAdmin"));
+        });
+
         services.AddHealthChecks();
 
         // Add background services

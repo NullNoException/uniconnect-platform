@@ -29,6 +29,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Address> Addresses => Set<Address>();
     public DbSet<Country> Countries => Set<Country>();
     public DbSet<University> Universities => Set<University>();
+    public DbSet<UniversityContact> UniversityContacts => Set<UniversityContact>();
+    public DbSet<UniversityAddress> UniversityAddresses => Set<UniversityAddress>();
+    public DbSet<AcademicProgram> AcademicPrograms => Set<AcademicProgram>();
+    public DbSet<AcademicLevel> AcademicLevels => Set<AcademicLevel>();
+    public DbSet<Major> Majors => Set<Major>();
+    public DbSet<ProgramTuitionFee> ProgramTuitionFees => Set<ProgramTuitionFee>();
+    public DbSet<ProviderProgramOffering> ProviderProgramOfferings => Set<ProviderProgramOffering>();
     public DbSet<FieldOfStudy> FieldsOfStudy => Set<FieldOfStudy>();
     public DbSet<ServiceCategory> ServiceCategories => Set<ServiceCategory>();
     public DbSet<Service> Services => Set<Service>();

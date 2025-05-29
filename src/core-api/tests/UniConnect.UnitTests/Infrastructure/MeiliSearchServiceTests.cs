@@ -73,12 +73,8 @@ public class MeiliSearchServiceTests
         Assert.Equal(0, result.ProcessingTimeMs);
     }
 
-    [Theory]
-    [InlineData("services", "id")]
-    [InlineData("service_providers", "id")]
-    [InlineData("universities", "id")]
-    [InlineData("fields_of_study", "id")]
-    public async Task InitializeIndexesAsync_ShouldNotThrow(string indexName, string primaryKey)
+    [Fact]
+    public async Task InitializeIndexesAsync_ShouldNotThrow()
     {
         // Arrange & Act & Assert
         // This test just ensures the method doesn't throw during initialization

@@ -42,7 +42,7 @@ services:
       - EmailSettings__FromEmail=noreply@uniconnect.com
       - EmailSettings__FromName=UniConnect
       - MeilisearchSettings__Url=http://meilisearch:7700
-      - MeilisearchSettings__MasterKey=masterKey
+      - MeilisearchSettings__MasterKey=f0Ylc3dNgtVYKIl8-gUnp52zzXkagWexrTox27NqNEg
       - JaegerSettings__Host=jaeger
       - JaegerSettings__Port=6831
       - KeycloakSettings__Authority=http://keycloak:8080
@@ -145,7 +145,7 @@ services:
     ports:
       - "7700:7700"
     environment:
-      - MEILI_MASTER_KEY=masterKey
+      - MEILI_MASTER_KEY=f0Ylc3dNgtVYKIl8-gUnp52zzXkagWexrTox27NqNEg
       - MEILI_ENV=production
       - MEILI_DB_PATH=/data.ms
       - MEILI_HTTP_ADDR=0.0.0.0:7700

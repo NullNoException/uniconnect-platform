@@ -45,7 +45,7 @@ public class TracingService : ITracingService
         {
             var activityEvent = new ActivityEvent(name, tags: tags != null
                 ? new ActivityTagsCollection(tags.Where(t => t.Value != null).Select(t =>
-                    new KeyValuePair<string, object>(t.Key, t.Value!)))
+                    new KeyValuePair<string, object?>(t.Key, t.Value)))
                 : null);
 
             activity.AddEvent(activityEvent);

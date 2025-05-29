@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,34 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ApplicationDbContextInitialiser>();
 
+        // Configure ASP.NET Core Identity
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            // Password settings
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 8;
+            options.Password.RequiredUniqueChars = 1;
+
+            // Lockout settings
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+
+            // User settings
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            options.User.RequireUniqueEmail = true;
+
+            // SignIn settings
+            options.SignIn.RequireConfirmedEmail = true;
+            options.SignIn.RequireConfirmedPhoneNumber = false;
+        })
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+
         // Configure Keycloak Authentication and Authorization
         services.AddKeycloakWebApiAuthentication(configuration);
         services.AddKeycloakAuthorization(configuration);
@@ -51,7 +80,7 @@ public static class DependencyInjection
                 tags: new[] { "database", "sql", "postgresql" });
 
         // Register repositories
-        services.AddScoped(typeof(Domain.Repositories.IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Configure Redis
@@ -73,11 +102,20 @@ public static class DependencyInjection
         services.AddTransient<IIdentityService, KeycloakAuthService>();
         services.AddTransient<ITokenService, TokenService>();
 
+        // Configure MinIO settings and storage services
+        services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+
+
         // Configure Email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<ISmsService, SmsService>();
-        services.AddTransient<IStorageService, MinioStorageService>();
+
+        // Register MinioStorageService as implementation for both interfaces
+        services.AddTransient<MinioStorageService>();
+        services.AddTransient<IStorageService>(provider => provider.GetRequiredService<MinioStorageService>());
+        services.AddTransient<IFileStorageService>(provider => provider.GetRequiredService<MinioStorageService>());
+
         services.AddTransient<ICacheService, EnhancedRedisCacheService>();
         services.AddTransient<IPaymentService, PaymentService>();
 

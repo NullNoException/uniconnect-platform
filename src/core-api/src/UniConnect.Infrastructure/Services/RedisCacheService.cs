@@ -87,11 +87,12 @@ public class RedisCacheService : ICacheService
         }
     }
 
-    public async Task RemoveByPatternAsync(string pattern, CancellationToken cancellationToken = default)
+    public Task RemoveByPatternAsync(string pattern, CancellationToken cancellationToken = default)
     {
         // Note: This is a simplified implementation.
         // Redis doesn't have a direct way to remove by pattern through the IDistributedCache interface.
         // In a real implementation, you would need to inject IConnectionMultiplexer and use server.Keys() to find and remove matching keys.
         _logger.LogWarning("RemoveByPatternAsync is not fully implemented in this version of RedisCacheService");
+        return Task.CompletedTask;
     }
 }

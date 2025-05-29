@@ -24,9 +24,9 @@ public class PaymentService : IPaymentService
             amount, currency, paymentMethodId);
 
         // Implementation would connect to a payment processor in a real app
-        string? transactionId = Guid.NewGuid().ToString();
+        string transactionId = Guid.NewGuid().ToString();
         string? errorMessage = null;
-        return Task.FromResult((true, transactionId, errorMessage));
+        return Task.FromResult((true, (string?)transactionId, errorMessage));
     }
 
     public Task<bool> RefundPaymentAsync(string transactionId, decimal? amount = null, CancellationToken cancellationToken = default)
