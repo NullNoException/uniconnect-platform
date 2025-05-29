@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using UniConnect.Application.Auth.DTOs;
-using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Services;
 
 namespace UniConnect.Infrastructure.Identity;
@@ -18,18 +17,15 @@ public class KeycloakAuthService : IIdentityService
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
     private readonly ILogger<KeycloakAuthService> _logger;
-    private readonly ITokenService _tokenService;
 
     public KeycloakAuthService(
         HttpClient httpClient,
         IConfiguration configuration,
-        ILogger<KeycloakAuthService> logger,
-        ITokenService tokenService)
+        ILogger<KeycloakAuthService> logger)
     {
         _httpClient = httpClient;
         _configuration = configuration;
         _logger = logger;
-        _tokenService = tokenService;
     }
 
     public async Task<(bool Success, string UserId, string Message)> AuthenticateAsync(string email, string password)
@@ -78,7 +74,8 @@ public class KeycloakAuthService : IIdentityService
             }
 
             // Store the refresh token
-            await _tokenService.SaveRefreshTokenAsync(userId, tokenResponse.RefreshToken, tokenResponse.RefreshExpiresIn);
+            // Note: With Keycloak, refresh tokens are managed by Keycloak itself
+            // No need to store them in our database
 
             return (true, userId, "Authentication successful");
         }
@@ -565,10 +562,8 @@ public class KeycloakAuthService : IIdentityService
             }
 
             // Save the new refresh token
-            if (!string.IsNullOrEmpty(userId))
-            {
-                await _tokenService.SaveRefreshTokenAsync(userId, tokenResponse.RefreshToken, tokenResponse.RefreshExpiresIn);
-            }
+            // Note: With Keycloak, refresh tokens are managed by Keycloak itself
+            // No need to store them in our database
 
             return (true, userId, email, roles, null);
         }

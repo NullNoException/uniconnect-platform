@@ -31,7 +31,6 @@ docker compose -f ../docker-compose.yml up -d
 echo "⏳ Checking service readiness..."
 check_service postgres 12
 check_service redis 6
-check_service elasticsearch 15
 check_service meilisearch 10
 check_service jaeger 6
 check_service keycloak 15

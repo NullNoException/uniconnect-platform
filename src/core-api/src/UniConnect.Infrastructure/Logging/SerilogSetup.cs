@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
-using Serilog.Sinks.Elasticsearch;
 using System.Diagnostics;
 
 namespace UniConnect.Infrastructure.Logging;
@@ -17,9 +16,6 @@ public static class SerilogSetup
         {
             var environment = context.HostingEnvironment;
             var config = context.Configuration;
-
-            var elasticsearchUrl = config["Elasticsearch:Url"];
-            var isElasticsearchEnabled = !string.IsNullOrEmpty(elasticsearchUrl);
 
             loggerConfiguration
                 .ReadFrom.Configuration(config)
@@ -36,18 +32,6 @@ public static class SerilogSetup
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                 .WriteTo.Console();
-
-            if (isElasticsearchEnabled)
-            {
-                loggerConfiguration.WriteTo.Elasticsearch(
-                    new ElasticsearchSinkOptions(new Uri(elasticsearchUrl))
-                    {
-                        IndexFormat = $"uniconnect-logs-{environment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
-                        AutoRegisterTemplate = true,
-                        NumberOfShards = 2,
-                        NumberOfReplicas = 1
-                    });
-            }
 
             if (!environment.IsProduction())
             {

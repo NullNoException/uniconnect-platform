@@ -95,12 +95,12 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
             ["service.id"] = service.Id
         });
 
-        // Index in Elasticsearch
+        // Index in MeiliSearch
         try
         {
-            await _searchService.IndexDocumentAsync(service, service.Id.ToString());
+            await _searchService.IndexServiceAsync(service, cancellationToken);
             _tracingService.AddActivityEvent("ServiceIndexed");
-            _logger.LogInformation("Service {ServiceId} indexed in Elasticsearch", service.Id);
+            _logger.LogInformation("Service {ServiceId} indexed in MeiliSearch", service.Id);
         }
         catch (Exception ex)
         {
@@ -108,9 +108,9 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
             _tracingService.RecordException(ex, new Dictionary<string, object?>
             {
                 ["service.id"] = service.Id,
-                ["operation"] = "elasticsearch_indexing"
+                ["operation"] = "meilisearch_indexing"
             });
-            _logger.LogError(ex, "Failed to index service {ServiceId} in Elasticsearch", service.Id);
+            _logger.LogError(ex, "Failed to index service {ServiceId} in MeiliSearch", service.Id);
         }
 
         _logger.LogInformation("Created new service {ServiceId} for provider {ProviderId}",

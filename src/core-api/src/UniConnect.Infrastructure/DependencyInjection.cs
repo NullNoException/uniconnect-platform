@@ -1,16 +1,17 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
-using Nest;
+using StackExchange.Redis;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
+using Keycloak.AuthServices.Sdk;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Repositories;
 using UniConnect.Domain.Services;
+using UniConnect.Infrastructure.Configuration;
 using UniConnect.Infrastructure.Identity;
 using UniConnect.Infrastructure.Persistence;
 using UniConnect.Infrastructure.Persistence.Interceptors;
@@ -36,18 +37,12 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ApplicationDbContextInitialiser>();
 
-        // Configure ASP.NET Core Identity
-        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = true;
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+        // Configure Keycloak Authentication and Authorization
+        services.AddKeycloakWebApiAuthentication(configuration);
+        services.AddKeycloakAuthorization(configuration);
+
+        // Add Keycloak Admin SDK
+        services.AddKeycloakAdminHttpClient(configuration);
 
         // Register health checks for the database
         services.AddHealthChecks()
@@ -66,6 +61,13 @@ public static class DependencyInjection
             options.InstanceName = "UniConnect:";
         });
 
+        // Add Redis connection multiplexer for advanced operations
+        services.AddSingleton<IConnectionMultiplexer>(provider =>
+        {
+            var connectionString = configuration.GetSection("Redis")["Configuration"] ?? "localhost:6379";
+            return ConnectionMultiplexer.Connect(connectionString);
+        });
+
         // Register services
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, KeycloakAuthService>();
@@ -76,80 +78,34 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<ISmsService, SmsService>();
         services.AddTransient<IStorageService, MinioStorageService>();
-        services.AddTransient<ICacheService, RedisCacheService>();
+        services.AddTransient<ICacheService, EnhancedRedisCacheService>();
         services.AddTransient<IPaymentService, PaymentService>();
 
-        // Configure Elasticsearch
-        ConfigureElasticsearch(services, configuration);
+        // Configure MeiliSearch
+        ConfigureMeiliSearch(services, configuration);
 
         // Configure OpenTelemetry with Jaeger
         services.AddOpenTelemetryServices(configuration);
 
-        // Configure JWT authentication
-        var jwtSettings = configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings["SecretKey"];
-
-        if (string.IsNullOrEmpty(secretKey))
-        {
-            throw new InvalidOperationException("JWT Secret Key is not configured.");
-        }
-
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["Issuer"],
-                ValidAudience = jwtSettings["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-            };
-        });
-
         return services;
     }
 
-    private static void ConfigureElasticsearch(IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureMeiliSearch(IServiceCollection services, IConfiguration configuration)
     {
-        var elasticsearchUrl = configuration["Elasticsearch:Url"];
+        // Configure MeiliSearch settings
+        services.Configure<MeiliSearchSettings>(configuration.GetSection(MeiliSearchSettings.SectionName));
 
-        if (string.IsNullOrEmpty(elasticsearchUrl))
-        {
-            elasticsearchUrl = configuration["Elasticsearch:DefaultUrl"] ?? "http://elasticsearch:9200";
-        }
+        // Register MeiliSearch service
+        services.AddScoped<MeiliSearchService>();
+        services.AddScoped<ISearchService>(provider => provider.GetRequiredService<MeiliSearchService>());
 
-        var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
-            .DefaultMappingFor<Domain.Entities.Service>(m => m
-                .IndexName("services"))
-            .DefaultMappingFor<Domain.Entities.ServiceProvider>(m => m
-                .IndexName("serviceproviders"))
-            .DefaultMappingFor<Domain.Entities.University>(m => m
-                .IndexName("universities"))
-            .DefaultMappingFor<Domain.Entities.FieldOfStudy>(m => m
-                .IndexName("fieldsofstudy"))
-            .DefaultMappingFor<Domain.Entities.ServiceCategory>(m => m
-                .IndexName("servicecategories"))
-            .EnableDebugMode()
-            .PrettyJson()
-            .RequestTimeout(TimeSpan.FromSeconds(30));
-
-        var client = new ElasticClient(settings);
-        services.AddSingleton<IElasticClient>(client);
-        services.AddScoped<ISearchService, ElasticsearchService>();
-
-        // Register health check for Elasticsearch
+        // Register health check for MeiliSearch
+        var meilisearchUrl = configuration["MeilisearchSettings:Url"] ?? "http://meilisearch:7700";
         services.AddHealthChecks()
             .AddUrlGroup(
-                new Uri(elasticsearchUrl),
-                name: "elasticsearch",
+                new Uri($"{meilisearchUrl}/health"),
+                name: "meilisearch",
                 failureStatus: HealthStatus.Degraded,
-                tags: new[] { "elasticsearch" });
+                tags: new[] { "meilisearch", "search" });
     }
 }

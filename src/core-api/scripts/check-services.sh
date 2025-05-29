@@ -87,7 +87,6 @@ echo -e "${BLUE}=== Checking Container Status ===${NC}"
 check_container_health "uniconnect-postgres" "$COMPOSE_FILE"
 check_container_health "uniconnect-redis" "$COMPOSE_FILE"
 check_container_health "uniconnect-minio" "$COMPOSE_FILE"
-check_container_health "uniconnect-elasticsearch" "$COMPOSE_FILE"
 check_container_health "uniconnect-meilisearch" "$COMPOSE_FILE"
 check_container_health "uniconnect-jaeger" "$COMPOSE_FILE"
 check_container_health "uniconnect-keycloak" "$COMPOSE_FILE"
@@ -97,7 +96,6 @@ check_container_health "uniconnect-mailhog" "$COMPOSE_FILE"
 # Test service endpoints
 echo -e "${BLUE}=== Testing Service Endpoints ===${NC}"
 test_service_endpoint "API Health" "http://localhost:8080/health" "200" 5
-test_service_endpoint "Elasticsearch" "http://localhost:9200/_cluster/health" "200" 5
 test_service_endpoint "Meilisearch" "http://localhost:7700/health" "200" 5
 test_service_endpoint "Minio" "http://localhost:9000/minio/health/live" "200" 5
 test_service_endpoint "Keycloak" "http://localhost:8180/health/ready" "200" 5

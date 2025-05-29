@@ -16,8 +16,6 @@ services:
         condition: service_healthy
       minio:
         condition: service_started
-      elasticsearch:
-        condition: service_healthy
       meilisearch:
         condition: service_started
       jaeger:
@@ -43,7 +41,6 @@ services:
       - EmailSettings__EnableSsl=false
       - EmailSettings__FromEmail=noreply@uniconnect.com
       - EmailSettings__FromName=UniConnect
-      - Elasticsearch__Url=http://elasticsearch:9200
       - MeilisearchSettings__Url=http://meilisearch:7700
       - MeilisearchSettings__MasterKey=masterKey
       - JaegerSettings__Host=jaeger
@@ -80,6 +77,7 @@ services:
       - POSTGRES_DB=uniconnect
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     networks:
       - uniconnect-network
     restart: always
@@ -140,29 +138,6 @@ services:
       - uniconnect-network
     restart: always
 
-  # Elasticsearch
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
-    container_name: uniconnect-elasticsearch
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    networks:
-      - uniconnect-network
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
   # Meilisearch
   meilisearch:
     image: getmeili/meilisearch:latest
@@ -171,6 +146,11 @@ services:
       - "7700:7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
+      - MEILI_ENV=production
+      - MEILI_DB_PATH=/data.ms
+      - MEILI_HTTP_ADDR=0.0.0.0:7700
+      - MEILI_MAX_INDEX_SIZE=100GB
+      - MEILI_MAX_TASK_DB_SIZE=10GB
     volumes:
       - meilisearch_data:/data.ms
     networks:
@@ -213,6 +193,7 @@ services:
       - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
       - KC_DB_USERNAME=uniconnect
       - KC_DB_PASSWORD=uniconnect_password
+      - KC_HEALTH_ENABLED=true
     command: start-dev
     depends_on:
       postgres:
@@ -225,7 +206,7 @@ services:
       interval: 30s
       timeout: 15s
       retries: 5
-      start_period: 30s
+      start_period: 60s
 
 # Networks
 networks:
@@ -237,5 +218,4 @@ volumes:
   postgres_data:
   redis_data:
   minio_data:
-  elasticsearch_data:
   meilisearch_data:

@@ -26,7 +26,7 @@ public static class DependencyInjection
         services.AddHealthChecks();
 
         // Add background services
-        services.AddHostedService<ElasticsearchIndexInitializer>();
+        services.AddHostedService<MeiliSearchIndexInitializer>();
 
         // Database health checks will be registered in the Infrastructure layer
         // where the DbContext is defined

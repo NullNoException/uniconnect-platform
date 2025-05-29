@@ -49,9 +49,9 @@ public class AuthController : ApiControllerBase
         var roles = await _identityService.GetUserRolesAsync(userId!);
         var (token, refreshToken) = await _identityService.GenerateTokensAsync(userId!, email!, roles);
 
-        // Get token expiry from settings
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");
+        // Get token expiry from Keycloak settings (default to 15 minutes)
+        var keycloakSettings = _configuration.GetSection("KeycloakSettings");
+        var expirationMinutes = int.Parse(keycloakSettings["AccessTokenExpirationMinutes"] ?? "15");
         var expiresAt = DateTime.UtcNow.AddMinutes(expirationMinutes);
 
         _logger.LogInformation("User {Email} logged in successfully", email);
@@ -95,9 +95,9 @@ public class AuthController : ApiControllerBase
         var (newToken, newRefreshToken) = await _identityService.GenerateTokensAsync(
             userId!, email!, roles!);
 
-        // Get token expiry from settings
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");
+        // Get token expiry from Keycloak settings (default to 15 minutes)
+        var keycloakSettings = _configuration.GetSection("KeycloakSettings");
+        var expirationMinutes = int.Parse(keycloakSettings["AccessTokenExpirationMinutes"] ?? "15");
         var expiresAt = DateTime.UtcNow.AddMinutes(expirationMinutes);
 
         _logger.LogInformation("Token refreshed for user {UserId}", userId);

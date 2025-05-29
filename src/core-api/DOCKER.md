@@ -45,17 +45,16 @@ cd scripts
 
 This setup will start the following services:
 
-| Service | Description | Port(s) | URL |
-|---------|-------------|---------|-----|
-| UniConnect API | ASP.NET Core API | 8080 (HTTP), 8443 (HTTPS) | http://localhost:8080 |
-| PostgreSQL | Database | 5432 | - |
-| Redis | Cache | 6379 | - |
-| Minio | Object Storage | 9000 (API), 9001 (Console) | http://localhost:9001 |
-| Elasticsearch | Search Engine | 9200, 9300 | http://localhost:9200 |
-| Meilisearch | Search Engine | 7700 | http://localhost:7700 |
-| Jaeger | Tracing | 16686 (UI), various | http://localhost:16686 |
-| Keycloak | Authentication | 8180 | http://localhost:8180 |
-| MailHog | Email Testing | 1025 (SMTP), 8025 (UI) | http://localhost:8025 |
+| Service        | Description      | Port(s)                    | URL                    |
+| -------------- | ---------------- | -------------------------- | ---------------------- |
+| UniConnect API | ASP.NET Core API | 8080 (HTTP), 8443 (HTTPS)  | http://localhost:8080  |
+| PostgreSQL     | Database         | 5432                       | -                      |
+| Redis          | Cache            | 6379                       | -                      |
+| Minio          | Object Storage   | 9000 (API), 9001 (Console) | http://localhost:9001  |
+| Meilisearch    | Search Engine    | 7700                       | http://localhost:7700  |
+| Jaeger         | Tracing          | 16686 (UI), various        | http://localhost:16686 |
+| Keycloak       | Authentication   | 8180                       | http://localhost:8180  |
+| MailHog        | Email Testing    | 1025 (SMTP), 8025 (UI)     | http://localhost:8025  |
 
 4. Access the API Swagger documentation:
 
@@ -70,60 +69,38 @@ cd scripts
 
 ## Configuration
 
-The services are configured through environment variables in the Docker Compose files. For development, default credentials are used, but in production, you should change these values.
-
-## Debugging
-
-The application can be debugged remotely:
-
-1. Start the development environment: 
-```bash
-cd scripts
-./debug-container.sh
-```
-
-2. In VS Code, use the ".NET Core Attach" configuration
-3. Select the process to debug (usually `dotnet exec /app/.../UniConnect.API.dll`)
-
-## Available Scripts
-
-All scripts are located in the `scripts/` directory:
-
-| Script | Description |
-|--------|-------------|
-| `start-docker.sh` | Starts the production-like environment |
-| `stop-docker.sh` | Stops Docker environments (`all`, `dev`, or default) |
-| `debug-container.sh` | Starts the development environment with debugging support |
-| `restart-dev-environment.sh` | Restarts the development environment |
-| `check-services.sh` | Verifies all services are running properly |
+The services are configured through environment variables in the docker-compose.yml file. For development, default credentials are used, but in production, you should change these values.
 
 ## Useful Commands
 
 - Stop all services:
 
   ```bash
-  cd scripts
-  ./stop-docker.sh all  # Stops both environments
-  ./stop-docker.sh      # Stops production environment only
-  ./stop-docker.sh dev  # Stops development environment only
+  ./stop-docker.sh
+  ```
+
+  Or manually with:
+
+  ```bash
+  docker-compose down
   ```
 
 - View logs:
 
   ```bash
-  docker compose -f docker-compose.yml logs -f
+  docker-compose logs -f
   ```
 
 - View logs for a specific service:
 
   ```bash
-  docker logs -f uniconnect-api
+  docker-compose logs -f uniconnect-api
   ```
 
 - Rebuild the API:
 
   ```bash
-  docker compose -f docker-compose.yml build uniconnect-api
+  docker-compose build uniconnect-api
   ```
 
 - Access PostgreSQL:
@@ -131,56 +108,12 @@ All scripts are located in the `scripts/` directory:
   docker exec -it uniconnect-postgres psql -U uniconnect -d uniconnect
   ```
 
-## Service Administration
-
-- **Keycloak Admin Console**: http://localhost:8180/admin/ 
-  - Username: admin
-  - Password: admin
-
-- **Minio Console**: http://localhost:9001
-  - Username: minioadmin
-  - Password: minioadmin
-  
-- **Jaeger UI**: http://localhost:16686
-  - For viewing distributed traces
-
-- **MailHog**: http://localhost:8025
-  - For testing email functionality
-
 ## Data Persistence
 
 The following Docker volumes are used to persist data:
 
-| Volume | Service | Purpose |
-|--------|---------|---------|
-| postgres_data | PostgreSQL | Database files |
-| redis_data | Redis | Cache data |
-| minio_data | MinIO | Object storage |
-| elasticsearch_data | Elasticsearch | Search index data |
-| meilisearch_data | Meilisearch | Search index data |
+- postgres_data: PostgreSQL database
+- redis_data: Redis data
+- minio_data: MinIO object storage
 
 These volumes ensure that your data is preserved between container restarts.
-
-## Troubleshooting
-
-If services aren't initializing properly:
-
-1. Check the service's health status:
-   ```bash
-   ./check-services.sh
-   ```
-
-2. View specific service logs:
-   ```bash
-   docker logs uniconnect-[service-name]
-   ```
-
-3. Restart specific services:
-   ```bash
-   docker compose -f docker-compose.yml restart [service-name]
-   ```
-
-4. For a complete reset, stop and restart all services:
-   ```bash
-   ./stop-docker.sh all && ./start-docker.sh
-   ```
