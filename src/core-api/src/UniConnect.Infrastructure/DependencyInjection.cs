@@ -29,11 +29,20 @@ public static class DependencyInjection
     {
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
-        // Database configuration
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        // Database configuration - conditionally use in-memory DB for tests
+        if (configuration.GetValue<bool>("UseInMemoryDatabase", false))
+        {
+            // This branch will be used in tests, but we won't add the DbContext here
+            // as it will be added by the test framework
+        }
+        else
+        {
+            // Add PostgreSQL for normal operation
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        }
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ApplicationDbContextInitialiser>();
@@ -102,6 +111,9 @@ public static class DependencyInjection
         services.AddTransient<IIdentityService, KeycloakAuthService>();
         services.AddTransient<ITokenService, TokenService>();
 
+        // Register background services
+        services.AddHostedService<SemesterStatusUpdateService>();
+
         // Configure MinIO settings and storage services
         services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
 
@@ -122,8 +134,12 @@ public static class DependencyInjection
         // Configure MeiliSearch
         ConfigureMeiliSearch(services, configuration);
 
-        // Configure OpenTelemetry with Jaeger
-        services.AddOpenTelemetryServices(configuration);
+        // Configure OpenTelemetry with Jaeger only in non-test environments
+        if (!configuration.GetValue<bool>("UseInMemoryDatabase", false) &&
+            configuration.GetSection("JaegerSettings").GetValue<bool>("Enabled", true))
+        {
+            services.AddOpenTelemetryServices(configuration);
+        }
 
         return services;
     }

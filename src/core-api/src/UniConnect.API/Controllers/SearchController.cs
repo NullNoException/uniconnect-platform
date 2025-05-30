@@ -8,6 +8,7 @@ using DomainServiceProvider = UniConnect.Domain.Entities.ServiceProvider;
 
 namespace UniConnect.API.Controllers;
 
+[Route("api/search")]
 public class SearchController : ApiControllerBase
 {
     private readonly ISearchService _searchService;

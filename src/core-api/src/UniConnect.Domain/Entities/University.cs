@@ -33,4 +33,5 @@ public class University : BaseEntity
     public ICollection<AcademicProgram> AcademicPrograms { get; private set; } = new List<AcademicProgram>();
     public ICollection<UniversityContact> Contacts { get; private set; } = new List<UniversityContact>();
     public ICollection<UniversityAddress> Addresses { get; private set; } = new List<UniversityAddress>();
+    public ICollection<AcademicCalendar> AcademicCalendars { get; private set; } = new List<AcademicCalendar>();
 }

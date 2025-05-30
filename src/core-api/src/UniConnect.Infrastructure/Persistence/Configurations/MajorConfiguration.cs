@@ -46,7 +46,7 @@ public class MajorConfiguration : IEntityTypeConfiguration<Major>
         // Configure audit fields
         builder.Property(m => m.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(m => m.UpdatedAt)
             .IsRequired(false);

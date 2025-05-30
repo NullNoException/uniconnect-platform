@@ -40,7 +40,7 @@ public class AcademicLevelConfiguration : IEntityTypeConfiguration<AcademicLevel
         // Configure audit fields
         builder.Property(al => al.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(al => al.UpdatedAt)
             .IsRequired(false);

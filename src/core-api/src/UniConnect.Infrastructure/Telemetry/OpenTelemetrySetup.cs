@@ -14,6 +14,14 @@ public static class OpenTelemetrySetup
 {
     public static IServiceCollection AddOpenTelemetryServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // Early exit for test environments
+        if (configuration.GetValue<bool>("UseInMemoryDatabase", false) ||
+            !configuration.GetSection("JaegerSettings").GetValue<bool>("Enabled", true))
+        {
+            // For test environments, just return the services without adding OpenTelemetry
+            return services;
+        }
+
         var resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService(serviceName: "UniConnect.API", serviceVersion: "1.0.0")
             .AddTelemetrySdk()
@@ -61,9 +69,11 @@ public static class OpenTelemetrySetup
                 options.SetDbStatementForStoredProcedure = true;
             });
 
-        // Add Jaeger Exporter if configured
+        // Add Jaeger Exporter if configured and enabled
         var jaegerSettings = configuration.GetSection("JaegerSettings");
-        if (jaegerSettings.Exists() && !string.IsNullOrEmpty(jaegerSettings["Host"]))
+        if (jaegerSettings.Exists() &&
+            jaegerSettings.GetValue<bool>("Enabled", true) &&
+            !string.IsNullOrEmpty(jaegerSettings["Host"]))
         {
             builder.AddJaegerExporter(options =>
             {

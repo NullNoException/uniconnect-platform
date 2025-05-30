@@ -29,6 +29,8 @@ public class AcademicProgram : BaseEntity
     public AcademicLevel AcademicLevel { get; set; } = null!;
     public Major? Major { get; set; }
     public Currency? Currency { get; set; }
+    public ICollection<SemesterProgram> SemesterPrograms { get; private set; } = new List<SemesterProgram>();
     public ICollection<ProgramTuitionFee> TuitionFees { get; private set; } = new List<ProgramTuitionFee>();
     public ICollection<ProviderProgramOffering> ProviderOfferings { get; private set; } = new List<ProviderProgramOffering>();
+    public ICollection<Semester> AvailableSemesters { get; private set; } = new List<Semester>();
 }

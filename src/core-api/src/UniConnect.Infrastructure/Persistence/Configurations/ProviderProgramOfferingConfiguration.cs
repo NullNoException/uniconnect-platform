@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Enums;
 
 namespace UniConnect.Infrastructure.Persistence.Configurations;
 
@@ -28,7 +29,7 @@ public class ProviderProgramOfferingConfiguration : IEntityTypeConfiguration<Pro
 
         builder.Property(ppo => ppo.Status)
             .IsRequired()
-            .HasDefaultValue(0); // Default to Active
+            .HasDefaultValue(OfferingStatus.Active); // Default to Active
 
         builder.Property(ppo => ppo.IsPromoted)
             .IsRequired()
@@ -62,7 +63,7 @@ public class ProviderProgramOfferingConfiguration : IEntityTypeConfiguration<Pro
         // Configure audit fields
         builder.Property(ppo => ppo.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(ppo => ppo.UpdatedAt)
             .IsRequired(false);

@@ -2,6 +2,7 @@
 applyTo: '**/*.cs'
 ---
 
+act as a Expert .Net Core Backend Developer and Senior Software architecture, with huge experience in API and System integration
 Design a .NET Aspire solution using Clean Architecture and Modular Monolith principles.
 Follow this structure:
 

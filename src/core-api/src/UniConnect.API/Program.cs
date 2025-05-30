@@ -8,18 +8,42 @@ using UniConnect.Infrastructure;
 using UniConnect.Infrastructure.Logging;
 using UniConnect.Infrastructure.Persistence;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
+// Check if we're in testing environment
+var isTestingEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing";
+var useSerilog = !isTestingEnvironment && (Environment.GetEnvironmentVariable("DISABLE_SERILOG") != "true");
+
+// Only initialize the logger in non-test environments
+if (useSerilog)
+{
+    try
+    {
+        // Create a minimal bootstrap logger for startup only - will be replaced by full configuration
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
+    }
+    catch (Exception ex)
+    {
+        // Ignore already frozen logger errors during bootstrap
+        Console.WriteLine($"Warning: {ex.Message}");
+    }
+}
 
 try
 {
-    Log.Information("Starting UniConnect API");
+    if (useSerilog)
+    {
+        Log.Information("Starting UniConnect API");
+    }
 
     var builder = WebApplication.CreateBuilder(args);
 
-    // Use Serilog for logging
-    builder.Host.UseSerilogLogging();
+    // Use Serilog for logging only in non-test environments
+    if (useSerilog && builder.Configuration.GetValue<bool>("UseSerilog", true))
+    {
+        // Avoid adding Serilog again if it's already configured
+        builder.Host.UseSerilogLogging();
+    }
 
     // Add services to the container
     builder.Services.AddApplicationInsightsTelemetry();
@@ -39,6 +63,9 @@ try
     // Add API Explorer for Swagger
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    // Add Areas support
+    builder.Services.AddMvc().AddControllersAsServices();
 
     // Add CORS
     builder.Services.AddCors(options =>
@@ -60,12 +87,16 @@ try
     {
         app.UseDeveloperExceptionPage();
 
-        // Initialize and seed database
-        using (var scope = app.Services.CreateScope())
+        // Initialize and seed database (skip for integration tests)
+        var skipDbInit = app.Configuration.GetValue<bool>("SkipDbInitialization");
+        if (!skipDbInit)
         {
-            var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-            await initialiser.InitialiseAsync();
-            await initialiser.SeedAsync();
+            using (var scope = app.Services.CreateScope())
+            {
+                var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+                await initialiser.InitialiseAsync();
+                await initialiser.SeedAsync();
+            }
         }
     }
     else
@@ -127,12 +158,18 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "An unhandled exception occurred during bootstrapping");
+    if (useSerilog)
+    {
+        Log.Fatal(ex, "An unhandled exception occurred during bootstrapping");
+    }
     throw;
 }
 finally
 {
-    Log.CloseAndFlush();
+    if (useSerilog)
+    {
+        Log.CloseAndFlush();
+    }
 }
 
 // Make Program class accessible for integration tests

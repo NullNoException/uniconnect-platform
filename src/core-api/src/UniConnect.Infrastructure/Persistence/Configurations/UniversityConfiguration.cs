@@ -91,7 +91,7 @@ public class UniversityConfiguration : IEntityTypeConfiguration<University>
         // Configure audit fields
         builder.Property(u => u.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(u => u.UpdatedAt)
             .IsRequired(false);

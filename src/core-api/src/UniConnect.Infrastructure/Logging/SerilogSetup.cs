@@ -17,6 +17,12 @@ public static class SerilogSetup
             var environment = context.HostingEnvironment;
             var config = context.Configuration;
 
+            // Skip Serilog setup for testing environment
+            if (environment.EnvironmentName == "Testing" || config.GetValue<bool>("UseSerilog", true) == false)
+            {
+                return;
+            }
+
             loggerConfiguration
                 .ReadFrom.Configuration(config)
                 .ReadFrom.Services(services)

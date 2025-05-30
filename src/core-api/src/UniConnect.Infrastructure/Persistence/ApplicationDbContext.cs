@@ -49,6 +49,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Currency> Currencies => Set<Currency>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
+    public DbSet<AcademicCalendar> AcademicCalendars => Set<AcademicCalendar>();
+    public DbSet<AcademicYear> AcademicYears => Set<AcademicYear>();
+    public DbSet<Semester> Semesters => Set<Semester>();
+    public DbSet<Deadline> Deadlines => Set<Deadline>();
+    public DbSet<SemesterProgram> SemesterPrograms => Set<SemesterProgram>();
     public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();

@@ -51,7 +51,7 @@ public class ProgramTuitionFeeConfiguration : IEntityTypeConfiguration<ProgramTu
         // Configure audit fields
         builder.Property(ptf => ptf.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(ptf => ptf.UpdatedAt)
             .IsRequired(false);

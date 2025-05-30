@@ -72,6 +72,10 @@ public static class DependencyInjection
                 }
             });
 
+            // Add custom operation filters to fix area routing conflicts
+            options.OperationFilter<Common.SwaggerConfig.SwaggerDefaultValues>();
+            options.OperationFilter<Common.SwaggerConfig.ConflictingActionsResolver>();
+
             // Add JWT authentication for Swagger
             var securityScheme = new OpenApiSecurityScheme
             {

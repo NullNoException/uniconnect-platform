@@ -34,6 +34,11 @@ public interface IApplicationDbContext
     DbSet<Currency> Currencies { get; }
     DbSet<Transaction> Transactions { get; }
     DbSet<PaymentMethod> PaymentMethods { get; }
+    DbSet<AcademicCalendar> AcademicCalendars { get; }
+    DbSet<AcademicYear> AcademicYears { get; }
+    DbSet<Semester> Semesters { get; }
+    DbSet<Deadline> Deadlines { get; }
+    DbSet<SemesterProgram> SemesterPrograms { get; }
     DbSet<SubscriptionPlan> SubscriptionPlans { get; }
     DbSet<Invoice> Invoices { get; }
     DbSet<InvoiceItem> InvoiceItems { get; }
