@@ -1,0 +1,14 @@
+namespace UniConnect.Application.Providers.DTOs;
+
+public class ProviderStaffDto
+{
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public Guid ProviderId { get; set; }
+    public string Position { get; set; } = string.Empty;
+    public string Permissions { get; set; } = string.Empty;
+    public Guid? SupervisorId { get; set; }
+    public string? UserName { get; set; }
+    public string? Email { get; set; }
+    public string? SupervisorName { get; set; }
+}

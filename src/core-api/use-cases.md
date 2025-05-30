@@ -1,70 +1,70 @@
 # UniConnect Platform Use Cases
 
-## 1. Student Use Cases
+## 1. Customer Use Cases
 
 ### 1.1 Account Management
 
-#### UC-1.1.1: Student Registration
+#### UC-1.1.1: Customer Registration
 
-- **Actor**: Student
-- **Description**: Student creates a new account on the platform
+- **Actor**: Customer
+- **Description**: Customer creates a new account on the platform
 - **Preconditions**: None
 - **Main Flow**:
-  1. Student navigates to registration page
-  2. Student selects "Create Account"
-  3. Student enters email, password, personal information, and selects student account type
+  1. Customer navigates to registration page
+  2. Customer selects "Create Account"
+  3. Customer enters email, password, personal information, and selects Customer account type
   4. System validates input and checks for duplicate accounts
   5. System sends verification email
-  6. Student verifies email address by clicking link
-  7. System creates verified user account with Student role
+  6. Customer verifies email address by clicking link
+  7. System creates verified user account with Customer role
   8. System redirects to profile completion page
 - **Alternative Flows**:
-  - A1: Student registers using social media account
+  - A1: Customer registers using social media account
   - A2: Email verification fails
-  - A3: Student abandons registration process
-- **Postconditions**: Student has a verified account on the platform
+  - A3: Customer abandons registration process
+- **Postconditions**: Customer has a verified account on the platform
 - **Business Rules**:
   - Password must meet complexity requirements
   - Email must be unique in the system
   - Account remains limited until email verification is complete
 
-#### UC-1.1.2: Student Profile Completion
+#### UC-1.1.2: Customer Profile Completion
 
-- **Actor**: Student
-- **Description**: Student completes their profile with educational details
-- **Preconditions**: Student has a verified account
+- **Actor**: Customer
+- **Description**: Customer completes their profile with educational details
+- **Preconditions**: Customer has a verified account
 - **Main Flow**:
-  1. Student navigates to profile section
-  2. Student adds/edits personal information
-  3. Student adds current/previous education details
-  4. Student specifies target education goals and preferred countries
-  5. Student uploads profile picture
-  6. Student sets communication preferences
+  1. Customer navigates to profile section
+  2. Customer adds/edits personal information
+  3. Customer adds current/previous education details
+  4. Customer specifies target education goals and preferred countries
+  5. Customer uploads profile picture
+  6. Customer sets communication preferences
   7. System saves profile information
 - **Alternative Flows**:
-  - A1: Student skips certain optional fields
-  - A2: Student uploads invalid file format for profile picture
-- **Postconditions**: Student has a complete profile
+  - A1: Customer skips certain optional fields
+  - A2: Customer uploads invalid file format for profile picture
+- **Postconditions**: Customer has a complete profile
 - **Business Rules**:
   - Profile pictures must be less than 5MB
   - Certain fields are mandatory for profile completion
 
-#### UC-1.1.3: Student Account Settings Management
+#### UC-1.1.3: Customer Account Settings Management
 
-- **Actor**: Student
-- **Description**: Student manages account settings and preferences
-- **Preconditions**: Student is logged in
+- **Actor**: Customer
+- **Description**: Customer manages account settings and preferences
+- **Preconditions**: Customer is logged in
 - **Main Flow**:
-  1. Student navigates to account settings
-  2. Student can update password
-  3. Student can set preferred language (English, Arabic, Farsi)
-  4. Student can configure notification preferences
-  5. Student can manage connected social accounts
-  6. Student can set privacy preferences
+  1. Customer navigates to account settings
+  2. Customer can update password
+  3. Customer can set preferred language (English, Arabic, Farsi)
+  4. Customer can configure notification preferences
+  5. Customer can manage connected social accounts
+  6. Customer can set privacy preferences
   7. System saves settings changes
 - **Alternative Flows**:
   - A1: Password change requires current password verification
-- **Postconditions**: Student account settings are updated
+- **Postconditions**: Customer account settings are updated
 - **Business Rules**:
   - Password changes require confirmation email
   - Language preference affects all system communications
@@ -73,115 +73,115 @@
 
 #### UC-1.2.1: Browse Service Categories
 
-- **Actor**: Student
-- **Description**: Student browses available service categories
-- **Preconditions**: Student is logged in
+- **Actor**: Customer
+- **Description**: Customer browses available service categories
+- **Preconditions**: Customer is logged in
 - **Main Flow**:
-  1. Student navigates to service directory
+  1. Customer navigates to service directory
   2. System displays hierarchical category structure
-  3. Student selects category of interest
+  3. Customer selects category of interest
   4. System displays services within selected category
-  5. Student can filter results by various criteria
+  5. Customer can filter results by various criteria
 - **Alternative Flows**:
   - A1: No services available in selected category
-- **Postconditions**: Student views services in selected category
+- **Postconditions**: Customer views services in selected category
 - **Business Rules**:
   - Only verified services are displayed
   - Featured services appear at the top
 
 #### UC-1.2.2: Search for Services
 
-- **Actor**: Student
-- **Description**: Student searches for specific services
-- **Preconditions**: Student is logged in
+- **Actor**: Customer
+- **Description**: Customer searches for specific services
+- **Preconditions**: Customer is logged in
 - **Main Flow**:
-  1. Student enters search keywords in search bar
+  1. Customer enters search keywords in search bar
   2. System returns matching services
-  3. Student applies filters (university, price range, rating, etc.)
-  4. Student sorts results by relevance, price, or rating
+  3. Customer applies filters (university, price range, rating, etc.)
+  4. Customer sorts results by relevance, price, or rating
   5. System refines displayed results based on filters and sorting
 - **Alternative Flows**:
   - A1: No results match search criteria
-  - A2: Student uses advanced search options
-- **Postconditions**: Student views search results
+  - A2: Customer uses advanced search options
+- **Postconditions**: Customer views search results
 - **Business Rules**:
   - Search covers service names, descriptions, and keywords
   - Results prioritize keyword matches in title over description
 
 #### UC-1.2.3: View Service Details
 
-- **Actor**: Student
-- **Description**: Student views detailed information about a service
-- **Preconditions**: Student is logged in
+- **Actor**: Customer
+- **Description**: Customer views detailed information about a service
+- **Preconditions**: Customer is logged in
 - **Main Flow**:
-  1. Student selects a service from search results or browsing
+  1. Customer selects a service from search results or browsing
   2. System displays comprehensive service information
-  3. Student reviews provider credentials, pricing, and delivery timeframes
-  4. Student views ratings and reviews
-  5. Student can see sample work if available
+  3. Customer reviews provider credentials, pricing, and delivery timeframes
+  4. Customer views ratings and reviews
+  5. Customer can see sample work if available
 - **Alternative Flows**:
-  - A1: Student saves service to favorites
-- **Postconditions**: Student has viewed service details
+  - A1: Customer saves service to favorites
+- **Postconditions**: Customer has viewed service details
 - **Business Rules**:
   - Service page shows average rating and review count
-  - Price is displayed in student's preferred currency
+  - Price is displayed in Customer's preferred currency
 
 ### 1.3 Service Engagement
 
 #### UC-1.3.1: Contact Service Provider
 
-- **Actor**: Student
-- **Description**: Student initiates communication with provider
-- **Preconditions**: Student is logged in and viewing a service
+- **Actor**: Customer
+- **Description**: Customer initiates communication with provider
+- **Preconditions**: Customer is logged in and viewing a service
 - **Main Flow**:
-  1. Student clicks "Contact Provider" on service details page
+  1. Customer clicks "Contact Provider" on service details page
   2. System displays messaging interface
-  3. Student composes and sends inquiry
+  3. Customer composes and sends inquiry
   4. System delivers message to provider
   5. System creates conversation record in database
 - **Alternative Flows**:
-  - A1: Student includes attachments in message
+  - A1: Customer includes attachments in message
 - **Postconditions**: Message is sent to provider
 - **Business Rules**:
-  - Students cannot contact suspended providers
+  - Customers cannot contact suspended providers
   - Message content is scanned for prohibited content
 
 #### UC-1.3.2: Request Service Quote
 
-- **Actor**: Student
-- **Description**: Student requests custom quote for a service
-- **Preconditions**: Student is logged in and viewing a service
+- **Actor**: Customer
+- **Description**: Customer requests custom quote for a service
+- **Preconditions**: Customer is logged in and viewing a service
 - **Main Flow**:
-  1. Student clicks "Request Quote" button
+  1. Customer clicks "Request Quote" button
   2. System displays quote request form
-  3. Student provides required details about their needs
-  4. Student submits quote request
+  3. Customer provides required details about their needs
+  4. Customer submits quote request
   5. System notifies provider of quote request
   6. Provider receives request and can respond with custom quote
 - **Alternative Flows**:
-  - A1: Student abandons quote request
+  - A1: Customer abandons quote request
 - **Postconditions**: Quote request is sent to provider
 - **Business Rules**:
   - Quote requests expire after 7 days if not answered
-  - Students can have maximum 10 active quote requests
+  - Customers can have maximum 10 active quote requests
 
 #### UC-1.3.3: Submit Service Application
 
-- **Actor**: Student
-- **Description**: Student applies for a service
-- **Preconditions**: Student is logged in and viewing a service
+- **Actor**: Customer
+- **Description**: Customer applies for a service
+- **Preconditions**: Customer is logged in and viewing a service
 - **Main Flow**:
-  1. Student clicks "Apply" button on service
+  1. Customer clicks "Apply" button on service
   2. System displays application form with service requirements
-  3. Student fills in required information
-  4. Student uploads required documents (school reports, diploma, passport, etc.)
-  5. Student reviews application details
-  6. Student submits application
+  3. Customer fills in required information
+  4. Customer uploads required documents (school reports, diploma, passport, etc.)
+  5. Customer reviews application details
+  6. Customer submits application
   7. System creates service request record
   8. System notifies provider of new application
 - **Alternative Flows**:
-  - A1: Student saves application as draft
-  - A2: Student uploads invalid document format
+  - A1: Customer saves application as draft
+  - A2: Customer uploads invalid document format
 - **Postconditions**: Service application is submitted
 - **Business Rules**:
   - All required documents must be provided
@@ -192,22 +192,22 @@
 
 #### UC-1.4.1: Make Service Payment
 
-- **Actor**: Student
-- **Description**: Student makes payment for a service
-- **Preconditions**: Student has submitted service application
+- **Actor**: Customer
+- **Description**: Customer makes payment for a service
+- **Preconditions**: Customer has submitted service application
 - **Main Flow**:
-  1. Student reviews service cost and details
-  2. Student selects payment method (credit card, bank transfer, PayPal, cryptocurrency)
+  1. Customer reviews service cost and details
+  2. Customer selects payment method (credit card, bank transfer, PayPal, cryptocurrency)
   3. System displays payment form for selected method
-  4. Student enters payment details
+  4. Customer enters payment details
   5. System processes payment through payment gateway
   6. System places funds in escrow
   7. System updates service request status
   8. System notifies provider of payment
 - **Alternative Flows**:
   - A1: Payment processing fails
-  - A2: Student cancels during payment
-  - A3: Student selects offline payment method
+  - A2: Customer cancels during payment
+  - A3: Customer selects offline payment method
 - **Postconditions**: Payment is processed and held in escrow
 - **Business Rules**:
   - All payments are held in escrow until service completion
@@ -216,17 +216,17 @@
 
 #### UC-1.4.2: Track Escrow Status
 
-- **Actor**: Student
-- **Description**: Student tracks the status of funds in escrow
-- **Preconditions**: Student has paid for a service
+- **Actor**: Customer
+- **Description**: Customer tracks the status of funds in escrow
+- **Preconditions**: Customer has paid for a service
 - **Main Flow**:
-  1. Student navigates to order details
+  1. Customer navigates to order details
   2. System displays payment information including escrow status
-  3. Student can view payment history and transaction details
+  3. Customer can view payment history and transaction details
   4. System shows estimated release date for escrowed funds
 - **Alternative Flows**:
-  - A1: Student requests refund for unopened service request
-- **Postconditions**: Student has viewed escrow information
+  - A1: Customer requests refund for unopened service request
+- **Postconditions**: Customer has viewed escrow information
 - **Business Rules**:
   - Escrow status changes with service status
   - Full transaction history is maintained
@@ -235,37 +235,37 @@
 
 #### UC-1.5.1: Track Service Progress
 
-- **Actor**: Student
-- **Description**: Student monitors the progress of their service request
-- **Preconditions**: Student has an active service request
+- **Actor**: Customer
+- **Description**: Customer monitors the progress of their service request
+- **Preconditions**: Customer has an active service request
 - **Main Flow**:
-  1. Student navigates to "My Services" section
-  2. Student selects specific service request
+  1. Customer navigates to "My Services" section
+  2. Customer selects specific service request
   3. System displays current status and progress indicators
-  4. Student views timeline of service milestones
-  5. Student can see estimated completion date
+  4. Customer views timeline of service milestones
+  5. Customer can see estimated completion date
 - **Alternative Flows**:
   - A1: Service is delayed beyond estimated completion
-- **Postconditions**: Student has viewed service progress
+- **Postconditions**: Customer has viewed service progress
 - **Business Rules**:
   - Status updates require provider confirmation
   - Automatic notifications sent for status changes
 
 #### UC-1.5.2: Communicate During Service Fulfillment
 
-- **Actor**: Student
-- **Description**: Student communicates with provider during service fulfillment
-- **Preconditions**: Student has an active service request
+- **Actor**: Customer
+- **Description**: Customer communicates with provider during service fulfillment
+- **Preconditions**: Customer has an active service request
 - **Main Flow**:
-  1. Student navigates to service request details
-  2. Student opens messaging interface
-  3. Student composes and sends message regarding the service
+  1. Customer navigates to service request details
+  2. Customer opens messaging interface
+  3. Customer composes and sends message regarding the service
   4. System delivers message to provider
   5. Provider can respond to message
   6. Messages are logged in the service request history
 - **Alternative Flows**:
-  - A1: Student uploads additional documents
-  - A2: Student responds to provider queries
+  - A1: Customer uploads additional documents
+  - A2: Customer responds to provider queries
 - **Postconditions**: Communication is logged in service record
 - **Business Rules**:
   - All communications are recorded for dispute resolution
@@ -273,18 +273,18 @@
 
 #### UC-1.5.3: Receive Service Updates
 
-- **Actor**: Student
-- **Description**: Student receives updates about service progress
-- **Preconditions**: Student has an active service request
+- **Actor**: Customer
+- **Description**: Customer receives updates about service progress
+- **Preconditions**: Customer has an active service request
 - **Main Flow**:
   1. Provider updates service status or milestone
-  2. System generates notification for student
+  2. System generates notification for Customer
   3. System sends notification via preferred channels (in-app, email, WhatsApp, Telegram)
-  4. Student receives and views notification
-  5. Student can access service request to see detailed update
+  4. Customer receives and views notification
+  5. Customer can access service request to see detailed update
 - **Alternative Flows**:
-  - A1: Student has disabled certain notification channels
-- **Postconditions**: Student is informed of service progress
+  - A1: Customer has disabled certain notification channels
+- **Postconditions**: Customer is informed of service progress
 - **Business Rules**:
   - Critical updates are sent through all available channels
   - Notification frequency is configurable
@@ -293,37 +293,37 @@
 
 #### UC-1.6.1: Review Completed Service
 
-- **Actor**: Student
-- **Description**: Student reviews completed service deliverables
+- **Actor**: Customer
+- **Description**: Customer reviews completed service deliverables
 - **Preconditions**: Provider has marked service as complete
 - **Main Flow**:
-  1. Student receives completion notification
-  2. Student navigates to service request details
-  3. Student reviews final deliverables and documents
-  4. Student can download or view all submitted materials
-  5. Student decides to accept completion or request revisions
+  1. Customer receives completion notification
+  2. Customer navigates to service request details
+  3. Customer reviews final deliverables and documents
+  4. Customer can download or view all submitted materials
+  5. Customer decides to accept completion or request revisions
 - **Alternative Flows**:
-  - A1: Student requests revisions
-  - A2: Student does not respond within timeframe
-- **Postconditions**: Student has reviewed deliverables
+  - A1: Customer requests revisions
+  - A2: Customer does not respond within timeframe
+- **Postconditions**: Customer has reviewed deliverables
 - **Business Rules**:
-  - Student has 7 days to review before automatic acceptance
+  - Customer has 7 days to review before automatic acceptance
   - Maximum 3 revision requests allowed per service
 
 #### UC-1.6.2: Accept Service Completion
 
-- **Actor**: Student
-- **Description**: Student accepts service as complete
-- **Preconditions**: Student has reviewed completed service
+- **Actor**: Customer
+- **Description**: Customer accepts service as complete
+- **Preconditions**: Customer has reviewed completed service
 - **Main Flow**:
-  1. Student clicks "Accept Completion" button
+  1. Customer clicks "Accept Completion" button
   2. System displays confirmation dialog
-  3. Student confirms acceptance
+  3. Customer confirms acceptance
   4. System updates service request status to completed
   5. System notifies administrator to release escrow
-  6. System prompts student to provide review
+  6. System prompts Customer to provide review
 - **Alternative Flows**:
-  - A1: Student declines to provide review
+  - A1: Customer declines to provide review
 - **Postconditions**: Service is marked as complete
 - **Business Rules**:
   - Escrow release requires admin approval
@@ -331,19 +331,19 @@
 
 #### UC-1.6.3: Rate and Review Service
 
-- **Actor**: Student
-- **Description**: Student rates and reviews completed service
-- **Preconditions**: Student has accepted service completion
+- **Actor**: Customer
+- **Description**: Customer rates and reviews completed service
+- **Preconditions**: Customer has accepted service completion
 - **Main Flow**:
-  1. Student navigates to completed service
+  1. Customer navigates to completed service
   2. System displays rating and review form
-  3. Student provides star rating for different aspects
-  4. Student writes review text
-  5. Student can upload photos of results (optional)
-  6. Student submits review
+  3. Customer provides star rating for different aspects
+  4. Customer writes review text
+  5. Customer can upload photos of results (optional)
+  6. Customer submits review
   7. System publishes review after moderation
 - **Alternative Flows**:
-  - A1: Student edits review within allowed timeframe
+  - A1: Customer edits review within allowed timeframe
 - **Postconditions**: Service is rated and reviewed
 - **Business Rules**:
   - Reviews can be edited within 30 days
@@ -484,17 +484,17 @@
 
 ### 2.3 Application Management
 
-#### UC-2.3.1: Receive Student Application
+#### UC-2.3.1: Receive Customer Application
 
 - **Actor**: Service Provider
-- **Description**: Provider receives and reviews student application
-- **Preconditions**: Student has submitted application
+- **Description**: Provider receives and reviews Customer application
+- **Preconditions**: Customer has submitted application
 - **Main Flow**:
   1. System notifies provider of new application
   2. Provider navigates to applications dashboard
   3. Provider reviews application details and documents
   4. Provider accepts or rejects application
-  5. System notifies student of application decision
+  5. System notifies Customer of application decision
 - **Alternative Flows**:
   - A1: Provider requests additional information
   - A2: Provider proposes modified service terms
@@ -512,13 +512,13 @@
   1. Provider updates service status to "In Progress"
   2. Provider performs required service work
   3. Provider updates service milestones as completed
-  4. Provider communicates with student as needed
+  4. Provider communicates with Customer as needed
   5. Provider uploads interim deliverables if applicable
   6. Provider marks service as complete when finished
-  7. System notifies student of completion
+  7. System notifies Customer of completion
 - **Alternative Flows**:
   - A1: Provider requests deadline extension
-  - A2: Provider requires additional information from student
+  - A2: Provider requires additional information from Customer
 - **Postconditions**: Service request is processed to completion
 - **Business Rules**:
   - Milestone updates must include progress notes
@@ -527,15 +527,15 @@
 #### UC-2.3.3: Handle Revision Requests
 
 - **Actor**: Service Provider
-- **Description**: Provider processes revision requests from student
-- **Preconditions**: Student has requested revisions
+- **Description**: Provider processes revision requests from Customer
+- **Preconditions**: Customer has requested revisions
 - **Main Flow**:
   1. Provider receives revision request notification
   2. Provider reviews requested changes
   3. Provider makes necessary revisions
   4. Provider uploads revised deliverables
   5. Provider marks revisions as complete
-  6. System notifies student of completed revisions
+  6. System notifies Customer of completed revisions
 - **Alternative Flows**:
   - A1: Provider declines certain revision requests
   - A2: Provider requests clarification on revisions
@@ -687,11 +687,11 @@
 
 - **Actor**: Administrator
 - **Description**: Admin approves release of escrow funds
-- **Preconditions**: Student has accepted service completion
+- **Preconditions**: Customer has accepted service completion
 - **Main Flow**:
   1. Admin navigates to escrow management
   2. Admin reviews completed service details
-  3. Admin verifies service delivery and student acceptance
+  3. Admin verifies service delivery and Customer acceptance
   4. Admin approves escrow release
   5. System processes payment to provider
   6. System records transaction details
@@ -706,7 +706,7 @@
 
 - **Actor**: Administrator
 - **Description**: Admin handles refund requests and disputes
-- **Preconditions**: Student or provider has raised dispute
+- **Preconditions**: Customer or provider has raised dispute
 - **Main Flow**:
   1. Admin navigates to dispute management
   2. Admin reviews dispute details and communication history
@@ -811,7 +811,7 @@
 
 - **Actor**: System
 - **Description**: System processes credit card payment
-- **Preconditions**: Student has selected credit card payment
+- **Preconditions**: Customer has selected credit card payment
 - **Main Flow**:
   1. System collects credit card details
   2. System sends payment request to payment gateway
@@ -831,10 +831,10 @@
 
 - **Actor**: System
 - **Description**: System processes cryptocurrency payment
-- **Preconditions**: Student has selected cryptocurrency payment
+- **Preconditions**: Customer has selected cryptocurrency payment
 - **Main Flow**:
   1. System generates cryptocurrency payment address
-  2. System displays payment instructions to student
+  2. System displays payment instructions to Customer
   3. System monitors address for incoming transaction
   4. System confirms transaction on blockchain
   5. System records payment details
@@ -853,7 +853,7 @@
 
 #### UC-5.1.1: Upload Document
 
-- **Actor**: Student or Provider
+- **Actor**: Customer or Provider
 - **Description**: User uploads document to the platform
 - **Preconditions**: User is logged in
 - **Main Flow**:
@@ -875,7 +875,7 @@
 
 #### UC-5.1.2: Share Document
 
-- **Actor**: Student or Provider
+- **Actor**: Customer or Provider
 - **Description**: User shares document with another user
 - **Preconditions**: User has uploaded document
 - **Main Flow**:
@@ -894,7 +894,7 @@
 
 #### UC-5.1.3: View Document
 
-- **Actor**: Student or Provider
+- **Actor**: Customer or Provider
 - **Description**: User views shared document
 - **Preconditions**: Document has been shared with user
 - **Main Flow**:

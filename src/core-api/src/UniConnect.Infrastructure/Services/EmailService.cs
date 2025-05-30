@@ -87,6 +87,13 @@ public class EmailService : IEmailService
         }
     }
 
+    public async Task SendVerificationEmailAsync(string email, string token)
+    {
+        var subject = "Verify your UniConnect account";
+        var body = $"<p>Please verify your email by clicking <a href='https://uniconnect.com/verify?token={token}'>here</a>.</p>";
+        await SendEmailAsync(email, subject, body);
+    }
+
     private SmtpClient CreateSmtpClient()
     {
         return new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort)
