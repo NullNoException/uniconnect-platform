@@ -10,8 +10,7 @@ import '../widgets/university_form.dart';
 class EditUniversityScreen extends ConsumerStatefulWidget {
   final String universityId;
 
-  const EditUniversityScreen({Key? key, required this.universityId})
-    : super(key: key);
+  const EditUniversityScreen({super.key, required this.universityId});
 
   @override
   ConsumerState<EditUniversityScreen> createState() =>

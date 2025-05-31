@@ -2,7 +2,7 @@ using MediatR;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
 using UniConnect.Domain.Repositories;
-using UniConnect.Application.Common.Interfaces;
+using UniConnect.Domain.Services;
 using UniConnect.Domain.Enums;
 
 namespace UniConnect.Application.Providers.Commands.RegisterProvider;

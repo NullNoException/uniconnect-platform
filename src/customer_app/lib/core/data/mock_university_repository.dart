@@ -48,10 +48,9 @@ class MockUniversityRepository implements UniversityRepository {
   }) async {
     var results = _universities;
     if (query != null && query.isNotEmpty) {
-      results =
-          results
-              .where((u) => u.name.toLowerCase().contains(query.toLowerCase()))
-              .toList();
+      results = results
+          .where((u) => u.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
     if (country != null && country.isNotEmpty) {
       results = results.where((u) => u.country == country).toList();
@@ -82,8 +81,9 @@ class MockUniversityRepository implements UniversityRepository {
 
   @override
   Future<Either<Failure, List<University>>> getBookmarkedUniversities() async {
-    final results =
-        _universities.where((u) => _bookmarked.contains(u.id)).toList();
+    final results = _universities
+        .where((u) => _bookmarked.contains(u.id))
+        .toList();
     return Right(results);
   }
 

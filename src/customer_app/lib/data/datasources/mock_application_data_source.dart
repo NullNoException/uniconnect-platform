@@ -562,10 +562,9 @@ class MockApplicationLocalDataSource implements ApplicationLocalDataSource {
       name: oldDoc.name,
       status: docStatus,
       fileUrl: fileUrl ?? oldDoc.fileUrl,
-      submissionDate:
-          docStatus == DocumentStatus.submitted
-              ? DateTime.now()
-              : oldDoc.submissionDate,
+      submissionDate: docStatus == DocumentStatus.submitted
+          ? DateTime.now()
+          : oldDoc.submissionDate,
     );
 
     _cachedApplications[applicationId] =

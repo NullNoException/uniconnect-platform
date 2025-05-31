@@ -63,9 +63,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       } catch (e) {
         if (mounted) {
           setState(
-            () =>
-                _errorMessage =
-                    'An unexpected error occurred. Please try again.',
+            () => _errorMessage =
+                'An unexpected error occurred. Please try again.',
           );
         }
       } finally {
@@ -180,17 +179,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                   ),
-                  child:
-                      _isLoading
-                          ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                          : const Text('Sign In'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Sign In'),
                 ),
                 const SizedBox(height: 24),
                 Row(

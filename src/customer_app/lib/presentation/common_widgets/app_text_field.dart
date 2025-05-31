@@ -77,12 +77,11 @@ class AppTextField extends StatelessWidget {
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor:
-              readOnly || !enabled
-                  ? Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainerHighest.withPreciseOpacity(0.3)
-                  : null,
+          fillColor: readOnly || !enabled
+              ? Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest.withPreciseOpacity(0.3)
+              : null,
         ),
       ),
     );
@@ -188,20 +187,19 @@ class AppSearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText ?? 'Search...',
           prefixIcon: const Icon(Icons.search),
-          suffixIcon:
-              controller != null && controller!.text.isNotEmpty
-                  ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      controller!.clear();
-                      if (onClear != null) {
-                        onClear!();
-                      } else if (onChanged != null) {
-                        onChanged!('');
-                      }
-                    },
-                  )
-                  : null,
+          suffixIcon: controller != null && controller!.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    controller!.clear();
+                    if (onClear != null) {
+                      onClear!();
+                    } else if (onChanged != null) {
+                      onChanged!('');
+                    }
+                  },
+                )
+              : null,
           fillColor: backgroundColor ?? Theme.of(context).colorScheme.surface,
           filled: true,
           contentPadding: const EdgeInsets.symmetric(vertical: 0),

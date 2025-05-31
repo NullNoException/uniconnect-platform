@@ -2,6 +2,7 @@ using MediatR;
 using UniConnect.Domain.Entities;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Common.Exceptions;
+using UniConnect.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace UniConnect.Application.Users.Commands.RegisterCustomer;

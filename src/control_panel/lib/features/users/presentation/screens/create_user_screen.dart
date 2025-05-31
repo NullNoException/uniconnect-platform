@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../dashboard/presentation/widgets/dashboard_layout.dart';
-import '../../domain/repositories/user_repository.dart';
 
 class CreateUserScreen extends ConsumerStatefulWidget {
   const CreateUserScreen({super.key});

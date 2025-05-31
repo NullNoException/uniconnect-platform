@@ -120,7 +120,8 @@ public static class DependencyInjection
 
         // Configure Email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-        services.AddTransient<UniConnect.Domain.Services.IEmailService, EmailService>();
+        services.AddTransient<EmailService>();
+        services.AddTransient<IEmailService>(provider => provider.GetRequiredService<EmailService>());
         services.AddTransient<ISmsService, SmsService>();
 
         // Register MinioStorageService as implementation for both interfaces

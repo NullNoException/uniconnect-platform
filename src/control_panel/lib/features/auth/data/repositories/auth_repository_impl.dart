@@ -20,8 +20,9 @@ class AuthRepositoryImpl implements AuthRepository {
     await _prefs.setString(PreferenceKeys.authToken, response.token);
     await _prefs.setString(PreferenceKeys.refreshToken, response.refreshToken);
     await _prefs.setString(PreferenceKeys.userId, response.userId);
-    await _prefs.setString(PreferenceKeys.userName, response.fullName);
+    await _prefs.setString(PreferenceKeys.userEmail, response.email);
     await _prefs.setStringList(PreferenceKeys.userRole, response.roles);
+    await _prefs.setString(PreferenceKeys.tokenExpiresAt, response.expiresAt);
 
     return response;
   }
@@ -33,7 +34,9 @@ class AuthRepositoryImpl implements AuthRepository {
     await _prefs.remove(PreferenceKeys.refreshToken);
     await _prefs.remove(PreferenceKeys.userId);
     await _prefs.remove(PreferenceKeys.userName);
+    await _prefs.remove(PreferenceKeys.userEmail);
     await _prefs.remove(PreferenceKeys.userRole);
+    await _prefs.remove(PreferenceKeys.tokenExpiresAt);
 
     return;
   }
@@ -79,6 +82,10 @@ class AuthRepositoryImpl implements AuthRepository {
         PreferenceKeys.refreshToken,
         response.refreshToken,
       );
+      await _prefs.setString(PreferenceKeys.userId, response.userId);
+      await _prefs.setString(PreferenceKeys.userEmail, response.email);
+      await _prefs.setStringList(PreferenceKeys.userRole, response.roles);
+      await _prefs.setString(PreferenceKeys.tokenExpiresAt, response.expiresAt);
 
       return true;
     } catch (e) {

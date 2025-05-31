@@ -6,6 +6,7 @@ import '../constants/app_constants.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../../features/auth/presentation/screens/auth_demo_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/users/presentation/screens/users_screen.dart';
 import '../../features/users/presentation/screens/user_detail_screen.dart';
@@ -23,13 +24,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthenticated = authState.isAuthenticated;
       final isAuthRoute =
           state.matchedLocation == AppRoutes.login ||
-          state.matchedLocation == AppRoutes.forgotPassword;
+          state.matchedLocation == AppRoutes.forgotPassword ||
+          state.matchedLocation == AppRoutes.authDemo;
 
       if (!isAuthenticated && !isAuthRoute) {
         return AppRoutes.login;
       }
 
-      if (isAuthenticated && isAuthRoute) {
+      if (isAuthenticated &&
+          isAuthRoute &&
+          state.matchedLocation != AppRoutes.authDemo) {
         return AppRoutes.dashboard;
       }
 
@@ -44,6 +48,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.authDemo,
+        builder: (context, state) => const AuthDemoScreen(),
       ),
 
       // Main application routes
@@ -249,15 +257,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const Placeholder(), // To be implemented
       ),
     ],
-    errorBuilder:
-        (context, state) => Scaffold(
-          appBar: AppBar(title: const Text('Not Found')),
-          body: Center(
-            child: Text(
-              'Page not found',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-          ),
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('Not Found')),
+      body: Center(
+        child: Text(
+          'Page not found',
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
+      ),
+    ),
   );
 });

@@ -468,24 +468,23 @@ class _ProgramDetailsScreenState extends ConsumerState<ProgramDetailsScreen>
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    requirements.map((requirement) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(child: Text(requirement)),
-                          ],
+                children: requirements.map((requirement) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 20,
                         ),
-                      );
-                    }).toList(),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text(requirement)),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ),

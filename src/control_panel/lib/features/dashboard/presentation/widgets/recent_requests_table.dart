@@ -27,7 +27,7 @@ class RecentRequestsTable extends StatelessWidget {
             smRatio: 0.75,
             lmRatio: 1.5,
             headingRowColor: WidgetStatePropertyAll(
-              theme.colorScheme.background,
+              theme.colorScheme.surface,
             ),
             decoration: BoxDecoration(
               border: Border.all(color: theme.dividerColor),
@@ -157,7 +157,7 @@ class RecentRequestsTable extends StatelessWidget {
                   // Extract ID number from the ID string (e.g., "SR-2025-001" -> "001")
                   final idNumber = id.split('-').last;
                   context.push(
-                    '${AppRoutes.serviceRequestDetails.replaceAll(':id', idNumber)}',
+                    AppRoutes.serviceRequestDetails.replaceAll(':id', idNumber),
                   );
                 },
                 tooltip: 'View Details',

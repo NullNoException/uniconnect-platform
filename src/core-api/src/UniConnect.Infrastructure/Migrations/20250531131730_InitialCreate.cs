@@ -7,11 +7,32 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace UniConnect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentityTables : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AcademicLevels",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Code = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AcademicLevels", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ApiKeys",
                 columns: table => new
@@ -206,6 +227,33 @@ namespace UniConnect.Infrastructure.Migrations
                         principalTable: "FieldsOfStudy",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Majors",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    ParentMajorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    Level = table.Column<int>(type: "integer", maxLength: 128, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Majors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Majors_Majors_ParentMajorId",
+                        column: x => x.ParentMajorId,
+                        principalTable: "Majors",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -651,6 +699,10 @@ namespace UniConnect.Infrastructure.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ProfilePictureUrl = table.Column<string>(type: "text", nullable: true),
                     PreferredLanguage = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false, defaultValue: "en"),
+                    EducationsJson = table.Column<string>(type: "text", nullable: true),
+                    TargetCountries = table.Column<string>(type: "text", nullable: true),
+                    EducationGoals = table.Column<string>(type: "text", nullable: true),
+                    CommunicationPreferencesJson = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -757,13 +809,28 @@ namespace UniConnect.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: false),
                     AddressId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Website = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    Website = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    LogoUrl = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Phone = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    AccreditationStatus = table.Column<int>(type: "integer", nullable: false),
+                    AccreditationBody = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    AccreditationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RejectionReason = table.Column<string>(type: "text", nullable: true),
+                    ReviewedByUserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ReviewedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    EstablishedYear = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    Ranking = table.Column<decimal>(type: "numeric(5,2)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -781,6 +848,66 @@ namespace UniConnect.Infrastructure.Migrations
                         principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Universities_Users_ReviewedByUserId",
+                        column: x => x.ReviewedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunicationPreferences",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserProfileId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<bool>(type: "boolean", nullable: false),
+                    Sms = table.Column<bool>(type: "boolean", nullable: false),
+                    WhatsApp = table.Column<bool>(type: "boolean", nullable: false),
+                    Telegram = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunicationPreferences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommunicationPreferences_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Education",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserProfileId = table.Column<Guid>(type: "uuid", nullable: false),
+                    School = table.Column<string>(type: "text", nullable: false),
+                    Degree = table.Column<string>(type: "text", nullable: false),
+                    FieldOfStudy = table.Column<string>(type: "text", nullable: false),
+                    StartYear = table.Column<string>(type: "text", nullable: false),
+                    EndYear = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Education", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Education_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -868,6 +995,92 @@ namespace UniConnect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AcademicCalendars",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UniversityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AcademicCalendars", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AcademicCalendars_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AcademicPrograms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    UniversityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AcademicLevelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MajorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DurationInSemesters = table.Column<int>(type: "integer", nullable: false),
+                    BaseTuitionFee = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
+                    CurrencyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Requirements = table.Column<string>(type: "text", nullable: true),
+                    Highlights = table.Column<string>(type: "text", nullable: true),
+                    ApplicationDeadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ProgramCode = table.Column<string>(type: "text", nullable: true),
+                    CreditHours = table.Column<int>(type: "integer", nullable: true),
+                    Language = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    IsOnline = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPartTime = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AcademicPrograms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AcademicPrograms_AcademicLevels_AcademicLevelId",
+                        column: x => x.AcademicLevelId,
+                        principalTable: "AcademicLevels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AcademicPrograms_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AcademicPrograms_Majors_MajorId",
+                        column: x => x.MajorId,
+                        principalTable: "Majors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AcademicPrograms_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -904,6 +1117,75 @@ namespace UniConnect.Infrastructure.Migrations
                         name: "FK_Students_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UniversityAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UniversityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddressType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Street = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    City = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    State = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    PostalCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    CountryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Latitude = table.Column<double>(type: "numeric(10,8)", nullable: true),
+                    Longitude = table.Column<double>(type: "numeric(11,8)", nullable: true),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UniversityAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UniversityAddresses_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UniversityAddresses_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UniversityContacts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UniversityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Department = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UniversityContacts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UniversityContacts_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -994,6 +1276,74 @@ namespace UniConnect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AcademicYears",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AcademicCalendarId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AcademicYears", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AcademicYears_AcademicCalendars_AcademicCalendarId",
+                        column: x => x.AcademicCalendarId,
+                        principalTable: "AcademicCalendars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProviderProgramOfferings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProviderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProgramId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ServiceDescription = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    MarketingContent = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
+                    EntryRequirements = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    ProgramHighlights = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    ActivationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeactivationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsPromoted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProviderProgramOfferings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProviderProgramOfferings_AcademicPrograms_ProgramId",
+                        column: x => x.ProgramId,
+                        principalTable: "AcademicPrograms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProviderProgramOfferings_ServiceProviders_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "ServiceProviders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServiceRequests",
                 columns: table => new
                 {
@@ -1028,6 +1378,86 @@ namespace UniConnect.Infrastructure.Migrations
                         principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Semesters",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AcademicYearId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Semesters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Semesters_AcademicYears_AcademicYearId",
+                        column: x => x.AcademicYearId,
+                        principalTable: "AcademicYears",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProgramTuitionFees",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProgramId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProviderId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    CurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FeeType = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    Semester = table.Column<int>(type: "integer", nullable: true),
+                    AcademicYear = table.Column<int>(type: "integer", nullable: true),
+                    EffectiveDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Notes = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    ProviderProgramOfferingId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProgramTuitionFees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProgramTuitionFees_AcademicPrograms_ProgramId",
+                        column: x => x.ProgramId,
+                        principalTable: "AcademicPrograms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProgramTuitionFees_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProgramTuitionFees_ProviderProgramOfferings_ProviderProgram~",
+                        column: x => x.ProviderProgramOfferingId,
+                        principalTable: "ProviderProgramOfferings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProgramTuitionFees_ServiceProviders_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "ServiceProviders",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1164,7 +1594,6 @@ namespace UniConnect.Infrastructure.Migrations
                     EscrowReleaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     PlatformFeeAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     ProviderAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    PaymentMethodId1 = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -1187,14 +1616,72 @@ namespace UniConnect.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Transactions_PaymentMethods_PaymentMethodId1",
-                        column: x => x.PaymentMethodId1,
-                        principalTable: "PaymentMethods",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Transactions_ServiceRequests_RequestId",
                         column: x => x.RequestId,
                         principalTable: "ServiceRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Deadlines",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SemesterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    SendReminder = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    ReminderDaysBefore = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deadlines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Deadlines_Semesters_SemesterId",
+                        column: x => x.SemesterId,
+                        principalTable: "Semesters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SemesterPrograms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SemesterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProgramId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    AvailableSeats = table.Column<int>(type: "integer", nullable: false),
+                    Notes = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SemesterPrograms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SemesterPrograms_AcademicPrograms_ProgramId",
+                        column: x => x.ProgramId,
+                        principalTable: "AcademicPrograms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SemesterPrograms_Semesters_SemesterId",
+                        column: x => x.SemesterId,
+                        principalTable: "Semesters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1335,6 +1822,52 @@ namespace UniConnect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AcademicCalendars_UniversityId",
+                table: "AcademicCalendars",
+                column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicLevels_Name",
+                table: "AcademicLevels",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicLevels_Order",
+                table: "AcademicLevels",
+                column: "Order");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicPrograms_AcademicLevelId",
+                table: "AcademicPrograms",
+                column: "AcademicLevelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicPrograms_CurrencyId",
+                table: "AcademicPrograms",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicPrograms_MajorId",
+                table: "AcademicPrograms",
+                column: "MajorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicPrograms_UniversityId",
+                table: "AcademicPrograms",
+                column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicPrograms_UniversityId_Status",
+                table: "AcademicPrograms",
+                columns: new[] { "UniversityId", "Status" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicYears_AcademicCalendarId",
+                table: "AcademicYears",
+                column: "AcademicCalendarId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Addresses_CountryId",
                 table: "Addresses",
                 column: "CountryId");
@@ -1399,6 +1932,12 @@ namespace UniConnect.Infrastructure.Migrations
                 columns: new[] { "UserId", "NotificationType" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CommunicationPreferences_UserProfileId",
+                table: "CommunicationPreferences",
+                column: "UserProfileId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConversationParticipants_ConversationId",
                 table: "ConversationParticipants",
                 column: "ConversationId");
@@ -1431,6 +1970,16 @@ namespace UniConnect.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Deadlines_SemesterId",
+                table: "Deadlines",
+                column: "SemesterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Education_UserProfileId",
+                table: "Education",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ErrorCodes_Code",
                 table: "ErrorCodes",
                 column: "Code",
@@ -1458,6 +2007,28 @@ namespace UniConnect.Infrastructure.Migrations
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Majors_Code",
+                table: "Majors",
+                column: "Code",
+                unique: true,
+                filter: "\"Code\" IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Majors_Level",
+                table: "Majors",
+                column: "Level");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Majors_Name",
+                table: "Majors",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Majors_ParentMajorId",
+                table: "Majors",
+                column: "ParentMajorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_ConversationId",
                 table: "Messages",
                 column: "ConversationId");
@@ -1481,6 +2052,63 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "IX_PaymentMethods_UserId",
                 table: "PaymentMethods",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_Amount",
+                table: "ProgramTuitionFees",
+                column: "Amount");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_CurrencyId",
+                table: "ProgramTuitionFees",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_FeeType",
+                table: "ProgramTuitionFees",
+                column: "FeeType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_ProgramId_FeeType",
+                table: "ProgramTuitionFees",
+                columns: new[] { "ProgramId", "FeeType" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_ProviderId",
+                table: "ProgramTuitionFees",
+                column: "ProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramTuitionFees_ProviderProgramOfferingId",
+                table: "ProgramTuitionFees",
+                column: "ProviderProgramOfferingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderProgramOfferings_ActivationDate",
+                table: "ProviderProgramOfferings",
+                column: "ActivationDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderProgramOfferings_DeactivationDate",
+                table: "ProviderProgramOfferings",
+                column: "DeactivationDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderProgramOfferings_ProgramId",
+                table: "ProviderProgramOfferings",
+                column: "ProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderProgramOfferings_ProviderId_ProgramId",
+                table: "ProviderProgramOfferings",
+                columns: new[] { "ProviderId", "ProgramId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderProgramOfferings_Status",
+                table: "ProviderProgramOfferings",
+                column: "Status");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProviderStaff_ProviderId",
@@ -1563,6 +2191,21 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "IX_Reviews_ReviewerId",
                 table: "Reviews",
                 column: "ReviewerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SemesterPrograms_ProgramId",
+                table: "SemesterPrograms",
+                column: "ProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SemesterPrograms_SemesterId",
+                table: "SemesterPrograms",
+                column: "SemesterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Semesters_AcademicYearId",
+                table: "Semesters",
+                column: "AcademicYearId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceAttributes_ServiceId",
@@ -1683,14 +2326,14 @@ namespace UniConnect.Infrastructure.Migrations
                 column: "PaymentMethodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_PaymentMethodId1",
-                table: "Transactions",
-                column: "PaymentMethodId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_RequestId",
                 table: "Transactions",
                 column: "RequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_AccreditationStatus",
+                table: "Universities",
+                column: "AccreditationStatus");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Universities_AddressId",
@@ -1702,6 +2345,56 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "IX_Universities_CountryId",
                 table: "Universities",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_EstablishedYear",
+                table: "Universities",
+                column: "EstablishedYear");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_Name",
+                table: "Universities",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_Ranking",
+                table: "Universities",
+                column: "Ranking");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_ReviewedByUserId",
+                table: "Universities",
+                column: "ReviewedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Universities_Status",
+                table: "Universities",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityAddresses_CountryId",
+                table: "UniversityAddresses",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityAddresses_UniversityId",
+                table: "UniversityAddresses",
+                column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityAddresses_UniversityId_IsPrimary",
+                table: "UniversityAddresses",
+                columns: new[] { "UniversityId", "IsPrimary" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityContacts_Email",
+                table: "UniversityContacts",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityContacts_UniversityId",
+                table: "UniversityContacts",
+                column: "UniversityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserProfiles_UserId",
@@ -1736,12 +2429,20 @@ namespace UniConnect.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Addresses_Countries_CountryId",
-                table: "Addresses");
+                name: "FK_Students_Universities_CurrentUniversityId",
+                table: "Students");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Universities_Countries_CountryId",
-                table: "Universities");
+                name: "FK_Services_Currencies_CurrencyId",
+                table: "Services");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_SubscriptionPlans_Currencies_CurrencyId",
+                table: "SubscriptionPlans");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Addresses_Countries_CountryId",
+                table: "Addresses");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Addresses_Users_EntityId",
@@ -1796,7 +2497,16 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "CommunicationChannelPreferences");
 
             migrationBuilder.DropTable(
+                name: "CommunicationPreferences");
+
+            migrationBuilder.DropTable(
                 name: "ConversationParticipants");
+
+            migrationBuilder.DropTable(
+                name: "Deadlines");
+
+            migrationBuilder.DropTable(
+                name: "Education");
 
             migrationBuilder.DropTable(
                 name: "ErrorCodes");
@@ -1809,6 +2519,9 @@ namespace UniConnect.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "ProgramTuitionFees");
 
             migrationBuilder.DropTable(
                 name: "ProviderStaff");
@@ -1826,6 +2539,9 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "ReviewResponses");
 
             migrationBuilder.DropTable(
+                name: "SemesterPrograms");
+
+            migrationBuilder.DropTable(
                 name: "ServiceAttributes");
 
             migrationBuilder.DropTable(
@@ -1841,7 +2557,10 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "UserProfiles");
+                name: "UniversityAddresses");
+
+            migrationBuilder.DropTable(
+                name: "UniversityContacts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -1850,16 +2569,46 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "UserProfiles");
+
+            migrationBuilder.DropTable(
                 name: "Invoices");
 
             migrationBuilder.DropTable(
+                name: "ProviderProgramOfferings");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "Semesters");
 
             migrationBuilder.DropTable(
                 name: "DocumentTypes");
 
             migrationBuilder.DropTable(
                 name: "PaymentMethods");
+
+            migrationBuilder.DropTable(
+                name: "AcademicPrograms");
+
+            migrationBuilder.DropTable(
+                name: "AcademicYears");
+
+            migrationBuilder.DropTable(
+                name: "AcademicLevels");
+
+            migrationBuilder.DropTable(
+                name: "Majors");
+
+            migrationBuilder.DropTable(
+                name: "AcademicCalendars");
+
+            migrationBuilder.DropTable(
+                name: "Universities");
+
+            migrationBuilder.DropTable(
+                name: "Currencies");
 
             migrationBuilder.DropTable(
                 name: "Countries");
@@ -1892,16 +2641,10 @@ namespace UniConnect.Infrastructure.Migrations
                 name: "FieldsOfStudy");
 
             migrationBuilder.DropTable(
-                name: "Universities");
-
-            migrationBuilder.DropTable(
-                name: "SubscriptionPlans");
-
-            migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Currencies");
+                name: "SubscriptionPlans");
         }
     }
 }

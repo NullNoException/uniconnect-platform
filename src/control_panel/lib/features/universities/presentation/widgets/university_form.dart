@@ -13,7 +13,7 @@ class UniversityForm extends StatelessWidget {
   final Function(bool) onIsActiveChanged;
 
   const UniversityForm({
-    Key? key,
+    super.key,
     required this.formKey,
     required this.nameController,
     required this.countryController,
@@ -24,7 +24,7 @@ class UniversityForm extends StatelessWidget {
     required this.isActive,
     required this.onIsActiveChanged,
     required this.isSubmitting,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

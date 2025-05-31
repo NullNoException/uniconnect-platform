@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dependency_injection.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/users/domain/repositories/user_repository.dart';
 import '../../features/universities/domain/repositories/university_repository.dart';
 

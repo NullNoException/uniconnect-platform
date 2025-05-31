@@ -23,19 +23,42 @@ class AuthController extends _$AuthController {
     final token = prefs.getString(PreferenceKeys.authToken);
     final refreshToken = prefs.getString(PreferenceKeys.refreshToken);
     final userId = prefs.getString(PreferenceKeys.userId);
+    final email = prefs.getString(PreferenceKeys.userEmail);
     final roles = prefs.getStringList(PreferenceKeys.userRole);
+    final expiresAtString = prefs.getString(PreferenceKeys.tokenExpiresAt);
 
     if (token != null &&
         refreshToken != null &&
         userId != null &&
         roles != null) {
+      DateTime? expiresAt;
+      if (expiresAtString != null) {
+        try {
+          expiresAt = DateTime.parse(expiresAtString);
+        } catch (e) {
+          // If parsing fails, treat as expired
+          if (kDebugMode) {
+            print('Failed to parse expiresAt: $e');
+          }
+        }
+      }
+
+      // Check if token is expired
+      if (expiresAt != null && DateTime.now().isAfter(expiresAt)) {
+        // Token expired, clear preferences and return initial state
+        _clearAuthPreferences();
+        return AuthState.initial();
+      }
+
       return AuthState(
         isAuthenticated: true,
         isLoading: false,
         token: token,
         refreshToken: refreshToken,
         userId: userId,
+        email: email,
         roles: roles,
+        expiresAt: expiresAt,
       );
     }
 
@@ -49,13 +72,25 @@ class AuthController extends _$AuthController {
       final request = LoginRequest(email: email, password: password);
       final response = await _repository.login(request);
 
+      // Parse expiresAt string to DateTime
+      DateTime? expiresAt;
+      try {
+        expiresAt = DateTime.parse(response.expiresAt);
+      } catch (e) {
+        if (kDebugMode) {
+          print('Failed to parse expiresAt: $e');
+        }
+      }
+
       state = state.copyWith(
         isAuthenticated: true,
         isLoading: false,
         token: response.token,
         refreshToken: response.refreshToken,
         userId: response.userId,
+        email: response.email,
         roles: response.roles,
+        expiresAt: expiresAt,
       );
 
       return true;
@@ -151,11 +186,24 @@ class AuthController extends _$AuthController {
         final prefs = ref.read(sharedPreferencesProvider);
         final newToken = prefs.getString(PreferenceKeys.authToken);
         final newRefreshToken = prefs.getString(PreferenceKeys.refreshToken);
+        final expiresAtString = prefs.getString(PreferenceKeys.tokenExpiresAt);
 
         if (newToken != null && newRefreshToken != null) {
+          DateTime? expiresAt;
+          if (expiresAtString != null) {
+            try {
+              expiresAt = DateTime.parse(expiresAtString);
+            } catch (e) {
+              if (kDebugMode) {
+                print('Failed to parse expiresAt: $e');
+              }
+            }
+          }
+
           state = state.copyWith(
             token: newToken,
             refreshToken: newRefreshToken,
+            expiresAt: expiresAt,
           );
           return true;
         }
@@ -168,6 +216,17 @@ class AuthController extends _$AuthController {
       state = AuthState.initial();
       return false;
     }
+  }
+
+  void _clearAuthPreferences() {
+    final prefs = ref.read(sharedPreferencesProvider);
+    prefs.remove(PreferenceKeys.authToken);
+    prefs.remove(PreferenceKeys.refreshToken);
+    prefs.remove(PreferenceKeys.userId);
+    prefs.remove(PreferenceKeys.userName);
+    prefs.remove(PreferenceKeys.userEmail);
+    prefs.remove(PreferenceKeys.userRole);
+    prefs.remove(PreferenceKeys.tokenExpiresAt);
   }
 
   bool hasRole(String role) {
@@ -189,10 +248,36 @@ class AuthController extends _$AuthController {
   bool isModerator() {
     return hasRole(Roles.moderator);
   }
+
+  // Check if token is expired or will expire soon (within 5 minutes)
+  bool isTokenExpired() {
+    if (state.expiresAt == null) {
+      return false; // If no expiration info, assume not expired
+    }
+    final now = DateTime.now();
+    final buffer = const Duration(minutes: 5); // 5-minute buffer
+    return now.isAfter(state.expiresAt!.subtract(buffer));
+  }
+
+  // Auto-refresh token if expired or expiring soon
+  Future<bool> ensureValidToken() async {
+    if (!state.isAuthenticated) {
+      return false;
+    }
+
+    if (isTokenExpired()) {
+      if (kDebugMode) {
+        print('Token expired or expiring soon, refreshing...');
+      }
+      return await refreshAuthToken();
+    }
+
+    return true; // Token is still valid
+  }
 }
 
 @riverpod
-Future<User> currentUser(CurrentUserRef ref) async {
+Future<User> currentUser(Ref ref) async {
   final authState = ref.watch(authControllerProvider);
   if (!authState.isAuthenticated) {
     throw Exception('User not authenticated');

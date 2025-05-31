@@ -637,6 +637,51 @@ namespace UniConnect.Infrastructure.Migrations
                     b.ToTable("CommunicationChannelPreferences");
                 });
 
+            modelBuilder.Entity("UniConnect.Domain.Entities.CommunicationPreferences", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Email")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Sms")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Telegram")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("WhatsApp")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId")
+                        .IsUnique();
+
+                    b.ToTable("CommunicationPreferences");
+                });
+
             modelBuilder.Entity("UniConnect.Domain.Entities.Conversation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -927,6 +972,57 @@ namespace UniConnect.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DocumentTypes");
+                });
+
+            modelBuilder.Entity("UniConnect.Domain.Entities.Education", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Degree")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EndYear")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FieldOfStudy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("School")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartYear")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Education");
                 });
 
             modelBuilder.Entity("UniConnect.Domain.Entities.ErrorCode", b =>
@@ -1243,7 +1339,7 @@ namespace UniConnect.Infrastructure.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("Level");
 
@@ -3038,6 +3134,9 @@ namespace UniConnect.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CommunicationPreferencesJson")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -3047,6 +3146,12 @@ namespace UniConnect.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EducationGoals")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EducationsJson")
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -3072,6 +3177,9 @@ namespace UniConnect.Infrastructure.Migrations
                         .HasDefaultValue("en");
 
                     b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TargetCountries")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -3306,6 +3414,17 @@ namespace UniConnect.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("UniConnect.Domain.Entities.CommunicationPreferences", b =>
+                {
+                    b.HasOne("UniConnect.Domain.Entities.UserProfile", "UserProfile")
+                        .WithOne("CommunicationPreferences")
+                        .HasForeignKey("UniConnect.Domain.Entities.CommunicationPreferences", "UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("UniConnect.Domain.Entities.Conversation", b =>
                 {
                     b.HasOne("UniConnect.Domain.Entities.Message", "LastMessage")
@@ -3351,6 +3470,17 @@ namespace UniConnect.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Semester");
+                });
+
+            modelBuilder.Entity("UniConnect.Domain.Entities.Education", b =>
+                {
+                    b.HasOne("UniConnect.Domain.Entities.UserProfile", "UserProfile")
+                        .WithMany("Educations")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("UniConnect.Domain.Entities.FieldOfStudy", b =>
@@ -4078,6 +4208,13 @@ namespace UniConnect.Infrastructure.Migrations
                     b.Navigation("ServiceProvider");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("UniConnect.Domain.Entities.UserProfile", b =>
+                {
+                    b.Navigation("CommunicationPreferences");
+
+                    b.Navigation("Educations");
                 });
 #pragma warning restore 612, 618
         }

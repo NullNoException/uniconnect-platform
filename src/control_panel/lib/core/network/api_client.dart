@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:control_panel/core/network/api_exception.dart';
+import 'package:control_panel/core/constants/app_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
@@ -10,6 +11,7 @@ class ApiClient {
   late final Dio _dio;
   final Logger _logger = Logger();
   final SharedPreferences _prefs;
+  bool _isRefreshing = false;
 
   // Base URL from configuration
   final String baseUrl;
@@ -33,7 +35,7 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           // Add authentication header if available
-          final token = _prefs.getString('auth_token');
+          final token = _prefs.getString(PreferenceKeys.authToken);
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
@@ -53,23 +55,105 @@ class ApiClient {
           }
           return handler.next(response);
         },
-        onError: (DioException e, handler) {
+        onError: (DioException e, handler) async {
           // Log error details
           _logger.e(
             'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
           );
 
           // Handle authentication errors (401)
-          if (e.response?.statusCode == 401) {
-            // Clear token and trigger reauth flow
-            _prefs.remove('auth_token');
-            // TODO: Implement reauth or redirect to login
+          if (e.response?.statusCode == 401 && !_isRefreshing) {
+            await _handleTokenRefresh(e, handler);
+            return;
           }
 
           return handler.next(e);
         },
       ),
     );
+  }
+
+  // Handle token refresh when 401 error occurs
+  Future<void> _handleTokenRefresh(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final refreshToken = _prefs.getString(PreferenceKeys.refreshToken);
+
+    if (refreshToken == null || _isRefreshing) {
+      // No refresh token available or already refreshing, clear auth and continue with error
+      await _clearAuthData();
+      return handler.next(error);
+    }
+
+    _isRefreshing = true;
+
+    try {
+      // Attempt to refresh the token
+      final response = await _dio.post(
+        ApiEndpoints.refreshToken,
+        data: {'refreshToken': refreshToken},
+        options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        // Save new tokens
+        await _prefs.setString(PreferenceKeys.authToken, data['token']);
+        await _prefs.setString(
+          PreferenceKeys.refreshToken,
+          data['refreshToken'],
+        );
+        await _prefs.setString(PreferenceKeys.userId, data['userId']);
+        await _prefs.setString(PreferenceKeys.userEmail, data['email']);
+        await _prefs.setStringList(
+          PreferenceKeys.userRole,
+          List<String>.from(data['roles']),
+        );
+        await _prefs.setString(
+          PreferenceKeys.tokenExpiresAt,
+          data['expiresAt'],
+        );
+
+        // Retry the original request with new token
+        final requestOptions = error.requestOptions;
+        requestOptions.headers['Authorization'] = 'Bearer ${data['token']}';
+
+        final retryResponse = await _dio.request(
+          requestOptions.path,
+          options: Options(
+            method: requestOptions.method,
+            headers: requestOptions.headers,
+          ),
+          data: requestOptions.data,
+          queryParameters: requestOptions.queryParameters,
+        );
+
+        return handler.resolve(retryResponse);
+      } else {
+        // Refresh failed, clear auth data
+        await _clearAuthData();
+        return handler.next(error);
+      }
+    } catch (e) {
+      // Refresh failed, clear auth data
+      await _clearAuthData();
+      return handler.next(error);
+    } finally {
+      _isRefreshing = false;
+    }
+  }
+
+  // Clear authentication data
+  Future<void> _clearAuthData() async {
+    await _prefs.remove(PreferenceKeys.authToken);
+    await _prefs.remove(PreferenceKeys.refreshToken);
+    await _prefs.remove(PreferenceKeys.userId);
+    await _prefs.remove(PreferenceKeys.userName);
+    await _prefs.remove(PreferenceKeys.userEmail);
+    await _prefs.remove(PreferenceKeys.userRole);
+    await _prefs.remove(PreferenceKeys.tokenExpiresAt);
   }
 
   // GET request method

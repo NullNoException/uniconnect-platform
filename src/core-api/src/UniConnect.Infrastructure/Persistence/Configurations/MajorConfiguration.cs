@@ -32,7 +32,7 @@ public class MajorConfiguration : IEntityTypeConfiguration<Major>
 
         builder.HasIndex(m => m.Code)
             .IsUnique()
-            .HasFilter("[Code] IS NOT NULL");
+            .HasFilter("\"Code\" IS NOT NULL");
 
         builder.HasIndex(m => m.Level);
 

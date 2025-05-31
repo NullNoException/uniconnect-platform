@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
-import '../lib/tools/logo_creator.dart';
+import 'package:control_panel/tools/logo_creator.dart';
 
 Future<void> main() async {
   // Ensure we're running from the project root

@@ -2,13 +2,17 @@
 class ApiEndpoints {
   // Base URLs
   static const String baseUrl = '/api/v1';
+  static const String controlPanelBaseUrl = '/api/control-panel/v1';
 
-  // Auth endpoints
-  static const String login = '$baseUrl/auth/login';
-  static const String refreshToken = '$baseUrl/auth/refresh';
-  static const String forgotPassword = '$baseUrl/auth/forgot-password';
-  static const String resetPassword = '$baseUrl/auth/reset-password';
-  static const String changePassword = '$baseUrl/auth/change-password';
+  // Auth endpoints (using control panel endpoints)
+  static const String login = '$controlPanelBaseUrl/auth/login';
+  static const String refreshToken = '$controlPanelBaseUrl/auth/refresh';
+  static const String forgotPassword =
+      '$controlPanelBaseUrl/auth/forgot-password';
+  static const String resetPassword =
+      '$controlPanelBaseUrl/auth/reset-password';
+  static const String changePassword =
+      '$controlPanelBaseUrl/auth/change-password';
 
   // User management
   static const String users = '$baseUrl/users';
@@ -69,6 +73,7 @@ class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
   static const String forgotPassword = '/forgot-password';
+  static const String authDemo = '/auth-demo';
   static const String dashboard = '/dashboard';
 
   static const String users = '/users';
@@ -122,7 +127,9 @@ class PreferenceKeys {
   static const String refreshToken = 'refresh_token';
   static const String userId = 'user_id';
   static const String userName = 'user_name';
+  static const String userEmail = 'user_email';
   static const String userRole = 'user_role';
+  static const String tokenExpiresAt = 'token_expires_at';
   static const String theme = 'theme';
   static const String locale = 'locale';
 }

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
 
- bool get isAuthenticated; bool get isLoading; String? get token; String? get refreshToken; String? get userId; List<String>? get roles; String? get error;
+ bool get isAuthenticated; bool get isLoading; String? get token; String? get refreshToken; String? get userId; String? get email; List<String>? get roles; DateTime? get expiresAt; String? get error;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other.roles, roles)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.roles, roles)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.error, error) || other.error == error));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isAuthenticated,isLoading,token,refreshToken,userId,const DeepCollectionEquality().hash(roles),error);
+int get hashCode => Object.hash(runtimeType,isAuthenticated,isLoading,token,refreshToken,userId,email,const DeepCollectionEquality().hash(roles),expiresAt,error);
 
 @override
 String toString() {
-  return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, token: $token, refreshToken: $refreshToken, userId: $userId, roles: $roles, error: $error)';
+  return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, token: $token, refreshToken: $refreshToken, userId: $userId, email: $email, roles: $roles, expiresAt: $expiresAt, error: $error)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- bool isAuthenticated, bool isLoading, String? token, String? refreshToken, String? userId, List<String>? roles, String? error
+ bool isAuthenticated, bool isLoading, String? token, String? refreshToken, String? userId, String? email, List<String>? roles, DateTime? expiresAt, String? error
 });
 
 
@@ -66,15 +66,17 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isAuthenticated = null,Object? isLoading = null,Object? token = freezed,Object? refreshToken = freezed,Object? userId = freezed,Object? roles = freezed,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isAuthenticated = null,Object? isLoading = null,Object? token = freezed,Object? refreshToken = freezed,Object? userId = freezed,Object? email = freezed,Object? roles = freezed,Object? expiresAt = freezed,Object? error = freezed,}) {
   return _then(_self.copyWith(
 isAuthenticated: null == isAuthenticated ? _self.isAuthenticated : isAuthenticated // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,refreshToken: freezed == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,roles: freezed == roles ? _self.roles : roles // ignore: cast_nullable_to_non_nullable
-as List<String>?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -86,7 +88,7 @@ as String?,
 @JsonSerializable()
 
 class _AuthState implements AuthState {
-  const _AuthState({required this.isAuthenticated, required this.isLoading, this.token, this.refreshToken, this.userId, final  List<String>? roles, this.error}): _roles = roles;
+  const _AuthState({required this.isAuthenticated, required this.isLoading, this.token, this.refreshToken, this.userId, this.email, final  List<String>? roles, this.expiresAt, this.error}): _roles = roles;
   factory _AuthState.fromJson(Map<String, dynamic> json) => _$AuthStateFromJson(json);
 
 @override final  bool isAuthenticated;
@@ -94,6 +96,7 @@ class _AuthState implements AuthState {
 @override final  String? token;
 @override final  String? refreshToken;
 @override final  String? userId;
+@override final  String? email;
  final  List<String>? _roles;
 @override List<String>? get roles {
   final value = _roles;
@@ -103,6 +106,7 @@ class _AuthState implements AuthState {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  DateTime? expiresAt;
 @override final  String? error;
 
 /// Create a copy of AuthState
@@ -118,16 +122,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other._roles, _roles)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._roles, _roles)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.error, error) || other.error == error));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isAuthenticated,isLoading,token,refreshToken,userId,const DeepCollectionEquality().hash(_roles),error);
+int get hashCode => Object.hash(runtimeType,isAuthenticated,isLoading,token,refreshToken,userId,email,const DeepCollectionEquality().hash(_roles),expiresAt,error);
 
 @override
 String toString() {
-  return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, token: $token, refreshToken: $refreshToken, userId: $userId, roles: $roles, error: $error)';
+  return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, token: $token, refreshToken: $refreshToken, userId: $userId, email: $email, roles: $roles, expiresAt: $expiresAt, error: $error)';
 }
 
 
@@ -138,7 +142,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isAuthenticated, bool isLoading, String? token, String? refreshToken, String? userId, List<String>? roles, String? error
+ bool isAuthenticated, bool isLoading, String? token, String? refreshToken, String? userId, String? email, List<String>? roles, DateTime? expiresAt, String? error
 });
 
 
@@ -155,15 +159,17 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isAuthenticated = null,Object? isLoading = null,Object? token = freezed,Object? refreshToken = freezed,Object? userId = freezed,Object? roles = freezed,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isAuthenticated = null,Object? isLoading = null,Object? token = freezed,Object? refreshToken = freezed,Object? userId = freezed,Object? email = freezed,Object? roles = freezed,Object? expiresAt = freezed,Object? error = freezed,}) {
   return _then(_AuthState(
 isAuthenticated: null == isAuthenticated ? _self.isAuthenticated : isAuthenticated // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,refreshToken: freezed == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,roles: freezed == roles ? _self._roles : roles // ignore: cast_nullable_to_non_nullable
-as List<String>?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -311,7 +317,7 @@ as String,
 /// @nodoc
 mixin _$LoginResponse {
 
- String get token; String get refreshToken; String get userId; List<String> get roles; String get fullName; String? get photoUrl;
+ String get token; String get refreshToken; String get userId; String get email; List<String> get roles; String get expiresAt;
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -324,16 +330,16 @@ $LoginResponseCopyWith<LoginResponse> get copyWith => _$LoginResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other.roles, roles)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.roles, roles)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,refreshToken,userId,const DeepCollectionEquality().hash(roles),fullName,photoUrl);
+int get hashCode => Object.hash(runtimeType,token,refreshToken,userId,email,const DeepCollectionEquality().hash(roles),expiresAt);
 
 @override
 String toString() {
-  return 'LoginResponse(token: $token, refreshToken: $refreshToken, userId: $userId, roles: $roles, fullName: $fullName, photoUrl: $photoUrl)';
+  return 'LoginResponse(token: $token, refreshToken: $refreshToken, userId: $userId, email: $email, roles: $roles, expiresAt: $expiresAt)';
 }
 
 
@@ -344,7 +350,7 @@ abstract mixin class $LoginResponseCopyWith<$Res>  {
   factory $LoginResponseCopyWith(LoginResponse value, $Res Function(LoginResponse) _then) = _$LoginResponseCopyWithImpl;
 @useResult
 $Res call({
- String token, String refreshToken, String userId, List<String> roles, String fullName, String? photoUrl
+ String token, String refreshToken, String userId, String email, List<String> roles, String expiresAt
 });
 
 
@@ -361,15 +367,15 @@ class _$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? refreshToken = null,Object? userId = null,Object? roles = null,Object? fullName = null,Object? photoUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? refreshToken = null,Object? userId = null,Object? email = null,Object? roles = null,Object? expiresAt = null,}) {
   return _then(_self.copyWith(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,roles: null == roles ? _self.roles : roles // ignore: cast_nullable_to_non_nullable
-as List<String>,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
-as String,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as List<String>,expiresAt: null == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -380,12 +386,13 @@ as String?,
 @JsonSerializable()
 
 class _LoginResponse implements LoginResponse {
-  const _LoginResponse({required this.token, required this.refreshToken, required this.userId, required final  List<String> roles, required this.fullName, this.photoUrl}): _roles = roles;
+  const _LoginResponse({required this.token, required this.refreshToken, required this.userId, required this.email, required final  List<String> roles, required this.expiresAt}): _roles = roles;
   factory _LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 
 @override final  String token;
 @override final  String refreshToken;
 @override final  String userId;
+@override final  String email;
  final  List<String> _roles;
 @override List<String> get roles {
   if (_roles is EqualUnmodifiableListView) return _roles;
@@ -393,8 +400,7 @@ class _LoginResponse implements LoginResponse {
   return EqualUnmodifiableListView(_roles);
 }
 
-@override final  String fullName;
-@override final  String? photoUrl;
+@override final  String expiresAt;
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -409,16 +415,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other._roles, _roles)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.token, token) || other.token == token)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._roles, _roles)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,refreshToken,userId,const DeepCollectionEquality().hash(_roles),fullName,photoUrl);
+int get hashCode => Object.hash(runtimeType,token,refreshToken,userId,email,const DeepCollectionEquality().hash(_roles),expiresAt);
 
 @override
 String toString() {
-  return 'LoginResponse(token: $token, refreshToken: $refreshToken, userId: $userId, roles: $roles, fullName: $fullName, photoUrl: $photoUrl)';
+  return 'LoginResponse(token: $token, refreshToken: $refreshToken, userId: $userId, email: $email, roles: $roles, expiresAt: $expiresAt)';
 }
 
 
@@ -429,7 +435,7 @@ abstract mixin class _$LoginResponseCopyWith<$Res> implements $LoginResponseCopy
   factory _$LoginResponseCopyWith(_LoginResponse value, $Res Function(_LoginResponse) _then) = __$LoginResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String token, String refreshToken, String userId, List<String> roles, String fullName, String? photoUrl
+ String token, String refreshToken, String userId, String email, List<String> roles, String expiresAt
 });
 
 
@@ -446,15 +452,15 @@ class __$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? refreshToken = null,Object? userId = null,Object? roles = null,Object? fullName = null,Object? photoUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? refreshToken = null,Object? userId = null,Object? email = null,Object? roles = null,Object? expiresAt = null,}) {
   return _then(_LoginResponse(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,roles: null == roles ? _self._roles : roles // ignore: cast_nullable_to_non_nullable
-as List<String>,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
-as String,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as List<String>,expiresAt: null == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -12,16 +12,14 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   fullName: json['fullName'] as String,
   photoUrl: json['photoUrl'] as String?,
   roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
-  lastLogin:
-      json['lastLogin'] == null
-          ? null
-          : DateTime.parse(json['lastLogin'] as String),
+  lastLogin: json['lastLogin'] == null
+      ? null
+      : DateTime.parse(json['lastLogin'] as String),
   isActive: json['isActive'] as bool,
   createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt:
-      json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+  updatedAt: json['updatedAt'] == null
+      ? null
+      : DateTime.parse(json['updatedAt'] as String),
 );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{

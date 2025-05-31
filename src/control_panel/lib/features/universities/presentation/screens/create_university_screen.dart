@@ -8,7 +8,7 @@ import '../controllers/universities_controller.dart';
 import '../widgets/university_form.dart';
 
 class CreateUniversityScreen extends ConsumerStatefulWidget {
-  const CreateUniversityScreen({Key? key}) : super(key: key);
+  const CreateUniversityScreen({super.key});
 
   @override
   ConsumerState<CreateUniversityScreen> createState() =>

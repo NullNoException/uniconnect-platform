@@ -12,7 +12,11 @@ _AuthState _$AuthStateFromJson(Map<String, dynamic> json) => _AuthState(
   token: json['token'] as String?,
   refreshToken: json['refreshToken'] as String?,
   userId: json['userId'] as String?,
+  email: json['email'] as String?,
   roles: (json['roles'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  expiresAt: json['expiresAt'] == null
+      ? null
+      : DateTime.parse(json['expiresAt'] as String),
   error: json['error'] as String?,
 );
 
@@ -23,7 +27,9 @@ Map<String, dynamic> _$AuthStateToJson(_AuthState instance) =>
       'token': instance.token,
       'refreshToken': instance.refreshToken,
       'userId': instance.userId,
+      'email': instance.email,
       'roles': instance.roles,
+      'expiresAt': instance.expiresAt?.toIso8601String(),
       'error': instance.error,
     };
 
@@ -41,9 +47,9 @@ _LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
       token: json['token'] as String,
       refreshToken: json['refreshToken'] as String,
       userId: json['userId'] as String,
+      email: json['email'] as String,
       roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
-      fullName: json['fullName'] as String,
-      photoUrl: json['photoUrl'] as String?,
+      expiresAt: json['expiresAt'] as String,
     );
 
 Map<String, dynamic> _$LoginResponseToJson(_LoginResponse instance) =>
@@ -51,9 +57,9 @@ Map<String, dynamic> _$LoginResponseToJson(_LoginResponse instance) =>
       'token': instance.token,
       'refreshToken': instance.refreshToken,
       'userId': instance.userId,
+      'email': instance.email,
       'roles': instance.roles,
-      'fullName': instance.fullName,
-      'photoUrl': instance.photoUrl,
+      'expiresAt': instance.expiresAt,
     };
 
 _ForgotPasswordRequest _$ForgotPasswordRequestFromJson(

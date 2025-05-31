@@ -11,7 +11,9 @@ abstract class AuthState with _$AuthState {
     String? token,
     String? refreshToken,
     String? userId,
+    String? email,
     List<String>? roles,
+    DateTime? expiresAt,
     String? error,
   }) = _AuthState;
 
@@ -39,9 +41,9 @@ abstract class LoginResponse with _$LoginResponse {
     required String token,
     required String refreshToken,
     required String userId,
+    required String email,
     required List<String> roles,
-    required String fullName,
-    String? photoUrl,
+    required String expiresAt, // ISO string format from API
   }) = _LoginResponse;
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>

@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../dashboard/presentation/widgets/dashboard_layout.dart';
 import '../../domain/models/user_list_item.dart';
-import '../../domain/repositories/user_repository.dart';
 
 class EditUserScreen extends ConsumerStatefulWidget {
   final String userId;

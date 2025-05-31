@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/dependency_injection.dart';
 
@@ -34,7 +33,7 @@ class MyApp extends ConsumerWidget {
       builder: (context, child) {
         return MediaQuery(
           // Set text scaling to prevent text overflow issues
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
           child: child!,
         );
       },
