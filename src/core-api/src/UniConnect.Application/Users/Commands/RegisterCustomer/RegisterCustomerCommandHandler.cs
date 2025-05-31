@@ -25,16 +25,24 @@ public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCo
         var user = new User
         {
             Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            PhoneNumber = request.PhoneNumber,
-            PreferredLanguage = request.PreferredLanguage,
-            UserType = UserType.Customer,
-            Status = UserStatus.Pending,
+            UserType = UniConnect.Domain.Enums.UserType.Student, // or Customer if defined
+            Status = UniConnect.Domain.Enums.UserStatus.Pending,
             // PasswordHash = ... (hash password)
         };
 
         _db.Users.Add(user);
+        await _db.SaveChangesAsync(cancellationToken);
+
+        // Create user profile
+        var profile = new UserProfile
+        {
+            UserId = user.Id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            PhoneNumber = request.PhoneNumber,
+            PreferredLanguage = request.PreferredLanguage
+        };
+        _db.UserProfiles.Add(profile);
         await _db.SaveChangesAsync(cancellationToken);
 
         // Send verification email

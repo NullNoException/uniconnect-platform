@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,32 +9,32 @@ using UniConnect.Application.AcademicCalendars.Services;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Entities;
 using UniConnect.Domain.Enums;
+using UniConnect.Infrastructure.Persistence;
+using UniConnect.Infrastructure.Persistence.Interceptors;
 using Xunit;
 
 namespace UniConnect.UnitTests.Application.AcademicCalendars.Services;
 
 public class SemesterStatusServiceTests
 {
-    private readonly Mock<IApplicationDbContext> _mockContext;
-    private readonly Mock<ILogger<SemesterStatusService>> _mockLogger;
-    private readonly Mock<IDateTime> _mockDateTime;
-    private readonly SemesterStatusService _service;
+    private static readonly DateTime _fixedDate = new DateTime(2025, 5, 30, 0, 0, 0, DateTimeKind.Utc);
 
-    // Mock DbSet data
-    private readonly List<Semester> _semesters;
-    private readonly DateTime _fixedDate = new DateTime(2025, 5, 30);
-
-    public SemesterStatusServiceTests()
+    private static ApplicationDbContext GetDbContext(string dbName)
     {
-        _mockContext = new Mock<IApplicationDbContext>();
-        _mockLogger = new Mock<ILogger<SemesterStatusService>>();
-        _mockDateTime = new Mock<IDateTime>();
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: dbName)
+            .Options;
+        var interceptor = new AuditableEntitySaveChangesInterceptor(
+            new TestCurrentUserService(), new TestDateTime());
+        return new ApplicationDbContext(options, interceptor);
+    }
 
-        // Setup fixed date for testing
-        _mockDateTime.Setup(d => d.Now).Returns(_fixedDate);
-
-        // Create sample data
-        _semesters = new List<Semester>
+    [Fact]
+    public async Task UpdateSemesterStatusesAsync_ShouldUpdateStatuses_BasedOnCurrentDate()
+    {
+        // Arrange
+        var dbContext = GetDbContext("SemesterStatusServiceTestDb");
+        dbContext.Semesters.AddRange(new[]
         {
             // Past semester that should be Inactive
             new Semester
@@ -44,9 +43,8 @@ public class SemesterStatusServiceTests
                 Name = "Past Semester",
                 StartDate = _fixedDate.AddMonths(-6),
                 EndDate = _fixedDate.AddMonths(-1),
-                Status = SemesterStatus.Active // Should change to Inactive
+                Status = SemesterStatus.Active
             },
-            
             // Current semester that should be Active
             new Semester
             {
@@ -54,9 +52,8 @@ public class SemesterStatusServiceTests
                 Name = "Current Semester",
                 StartDate = _fixedDate.AddMonths(-1),
                 EndDate = _fixedDate.AddMonths(2),
-                Status = SemesterStatus.Upcoming // Should change to Active
+                Status = SemesterStatus.Upcoming
             },
-            
             // Future semester that should remain Upcoming
             new Semester
             {
@@ -64,9 +61,8 @@ public class SemesterStatusServiceTests
                 Name = "Future Semester",
                 StartDate = _fixedDate.AddMonths(3),
                 EndDate = _fixedDate.AddMonths(6),
-                Status = SemesterStatus.Upcoming // Should stay Upcoming
+                Status = SemesterStatus.Upcoming
             },
-            
             // Edge case: Upcoming semester with past end date
             new Semester
             {
@@ -74,54 +70,39 @@ public class SemesterStatusServiceTests
                 Name = "Edge Case",
                 StartDate = _fixedDate.AddMonths(-3),
                 EndDate = _fixedDate.AddDays(-1),
-                Status = SemesterStatus.Upcoming // Should change to Inactive
+                Status = SemesterStatus.Upcoming
             }
-        };
+        });
+        await dbContext.SaveChangesAsync();
 
-        // Setup mock DbSet
-        var mockSemestersDbSet = CreateMockDbSet(_semesters);
-        _mockContext.Setup(c => c.Semesters).Returns(mockSemestersDbSet.Object);
+        var logger = new Mock<ILogger<SemesterStatusService>>();
+        var dateTime = new Mock<IDateTime>();
+        dateTime.Setup(d => d.UtcNow).Returns(_fixedDate);
 
-        // Create service
-        _service = new SemesterStatusService(_mockContext.Object, _mockLogger.Object, _mockDateTime.Object);
-    }
+        var service = new SemesterStatusService(dbContext, logger.Object, dateTime.Object);
 
-    [Fact]
-    public async Task UpdateSemesterStatusesAsync_ShouldUpdateStatuses_BasedOnCurrentDate()
-    {
         // Act
-        await _service.UpdateSemesterStatusesAsync(CancellationToken.None);
+        await service.UpdateSemesterStatusesAsync(CancellationToken.None);
 
         // Assert
-        _mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        // Verify past semester is now inactive
-        var pastSemester = _semesters[0];
-        Assert.Equal(SemesterStatus.Inactive, pastSemester.Status);
-
-        // Verify current semester is now active
-        var currentSemester = _semesters[1];
-        Assert.Equal(SemesterStatus.Active, currentSemester.Status);
-
-        // Verify future semester stays upcoming
-        var futureSemester = _semesters[2];
-        Assert.Equal(SemesterStatus.Upcoming, futureSemester.Status);
-
-        // Verify edge case is now inactive
-        var edgeCaseSemester = _semesters[3];
-        Assert.Equal(SemesterStatus.Inactive, edgeCaseSemester.Status);
+        var semesters = await dbContext.Semesters.ToListAsync();
+        Assert.Equal(SemesterStatus.Inactive, semesters[0].Status); // Past
+        Assert.Equal(SemesterStatus.Active, semesters[1].Status);   // Current
+        Assert.Equal(SemesterStatus.Upcoming, semesters[2].Status); // Future
+        Assert.Equal(SemesterStatus.Inactive, semesters[3].Status); // Edge
     }
 
-    private Mock<DbSet<T>> CreateMockDbSet<T>(List<T> data) where T : class
+    // TestCurrentUserService and TestDateTime for the interceptor
+    private class TestCurrentUserService : ICurrentUserService
     {
-        var queryable = data.AsQueryable();
-        var mockSet = new Mock<DbSet<T>>();
-
-        mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-        mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-        mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-        mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-
-        return mockSet;
+        public string? UserId => "test-user";
+        public string? UserEmail => "test@example.com";
+        public bool IsAuthenticated => true;
+        public bool IsInRole(string role) => false;
+    }
+    private class TestDateTime : IDateTime
+    {
+        public DateTime Now => _fixedDate;
+        public DateTime UtcNow => _fixedDate;
     }
 }

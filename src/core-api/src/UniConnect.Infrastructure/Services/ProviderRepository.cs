@@ -15,7 +15,9 @@ public class ProviderRepository : IProviderRepository
 
     public async Task<bool> ExistsByEmailAsync(string email)
     {
-        return await _dbContext.ServiceProviders.AnyAsync(p => p.Id == email);
+        return await _dbContext.ServiceProviders
+            .Include(p => p.User)
+            .AnyAsync(p => p.User.Email == email);
     }
 
     public async Task AddAsync(ServiceProvider provider)

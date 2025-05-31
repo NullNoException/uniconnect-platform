@@ -1,14 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
+using UniConnect.IntegrationTests.Services;
+using Xunit;
+
 
 namespace UniConnect.IntegrationTests;
 
-public abstract class IntegrationTestBase
+public abstract class IntegrationTestBase : IAsyncLifetime
 {
     protected CustomWebApplicationFactory<Program> Factory = null!;
 
-    [OneTimeSetUp]
-    public async Task BaseOneTimeSetUp()
+    public async Task InitializeAsync()
     {
         Factory = new CustomWebApplicationFactory<Program>();
         await using var scope = Factory.Services.CreateAsyncScope();
@@ -16,9 +17,9 @@ public abstract class IntegrationTestBase
         await databaseInitializer.InitializeAsync();
     }
 
-    [OneTimeTearDown]
-    public void BaseOneTimeTearDown()
+    public Task DisposeAsync()
     {
         Factory?.Dispose();
+        return Task.CompletedTask;
     }
 }

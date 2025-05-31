@@ -44,7 +44,7 @@ public class CreateProviderStaffCommandHandler : IRequestHandler<CreateProviderS
         {
             ProviderId = request.ProviderId,
             UserId = user.Id,
-            Position = request.Position,
+            Position = request.Position ?? string.Empty,
             SupervisorId = request.SupervisorId
         };
         await _providerStaffRepository.AddAsync(staff, cancellationToken);
@@ -59,7 +59,7 @@ public class CreateProviderStaffCommandHandler : IRequestHandler<CreateProviderS
             FirstName = request.FirstName,
             LastName = request.LastName,
             PhoneNumber = request.PhoneNumber,
-            Position = staff.Position,
+            Position = staff.Position ?? string.Empty,
             SupervisorId = staff.SupervisorId
         };
     }

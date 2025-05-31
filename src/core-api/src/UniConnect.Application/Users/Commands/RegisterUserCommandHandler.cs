@@ -20,7 +20,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     private readonly IMapper _mapper;
     private readonly IDateTime _dateTime;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IEmailService _emailService;
+    private readonly Domain.Services.IEmailService _emailService;
 
     public RegisterUserCommandHandler(
         IRepository<User> userRepository,
@@ -32,7 +32,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         IMapper mapper,
         IDateTime dateTime,
         ICurrentUserService currentUserService,
-        IEmailService emailService)
+        UniConnect.Domain.Services.IEmailService emailService)
     {
         _userRepository = userRepository;
         _profileRepository = profileRepository;
