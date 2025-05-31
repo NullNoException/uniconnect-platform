@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Repositories;
 
 namespace UniConnect.Application.Providers.Queries.FinancialManagement;
 
@@ -34,19 +35,12 @@ public class GetProviderEarningsQueryHandler : IRequestHandler<GetProviderEarnin
             throw new InvalidOperationException($"Provider with ID {request.ProviderId} not found");
         }
 
-        // Get all transactions for the provider's services
-        var transactions = await _transactionRepository.GetAllAsync(
-            filter: t => t.Request.Service.ProviderId == request.ProviderId &&
-                        (!request.DateFrom.HasValue || t.CreatedAt >= request.DateFrom.Value) &&
-                        (!request.DateTo.HasValue || t.CreatedAt <= request.DateTo.Value),
-            include: q => q.Include(t => t.Request)
-                          .ThenInclude(r => r.Service)
-                          .Include(t => t.Request)
-                          .ThenInclude(r => r.Student)
-                          .ThenInclude(s => s.User)
-                          .ThenInclude(u => u.Profile)
-                          .Include(t => t.Currency),
-            cancellationToken: cancellationToken);
+        // Get all transactions for the provider - basic filtering without includes
+        var allTransactions = await _transactionRepository.GetAllAsync(cancellationToken);
+        var transactions = allTransactions.Where(t =>
+            (!request.DateFrom.HasValue || t.CreatedAt >= request.DateFrom.Value) &&
+            (!request.DateTo.HasValue || t.CreatedAt <= request.DateTo.Value))
+            .ToList();
 
         var now = DateTime.UtcNow;
         var thisMonthStart = new DateTime(now.Year, now.Month, 1);

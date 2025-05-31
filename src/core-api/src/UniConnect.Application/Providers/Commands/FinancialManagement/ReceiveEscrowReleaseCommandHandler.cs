@@ -1,9 +1,9 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Enums;
+using UniConnect.Domain.Repositories;
 using UniConnect.Domain.Services;
 
 namespace UniConnect.Application.Providers.Commands.FinancialManagement;
@@ -39,16 +39,8 @@ public class ReceiveEscrowReleaseCommandHandler : IRequestHandler<ReceiveEscrowR
             throw new InvalidOperationException($"Provider with ID {request.ProviderId} not found");
         }
 
-        // Get transaction with related data
-        var transaction = await _transactionRepository.GetByIdAsync(request.TransactionId,
-            include: q => q.Include(t => t.Request)
-                          .ThenInclude(r => r.Service)
-                          .Include(t => t.Request)
-                          .ThenInclude(r => r.Student)
-                          .ThenInclude(s => s.User)
-                          .ThenInclude(u => u.Profile)
-                          .Include(t => t.Currency),
-            cancellationToken: cancellationToken);
+        // Get transaction
+        var transaction = await _transactionRepository.GetByIdAsync(request.TransactionId, cancellationToken);
 
         if (transaction == null)
         {
@@ -68,7 +60,7 @@ public class ReceiveEscrowReleaseCommandHandler : IRequestHandler<ReceiveEscrowR
         }
 
         // Validate the service request is completed
-        if (transaction.Request.RequestStatus != Domain.Enums.RequestStatus.Completed)
+        if (transaction.Request.RequestStatus != ServiceRequestStatus.Completed)
         {
             throw new InvalidOperationException("Cannot release escrow for incomplete service request");
         }

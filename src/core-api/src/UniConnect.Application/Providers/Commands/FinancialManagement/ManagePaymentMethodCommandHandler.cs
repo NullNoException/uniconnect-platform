@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Repositories;
 
 namespace UniConnect.Application.Providers.Commands.FinancialManagement;
 
@@ -11,15 +12,18 @@ public class ManagePaymentMethodCommandHandler : IRequestHandler<ManagePaymentMe
 {
     private readonly IRepository<PaymentMethod> _paymentMethodRepository;
     private readonly IRepository<ServiceProvider> _providerRepository;
+    private readonly IRepository<Transaction> _transactionRepository;
     private readonly ILogger<ManagePaymentMethodCommandHandler> _logger;
 
     public ManagePaymentMethodCommandHandler(
         IRepository<PaymentMethod> paymentMethodRepository,
         IRepository<ServiceProvider> providerRepository,
+        IRepository<Transaction> transactionRepository,
         ILogger<ManagePaymentMethodCommandHandler> logger)
     {
         _paymentMethodRepository = paymentMethodRepository;
         _providerRepository = providerRepository;
+        _transactionRepository = transactionRepository;
         _logger = logger;
     }
 
@@ -29,9 +33,7 @@ public class ManagePaymentMethodCommandHandler : IRequestHandler<ManagePaymentMe
             request.ProviderId, request.Operation);
 
         // Verify provider exists and get user ID
-        var provider = await _providerRepository.GetByIdAsync(request.ProviderId,
-            include: q => q.Include(p => p.User),
-            cancellationToken: cancellationToken);
+        var provider = await _providerRepository.GetByIdAsync(request.ProviderId, cancellationToken);
 
         if (provider == null)
         {
@@ -133,9 +135,9 @@ public class ManagePaymentMethodCommandHandler : IRequestHandler<ManagePaymentMe
         }
 
         // Check if there are any pending transactions using this payment method
-        var hasActiveTransactions = await _paymentMethodRepository.AnyAsync(
-            pm => pm.Id == paymentMethod.Id && pm.Transactions.Any(t => t.Status == "Pending" || t.Status == "Escrowed"),
-            cancellationToken: cancellationToken);
+        var allTransactions = await _transactionRepository.GetAllAsync(cancellationToken);
+        var hasActiveTransactions = allTransactions.Any(t => t.PaymentMethodId == paymentMethod.Id &&
+                                                            (t.Status == "Pending" || t.Status == "Escrowed"));
 
         if (hasActiveTransactions)
         {
@@ -176,9 +178,8 @@ public class ManagePaymentMethodCommandHandler : IRequestHandler<ManagePaymentMe
 
     private async Task UnsetDefaultPaymentMethodsAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var defaultMethods = await _paymentMethodRepository.GetAllAsync(
-            filter: pm => pm.UserId == userId && pm.IsDefault,
-            cancellationToken: cancellationToken);
+        var allMethods = await _paymentMethodRepository.GetAllAsync(cancellationToken);
+        var defaultMethods = allMethods.Where(pm => pm.UserId == userId && pm.IsDefault).ToList();
 
         foreach (var method in defaultMethods)
         {

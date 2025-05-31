@@ -24,11 +24,11 @@ public class GetProviderServicesQueryHandler : IRequestHandler<GetProviderServic
     {
         _logger.LogInformation("Getting services for provider {ProviderId}", request.ProviderId);
 
-        var services = await _serviceRepository.GetAllAsync(
-            filter: s => s.ProviderId == request.ProviderId &&
-                        (!request.IsActive.HasValue || s.IsActive == request.IsActive.Value) &&
-                        (!request.CategoryId.HasValue || s.CategoryId == request.CategoryId.Value),
-            cancellationToken: cancellationToken);
+        var allServices = await _serviceRepository.GetAllAsync(cancellationToken);
+        var services = allServices.Where(s => s.ProviderId == request.ProviderId &&
+                                             (!request.IsActive.HasValue || s.IsActive == request.IsActive.Value) &&
+                                             (!request.CategoryId.HasValue || s.CategoryId == request.CategoryId.Value))
+                                 .ToList();
 
         return services.Select(s => new ServiceDto
         {
