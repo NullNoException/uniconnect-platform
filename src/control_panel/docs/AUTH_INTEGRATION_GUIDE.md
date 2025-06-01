@@ -78,6 +78,7 @@ The system supports these roles:
 Ensure your API returns responses in this format:
 
 ### Login Response
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -90,12 +91,13 @@ Ensure your API returns responses in this format:
 ```
 
 ### Refresh Token Response
+
 ```json
 {
   "token": "new-jwt-token",
   "refreshToken": "new-refresh-token",
   "userId": "user-uuid-here",
-  "email": "user@example.com", 
+  "email": "user@example.com",
   "roles": ["Admin", "Moderator"],
   "expiresAt": "2024-01-15T11:30:00.000Z"
 }
@@ -104,12 +106,14 @@ Ensure your API returns responses in this format:
 ## Testing Scenarios
 
 ### Scenario 1: Successful Login
+
 1. Use valid credentials
 2. Verify token storage
 3. Check automatic header injection
 4. Confirm role-based UI updates
 
 ### Scenario 2: Token Expiration
+
 1. Login successfully
 2. Wait for token to expire (or modify expiry for testing)
 3. Make an API request
@@ -117,12 +121,14 @@ Ensure your API returns responses in this format:
 5. Confirm request retry with new token
 
 ### Scenario 3: Invalid Refresh Token
+
 1. Login successfully
 2. Manually corrupt refresh token in SharedPreferences
 3. Make an API request after token expiry
 4. Verify automatic logout and redirect to login
 
 ### Scenario 4: Network Errors
+
 1. Disconnect network
 2. Attempt login
 3. Verify proper error handling
@@ -153,12 +159,15 @@ Check these keys for stored auth data:
 ### Common Issues
 
 **Issue**: 401 errors not triggering refresh
+
 - **Solution**: Ensure API returns proper 401 status code
 
 **Issue**: Refresh loop
+
 - **Solution**: Check that refresh endpoint returns new tokens
 
 **Issue**: Navigation issues after logout
+
 - **Solution**: Verify router redirect logic
 
 ## Production Checklist

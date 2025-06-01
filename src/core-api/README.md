@@ -1,12 +1,8 @@
-# UniConnect Core API: Technical Specification Document
+# UniConnect Core API: Sprint-Based Breakdown
 
-## 1. Executive Summary
+## Sprint 1: Clean Architecture & Microservices Setup
 
-The UniConnect Core API serves as the central nervous system of the platform, providing a comprehensive set of services for connecting university students with educational support providers. This document outlines the technical architecture, design principles, and implementation strategy for the .NET 9-based API that powers the UniConnect ecosystem.
-
-## 2. Architectural Overview
-
-### 2.1 Clean Architecture Implementation
+### Clean Architecture Implementation
 
 The Core API follows a strict clean architecture pattern with four distinct layers:
 
@@ -20,7 +16,7 @@ The Core API follows a strict clean architecture pattern with four distinct laye
 
 This layered approach ensures separation of concerns, testability, and maintainability of the system.
 
-### 2.2 Microservices Structure
+### Microservices Structure
 
 The system is designed as a modular microservices architecture with the following core services:
 
@@ -39,7 +35,7 @@ Each service has:
 - Well-defined API boundaries
 - Internal encapsulation of business logic
 
-### 2.3 Cloud-Native Design
+### Cloud-Native Design
 
 The architecture leverages .NET Aspire for cloud-native capabilities:
 
@@ -57,9 +53,11 @@ The system is designed to run on Kubernetes (EKS/AKS/GKE) with:
 - Resource optimization
 - Service mesh integration
 
-## 3. API Design & Standards
+## Sprint 2: API Design & Data Architecture
 
-### 3.1 RESTful API Principles
+### API Design & Standards
+
+#### RESTful API Principles
 
 The API follows RESTful design principles:
 
@@ -69,7 +67,7 @@ The API follows RESTful design principles:
 - Hypermedia links (HATEOAS) for discoverability
 - Consistent URL patterns
 
-### 3.2 API Documentation
+#### API Documentation
 
 All APIs are documented using OpenAPI (Swagger):
 
@@ -79,7 +77,7 @@ All APIs are documented using OpenAPI (Swagger):
 - Rate limiting information
 - Error response formats
 
-### 3.3 Versioning Strategy
+#### Versioning Strategy
 
 API versioning is implemented through:
 
@@ -88,7 +86,7 @@ API versioning is implemented through:
 - Backward compatibility requirements
 - Version lifecycle documentation
 
-### 3.4 API Gateway Pattern
+#### API Gateway Pattern
 
 The system implements an API Gateway that provides:
 
@@ -100,9 +98,9 @@ The system implements an API Gateway that provides:
 - Caching strategies
 - Analytics and monitoring
 
-## 4. Data Architecture
+### Data Architecture
 
-### 4.1 Database Strategy
+#### Database Strategy
 
 The system uses PostgreSQL as the primary relational database:
 
@@ -113,7 +111,7 @@ The system uses PostgreSQL as the primary relational database:
 - Complex query optimization
 - Partitioning support for high-volume tables
 
-### 4.2 Data Access Patterns
+#### Data Access Patterns
 
 Data access is implemented through:
 
@@ -123,7 +121,7 @@ Data access is implemented through:
 - CQRS (Command Query Responsibility Segregation) for complex operations
 - Dapper for performance-critical database operations
 
-### 4.3 Database Migration Strategy
+#### Database Migration Strategy
 
 Database changes are managed through:
 
@@ -133,7 +131,7 @@ Database changes are managed through:
 - Rollback capabilities
 - Data integrity validation
 
-### 4.4 Caching Architecture
+#### Caching Architecture
 
 Multi-level caching strategy:
 
@@ -143,9 +141,11 @@ Multi-level caching strategy:
 - Cache-aside pattern implementation
 - Time-based and event-based expiration policies
 
-## 5. Security Framework
+## Sprint 3: Security & Document Management
 
-### 5.1 Authentication Implementation
+### Security Framework
+
+#### Authentication Implementation
 
 Integration with Keycloak for identity management:
 
@@ -157,7 +157,7 @@ Integration with Keycloak for identity management:
 - Social login integration
 - Multi-factor authentication support
 
-### 5.2 Authorization Model
+#### Authorization Model
 
 Comprehensive authorization strategy:
 
@@ -167,7 +167,7 @@ Comprehensive authorization strategy:
 - Permission aggregation and inheritance
 - Tenant isolation for multi-tenant data
 
-### 5.3 Security Practices
+#### Security Practices
 
 Security is implemented at multiple layers:
 
@@ -180,7 +180,7 @@ Security is implemented at multiple layers:
 - Brute force protection
 - Audit logging of security events
 
-### 5.4 Data Protection
+#### Data Protection
 
 Sensitive data protection measures:
 
@@ -191,9 +191,9 @@ Sensitive data protection measures:
 - Data retention and purging policies
 - Right to be forgotten implementation
 
-## 6. Document Management System
+### Document Management System
 
-### 6.1 Storage Architecture
+#### Storage Architecture
 
 Integration with MinIO for object storage:
 
@@ -204,7 +204,7 @@ Integration with MinIO for object storage:
 - Access control mechanisms
 - Encryption of stored objects
 
-### 6.2 Document Processing Pipeline
+#### Document Processing Pipeline
 
 Document handling workflow:
 
@@ -216,7 +216,7 @@ Document handling workflow:
 - Full-text indexing
 - Version tracking
 
-### 6.3 Content Delivery
+#### Content Delivery
 
 Efficient content delivery approach:
 
@@ -226,9 +226,11 @@ Efficient content delivery approach:
 - Streaming capabilities for large files
 - Bandwidth optimization strategies
 
-## 7. Workflow Engine
+## Sprint 4: Workflow Engine & Messaging
 
-### 7.1 Business Process Management
+### Workflow Engine
+
+#### Business Process Management
 
 Service request workflows are managed through:
 
@@ -240,7 +242,7 @@ Service request workflows are managed through:
 - SLA monitoring and escalation paths
 - Integration with external systems
 
-### 7.2 Workflow Storage and Execution
+#### Workflow Storage and Execution
 
 The workflow engine utilizes:
 
@@ -251,9 +253,9 @@ The workflow engine utilizes:
 - Audit trail of all state changes
 - Visualization of workflow status
 
-## 8. Messaging & Communication
+### Messaging & Communication
 
-### 8.1 Message Broker Integration
+#### Message Broker Integration
 
 Event-based communication using:
 
@@ -264,7 +266,7 @@ Event-based communication using:
 - Message durability and persistence
 - Message tracing and monitoring
 
-### 8.2 Communication Patterns
+#### Communication Patterns
 
 Implementation of various messaging patterns:
 
@@ -275,7 +277,7 @@ Implementation of various messaging patterns:
 - Outbox pattern for guaranteed message delivery
 - Circuit breaker for external service resilience
 
-### 8.3 Real-time Communications
+#### Real-time Communications
 
 Support for real-time updates through:
 
@@ -285,9 +287,11 @@ Support for real-time updates through:
 - Connection resilience and reconnection strategies
 - Scalable hub implementation
 
-## 9. Search Capabilities
+## Sprint 5: Search, Localization & Performance
 
-### 9.1 Search Engine Integration
+### Search Capabilities
+
+#### Search Engine Integration
 
 Elasticsearch integration providing:
 
@@ -299,7 +303,7 @@ Elasticsearch integration providing:
 - Searchable document content
 - Geospatial search capabilities
 
-### 9.2 Indexing Strategy
+#### Indexing Strategy
 
 Content indexing approach:
 
@@ -309,9 +313,9 @@ Content indexing approach:
 - Document classification and tagging
 - Index optimization and performance tuning
 
-## 10. Internationalization & Localization
+### Internationalization & Localization
 
-### 10.1 Multilingual Support
+#### Multilingual Support
 
 The API supports internationalization through:
 
@@ -322,7 +326,7 @@ The API supports internationalization through:
 - Language detection capabilities
 - Fallback language strategies
 
-### 10.2 Localization Infrastructure
+#### Localization Infrastructure
 
 Localization is implemented using:
 
@@ -332,9 +336,9 @@ Localization is implemented using:
 - Culturally appropriate formatting (dates, numbers, currency)
 - Language-specific business rules when applicable
 
-## 11. Performance Optimization
+### Performance Optimization
 
-### 11.1 Optimization Strategies
+#### Optimization Strategies
 
 The system employs multiple performance optimization techniques:
 
@@ -346,7 +350,7 @@ The system employs multiple performance optimization techniques:
 - Parallel processing where appropriate
 - Memory management best practices
 
-### 11.2 Scaling Approach
+#### Scaling Approach
 
 The architecture supports both vertical and horizontal scaling:
 
@@ -357,7 +361,7 @@ The architecture supports both vertical and horizontal scaling:
 - Connection pooling for efficient resource usage
 - Auto-scaling based on load metrics
 
-### 11.3 Response Time Optimization
+#### Response Time Optimization
 
 Strategies to ensure responsive API performance:
 
@@ -368,9 +372,11 @@ Strategies to ensure responsive API performance:
 - Background processing for time-consuming operations
 - Request prioritization mechanisms
 
-## 12. Observability Stack
+## Sprint 6: Observability & Resilience
 
-### 12.1 Logging Framework
+### Observability Stack
+
+#### Logging Framework
 
 Comprehensive logging strategy using Elasticsearch:
 
@@ -381,7 +387,7 @@ Comprehensive logging strategy using Elasticsearch:
 - Log rotation and retention policies
 - PII scrubbing from logs
 
-### 12.2 Monitoring & Alerting
+#### Monitoring & Alerting
 
 Proactive system monitoring with:
 
@@ -392,7 +398,7 @@ Proactive system monitoring with:
 - Trend analysis and anomaly detection
 - Dashboards for operational visibility
 
-### 12.3 Distributed Tracing
+#### Distributed Tracing
 
 End-to-end request visibility through:
 
@@ -403,7 +409,7 @@ End-to-end request visibility through:
 - Tracing context propagation
 - Sampling strategies for high-volume systems
 
-### 12.4 Exception Management
+#### Exception Management
 
 Robust error handling strategy:
 
@@ -414,9 +420,9 @@ Robust error handling strategy:
 - External error reporting integration
 - Error analytics for proactive resolution
 
-## 13. Resilience Patterns
+### Resilience Patterns
 
-### 13.1 Fault Tolerance
+#### Fault Tolerance
 
 Implementation of resilience patterns:
 
@@ -427,7 +433,7 @@ Implementation of resilience patterns:
 - Bulkhead pattern for resource isolation
 - Health monitoring and self-healing
 
-### 13.2 Data Consistency
+#### Data Consistency
 
 Ensuring data consistency across services:
 
@@ -438,9 +444,11 @@ Ensuring data consistency across services:
 - Conflict resolution strategies
 - Data reconciliation mechanisms
 
-## 14. Deployment & Infrastructure
+## Sprint 7: Deployment, Infrastructure & Dev Practices
 
-### 14.1 Container Strategy
+### Deployment & Infrastructure
+
+#### Container Strategy
 
 The application is containerized using:
 
@@ -451,7 +459,7 @@ The application is containerized using:
 - Security scanning in CI/CD pipeline
 - Container registry for image storage
 
-### 14.2 Kubernetes Deployment
+#### Kubernetes Deployment
 
 Deployment to Kubernetes with:
 
@@ -462,7 +470,7 @@ Deployment to Kubernetes with:
 - Liveness and readiness probes
 - ConfigMaps and Secrets for configuration
 
-### 14.3 Infrastructure as Code
+#### Infrastructure as Code
 
 Infrastructure provisioning using:
 
@@ -472,9 +480,9 @@ Infrastructure provisioning using:
 - Infrastructure versioning
 - Automated provisioning in CI/CD pipeline
 
-## 15. Development Practices
+### Development Practices
 
-### 15.1 Coding Standards
+#### Coding Standards
 
 Development follows established standards:
 
@@ -485,7 +493,7 @@ Development follows established standards:
 - Static code analysis integration
 - Automated formatting and style enforcement
 
-### 15.2 Testing Approach
+#### Testing Approach
 
 Comprehensive testing strategy:
 
@@ -496,7 +504,7 @@ Comprehensive testing strategy:
 - Load testing for scalability validation
 - Security testing and vulnerability scanning
 
-### 15.3 CI/CD Pipeline
+#### CI/CD Pipeline
 
 Automated delivery pipeline with:
 
@@ -508,9 +516,11 @@ Automated delivery pipeline with:
 - Deployment approval workflows
 - Rollback capabilities
 
-## 16. API Integration Points
+## Sprint 8: Integration Points & Security Compliance
 
-### 16.1 Mobile Application Integration
+### API Integration Points
+
+#### Mobile Application Integration
 
 Integration with Flutter client through:
 
@@ -521,7 +531,7 @@ Integration with Flutter client through:
 - Push notification integration
 - Bandwidth-efficient operations
 
-### 16.2 Admin Portal Integration
+#### Admin Portal Integration
 
 Integration with flutter admin portal through:
 
@@ -532,7 +542,7 @@ Integration with flutter admin portal through:
 - Report generation endpoints
 - Configuration management APIs
 
-### 16.3 External System Integration
+#### External System Integration
 
 Integration capabilities for third-party systems:
 
@@ -543,9 +553,9 @@ Integration capabilities for third-party systems:
 - Integration adapters for common systems
 - API rate limiting for external consumers
 
-## 17. Security Compliance & Governance
+### Security Compliance & Governance
 
-### 17.1 Compliance Framework
+#### Compliance Framework
 
 Adherence to relevant standards:
 
@@ -556,7 +566,7 @@ Adherence to relevant standards:
 - PCI DSS compliance where applicable
 - Industry-specific compliance measures
 
-### 17.2 Security Testing
+#### Security Testing
 
 Regular security validation through:
 
@@ -567,7 +577,7 @@ Regular security validation through:
 - Threat modeling
 - Security incident response plans
 
-### 17.3 Access Governance
+#### Access Governance
 
 Controls for system access:
 
@@ -578,9 +588,11 @@ Controls for system access:
 - Activity auditing and reporting
 - Segregation of duties
 
-## 18. Risk Management
+## Sprint 9: Risk Management & Future-Proofing
 
-### 18.1 Technical Risks
+### Risk Management
+
+#### Technical Risks
 
 Identification and mitigation of key risks:
 
@@ -591,7 +603,7 @@ Identification and mitigation of key risks:
 - Integration failure risks
 - Technology obsolescence risks
 
-### 18.2 Business Continuity
+#### Business Continuity
 
 Ensuring system resilience through:
 
@@ -602,9 +614,9 @@ Ensuring system resilience through:
 - Recovery time objective (RTO) planning
 - Recovery point objective (RPO) planning
 
-## 19. Future-Proofing Strategies
+### Future-Proofing Strategies
 
-### 19.1 Extensibility
+#### Extensibility
 
 Design for future changes through:
 
@@ -615,7 +627,7 @@ Design for future changes through:
 - API extensibility points
 - Custom field support
 
-### 19.2 Technology Evolution
+#### Technology Evolution
 
 Preparation for technology advancement:
 
@@ -626,9 +638,11 @@ Preparation for technology advancement:
 - Technical debt management processes
 - Innovation adoption framework
 
-## 20. Database Schema (Normalized to 3NF)
+## Sprint 10: Database Schema & Error Handling
 
-### Core Tables
+### Database Schema (Normalized to 3NF)
+
+#### Core Tables
 
 ```
 Users
@@ -779,7 +793,7 @@ FieldsOfStudy
 └── UpdatedBy
 ```
 
-### Service Management Tables
+#### Service Management Tables
 
 ```
 ServiceCategories
@@ -852,7 +866,7 @@ ServicePriceComponents
 └── IsDeleted
 ```
 
-### Order Management Tables
+#### Order Management Tables
 
 ```
 ServiceRequests
@@ -919,7 +933,7 @@ RequestMilestones
 └── IsDeleted
 ```
 
-### Financial Management Tables
+#### Financial Management Tables
 
 ```
 Transactions
@@ -1023,7 +1037,7 @@ InvoiceItems
 └── IsDeleted
 ```
 
-### Communication & Messaging Tables
+#### Communication & Messaging Tables
 
 ```
 Messages
@@ -1099,7 +1113,7 @@ CommunicationChannelPreferences
 └── IsDeleted
 ```
 
-### System Management Tables
+#### System Management Tables
 
 ```
 SystemLogs
@@ -1165,7 +1179,7 @@ FeatureToggles
 └── IsDeleted
 ```
 
-### Reviews & Ratings Tables
+#### Reviews & Ratings Tables
 
 ```
 Reviews
@@ -1204,11 +1218,11 @@ ReviewResponses
 └── IsDeleted
 ```
 
-## 21. Error Handling Framework
+### Error Handling Framework
 
-### System Error Codes
+#### System Error Codes
 
-#### User Management Errors (1000-1999)
+##### User Management Errors (1000-1999)
 
 - 1001: Invalid credentials
 - 1002: Account locked
@@ -1223,7 +1237,7 @@ ReviewResponses
 - 1030: User profile incomplete
 - 1031: Required fields missing
 
-#### Service Management Errors (2000-2999)
+##### Service Management Errors (2000-2999)
 
 - 2001: Service creation failed
 - 2002: Invalid service category
@@ -1236,7 +1250,7 @@ ReviewResponses
 - 2030: Service requirements incomplete
 - 2040: Provider not verified
 
-#### Order Management Errors (3000-3999)
+##### Order Management Errors (3000-3999)
 
 - 3001: Request creation failed
 - 3002: Invalid request status transition
@@ -1251,7 +1265,7 @@ ReviewResponses
 - 3031: Past cancellation window
 - 3040: Service delivery verification failed
 
-#### Payment Errors (4000-4999)
+##### Payment Errors (4000-4999)
 
 - 4001: Payment processing failed
 - 4002: Insufficient funds
@@ -1267,7 +1281,7 @@ ReviewResponses
 - 4051: Subscription renewal failed
 - 4052: Subscription cancellation failed
 
-#### Communication Errors (5000-5999)
+##### Communication Errors (5000-5999)
 
 - 5001: Message delivery failed
 - 5002: Recipient not found
@@ -1280,7 +1294,7 @@ ReviewResponses
 - 5024: Email delivery failed
 - 5030: Message content policy violation
 
-#### System Errors (9000-9999)
+##### System Errors (9000-9999)
 
 - 9001: Database connection error
 - 9002: Authentication service unavailable
@@ -1294,7 +1308,7 @@ ReviewResponses
 - 9040: Feature not enabled
 - 9050: Geographic restriction
 
-### Error Handling Strategy
+#### Error Handling Strategy
 
 - Consistent error response format across all APIs
 - Error logging with context for troubleshooting
@@ -1304,7 +1318,7 @@ ReviewResponses
 - Fallback mechanisms for critical operations
 - Circuit breakers for failing dependencies
 
-## 22. API Infrastructure
+## Sprint 11: API Infrastructure Overview
 
 ### API Gateway Layer
 

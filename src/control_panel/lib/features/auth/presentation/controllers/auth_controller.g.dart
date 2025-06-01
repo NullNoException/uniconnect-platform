@@ -6,7 +6,7 @@ part of 'auth_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentUserHash() => r'd032c6d906038ee2b8f6eda3a933f7c64c6db6a2';
+String _$currentUserHash() => r'0af46ae814df3ad79f6dc4d8a016ea175d54930e';
 
 /// See also [currentUser].
 @ProviderFor(currentUser)
@@ -23,7 +23,7 @@ final currentUserProvider = AutoDisposeFutureProvider<User>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentUserRef = AutoDisposeFutureProviderRef<User>;
-String _$authControllerHash() => r'9299ba1d726b744eafc1c4e2190379cbd61146e1';
+String _$authControllerHash() => r'dbd2f5ad31030c0759655315a3d819ac3c101d35';
 
 /// See also [AuthController].
 @ProviderFor(AuthController)

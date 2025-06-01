@@ -66,6 +66,17 @@ class ApiEndpoints {
       '$baseUrl/providers/'; // Append providerId + /programs/import
   static const String exportPrograms =
       '$baseUrl/providers/'; // Append providerId + /programs/export
+
+  // Dashboard endpoints
+  static const String dashboardData = '$controlPanelBaseUrl/dashboard/data';
+  static const String dashboardStats = '$controlPanelBaseUrl/dashboard/stats';
+  static const String dashboardChartData =
+      '$controlPanelBaseUrl/dashboard/chart-data';
+  static const String dashboardCategoryData =
+      '$controlPanelBaseUrl/dashboard/category-data';
+  static const String dashboardRecentRequests =
+      '$controlPanelBaseUrl/dashboard/recent-requests';
+  static const String dashboardExport = '$controlPanelBaseUrl/dashboard/export';
 }
 
 // Route names

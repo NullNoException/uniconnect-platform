@@ -5,7 +5,11 @@ import 'package:fl_chart/fl_chart.dart';
 
 import '../widgets/dashboard_layout.dart';
 import '../widgets/stat_card.dart';
-import '../widgets/recent_requests_table.dart';
+import '../widgets/enhanced_recent_requests_table.dart';
+import '../controllers/dashboard_controller.dart';
+import '../../domain/models/dashboard_filter.dart';
+import '../../domain/models/dashboard_state.dart';
+import '../../../../core/utils/providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -17,83 +21,241 @@ class DashboardScreen extends ConsumerWidget {
     final isMobile = size.width < 600;
     final isTablet = size.width >= 600 && size.width < 1100;
 
+    final dashboardState = ref.watch(dashboardControllerProvider);
+    final dashboardController = ref.read(dashboardControllerProvider.notifier);
+
+    // Initialize dashboard data on first load
+    ref.listen(dashboardControllerProvider, (previous, next) {
+      if (previous == null && next.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading dashboard: ${next.error}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
+
+    // Load dashboard data if not loaded
+    if (!dashboardState.hasData && !dashboardState.isLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        dashboardController.loadDashboardData();
+      });
+    }
+
     return DashboardLayout(
       title: 'Dashboard',
       selectedIndex: 0,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dashboard Overview',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+      child: RefreshIndicator(
+        onRefresh: () => dashboardController.refreshDashboard(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(theme, dashboardState, dashboardController),
+              const SizedBox(height: 32),
+
+              // Stats cards
+              _buildStatsCards(context, isMobile, isTablet, dashboardState),
+              const SizedBox(height: 32),
+
+              // Charts section
+              _buildChartsSection(
+                context,
+                isMobile,
+                isTablet,
+                dashboardState,
+                dashboardController,
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Welcome to the UniConnect Admin Panel',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.widgetStateProperty(0.6),
-              ),
-            ),
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            // Stats cards
-            _buildStatsCards(context, isMobile, isTablet),
-            const SizedBox(height: 32),
-
-            // Charts section
-            _buildChartsSection(context, isMobile, isTablet),
-            const SizedBox(height: 32),
-
-            // Recent service requests
-            _buildRecentRequests(context),
-          ],
+              // Recent service requests
+              _buildRecentRequests(context, dashboardState),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildStatsCards(BuildContext context, bool isMobile, bool isTablet) {
+  Widget _buildHeader(
+    ThemeData theme,
+    DashboardState state,
+    DashboardController controller,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Dashboard Overview',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Welcome to the UniConnect Admin Panel',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.widgetStateProperty(0.6),
+                ),
+              ),
+              if (state.stats?.lastUpdated != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Last updated: ${_formatLastUpdated(state.stats!.lastUpdated)}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.widgetStateProperty(0.5),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            // Time range filter
+            DropdownButton<DashboardTimeRange>(
+              value: state.filter.timeRange,
+              items: DashboardTimeRange.values.map((range) {
+                return DropdownMenuItem(
+                  value: range,
+                  child: Text(range.displayName),
+                );
+              }).toList(),
+              onChanged: (range) {
+                if (range != null) {
+                  controller.updateTimeRange(range);
+                }
+              },
+            ),
+            const SizedBox(width: 16),
+            // Refresh button
+            IconButton(
+              onPressed: state.isRefreshing
+                  ? null
+                  : () => controller.refreshDashboard(),
+              icon: state.isRefreshing
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.refresh),
+              tooltip: 'Refresh Dashboard',
+            ),
+            // Export button
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.download),
+              tooltip: 'Export Data',
+              onSelected: (format) => controller.exportData(format),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'csv',
+                  child: Row(
+                    children: [
+                      Icon(Icons.table_chart),
+                      SizedBox(width: 8),
+                      Text('Export as CSV'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'excel',
+                  child: Row(
+                    children: [
+                      Icon(Icons.grid_on),
+                      SizedBox(width: 8),
+                      Text('Export as Excel'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _formatLastUpdated(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 1) {
+      return 'Just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} hours ago';
+    } else {
+      return '${difference.inDays} days ago';
+    }
+  }
+
+  Widget _buildStatsCards(
+    BuildContext context,
+    bool isMobile,
+    bool isTablet,
+    DashboardState state,
+  ) {
+    if (state.isLoading && !state.hasStats) {
+      return GridView.count(
+        crossAxisCount: isMobile ? 1 : (isTablet ? 2 : 4),
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: List.generate(4, (index) => _LoadingStatCard()),
+      );
+    }
+
+    final stats = state.stats;
+    if (stats == null) {
+      return const SizedBox.shrink();
+    }
+
     return GridView.count(
       crossAxisCount: isMobile ? 1 : (isTablet ? 2 : 4),
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: const [
+      children: [
         StatCard(
           title: 'Total Users',
-          value: '1,245',
+          value: _formatNumber(stats.totalUsers),
           icon: Icons.people_outlined,
-          trend: 12.5,
+          trend: stats.trends.usersTrend,
           trendText: 'vs last month',
           color: Colors.blue,
         ),
         StatCard(
           title: 'Active Providers',
-          value: '86',
+          value: _formatNumber(stats.activeProviders),
           icon: Icons.business_outlined,
-          trend: 3.2,
+          trend: stats.trends.providersTrend,
           trendText: 'vs last month',
           color: Colors.green,
         ),
         StatCard(
           title: 'Pending Requests',
-          value: '38',
+          value: _formatNumber(stats.pendingRequests),
           icon: Icons.pending_actions_outlined,
-          trend: -5.1,
+          trend: stats.trends.requestsTrend,
           trendText: 'vs last month',
           isNegativeTrendGood: true,
           color: Colors.orange,
         ),
         StatCard(
           title: 'Revenue',
-          value: '\$24,500',
+          value: _formatCurrency(stats.revenue),
           icon: Icons.attach_money_outlined,
-          trend: 8.4,
+          trend: stats.trends.revenueTrend,
           trendText: 'vs last month',
           color: Colors.purple,
         ),
@@ -101,10 +263,30 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000000) {
+      return '\$${(amount / 1000000).toStringAsFixed(1)}M';
+    } else if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}K';
+    }
+    return '\$${amount.toStringAsFixed(0)}';
+  }
+
   Widget _buildChartsSection(
     BuildContext context,
     bool isMobile,
     bool isTablet,
+    DashboardState state,
+    DashboardController controller,
   ) {
     final theme = Theme.of(context);
 
@@ -459,7 +641,7 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentRequests(BuildContext context) {
+  Widget _buildRecentRequests(BuildContext context, DashboardState state) {
     final theme = Theme.of(context);
 
     return Column(
@@ -482,8 +664,66 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 16),
-        const RecentRequestsTable(),
+        EnhancedRecentRequestsTable(state: state),
       ],
+    );
+  }
+}
+
+class _LoadingStatCard extends StatelessWidget {
+  const _LoadingStatCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 80,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 120,
+              height: 24,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: 80,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

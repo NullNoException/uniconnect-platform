@@ -20,25 +20,25 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     initialLocation: AppRoutes.login,
-    redirect: (context, state) {
-      final isAuthenticated = authState.isAuthenticated;
-      final isAuthRoute =
-          state.matchedLocation == AppRoutes.login ||
-          state.matchedLocation == AppRoutes.forgotPassword ||
-          state.matchedLocation == AppRoutes.authDemo;
+    // redirect: (context, state) {
+    //   final isAuthenticated = authState.isAuthenticated;
+    //   final isAuthRoute =
+    //       state.matchedLocation == AppRoutes.login ||
+    //       state.matchedLocation == AppRoutes.forgotPassword ||
+    //       state.matchedLocation == AppRoutes.authDemo;
 
-      if (!isAuthenticated && !isAuthRoute) {
-        return AppRoutes.login;
-      }
+    //   if (!isAuthenticated && !isAuthRoute) {
+    //     return AppRoutes.login;
+    //   }
 
-      if (isAuthenticated &&
-          isAuthRoute &&
-          state.matchedLocation != AppRoutes.authDemo) {
-        return AppRoutes.dashboard;
-      }
+    //   if (isAuthenticated &&
+    //       isAuthRoute &&
+    //       state.matchedLocation != AppRoutes.authDemo) {
+    //     return AppRoutes.dashboard;
+    //   }
 
-      return null;
-    },
+    //   return null;
+    // },
     routes: [
       // Auth routes
       GoRoute(
