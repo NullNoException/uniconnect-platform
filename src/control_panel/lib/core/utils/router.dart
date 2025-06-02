@@ -14,6 +14,9 @@ import '../../features/universities/presentation/screens/universities_screen.dar
 import '../../features/universities/presentation/screens/university_detail_screen.dart';
 import '../../features/universities/presentation/screens/create_university_screen.dart';
 import '../../features/universities/presentation/screens/edit_university_screen.dart';
+import '../../features/services/presentation/screens/services_screen.dart';
+import '../../features/services/presentation/screens/service_detail_screen.dart';
+import '../../features/services/presentation/screens/service_form_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authControllerProvider);
@@ -111,24 +114,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Services routes
       GoRoute(
         path: AppRoutes.services,
-        builder: (context, state) => const Placeholder(), // To be implemented
+        builder: (context, state) => const ServicesScreen(),
       ),
       GoRoute(
         path: AppRoutes.serviceDetails,
         builder: (context, state) {
-          // final id = state.pathParameters['id']!;
-          return const Placeholder(); // To be implemented
+          final id = state.pathParameters['id']!;
+          return ServiceDetailScreen(serviceId: id);
         },
       ),
       GoRoute(
         path: AppRoutes.createService,
-        builder: (context, state) => const Placeholder(), // To be implemented
+        builder: (context, state) => const ServiceFormScreen(),
       ),
       GoRoute(
         path: AppRoutes.editService,
         builder: (context, state) {
-          // final id = state.pathParameters['id']!;
-          return const Placeholder(); // To be implemented
+          final id = state.pathParameters['id']!;
+          return ServiceFormScreen(serviceId: id);
         },
       ),
 

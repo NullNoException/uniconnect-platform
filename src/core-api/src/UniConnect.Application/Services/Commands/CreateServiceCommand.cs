@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using UniConnect.Application.Common.Interfaces;
 using UniConnect.Domain.Entities;
 using UniConnect.Domain.Repositories;
-using DomainServiceProvider = UniConnect.Domain.Entities.ServiceProvider;
 
 namespace UniConnect.Application.Services.Commands;
 

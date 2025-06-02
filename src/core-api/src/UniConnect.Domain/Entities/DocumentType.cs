@@ -2,7 +2,11 @@ using UniConnect.Domain.Common;
 
 namespace UniConnect.Domain.Entities;
 
-public class DocumentType : BaseEntity
+// Remove or rename the DocumentType entity if not used for this feature, or clarify usage to avoid confusion with the enum.
+// If you need both, consider renaming the entity to DocumentTypeEntity or similar.
+// For now, ensure all usages in upload feature use the enum UniConnect.Domain.Enums.DocumentType only.
+
+public class DocumentTypeEntity : BaseEntity
 {
     public string TypeName { get; set; } = string.Empty;
     public string? Description { get; set; }

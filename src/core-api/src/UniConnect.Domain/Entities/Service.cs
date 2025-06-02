@@ -1,4 +1,5 @@
 using UniConnect.Domain.Common;
+using UniConnect.Domain.Enums;
 
 namespace UniConnect.Domain.Entities;
 
@@ -16,10 +17,18 @@ public class Service : BaseEntity
     public int? FeaturedRank { get; set; }
     public string? ThumbnailUrl { get; set; }
 
+    // Approval properties
+    public ServiceApprovalStatus ApprovalStatus { get; set; } = ServiceApprovalStatus.Pending;
+    public DateTime? ApprovalDate { get; set; }
+    public Guid? ApprovedById { get; set; }
+    public string? ApprovalNotes { get; set; }
+    public string? RejectionReason { get; set; }
+
     // Navigation properties
     public ServiceProvider Provider { get; set; } = null!;
     public ServiceCategory Category { get; set; } = null!;
     public Currency Currency { get; set; } = null!;
+    public User? ApprovedBy { get; set; }
     public ICollection<ServiceAttribute> Attributes { get; private set; } = new List<ServiceAttribute>();
     public ICollection<ServiceRequirement> Requirements { get; private set; } = new List<ServiceRequirement>();
     public ICollection<ServicePriceComponent> PriceComponents { get; private set; } = new List<ServicePriceComponent>();

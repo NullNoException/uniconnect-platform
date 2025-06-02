@@ -4,9 +4,9 @@ using UniConnect.Domain.Entities;
 
 namespace UniConnect.Infrastructure.Persistence.Configurations;
 
-public class DocumentTypeConfiguration : IEntityTypeConfiguration<DocumentType>
+public class DocumentTypeConfiguration : IEntityTypeConfiguration<DocumentTypeEntity>
 {
-    public void Configure(EntityTypeBuilder<DocumentType> builder)
+    public void Configure(EntityTypeBuilder<DocumentTypeEntity> builder)
     {
         builder.HasKey(dt => dt.Id);
 

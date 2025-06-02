@@ -44,7 +44,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<ServicePriceComponent> ServicePriceComponents => Set<ServicePriceComponent>();
     public DbSet<ServiceRequest> ServiceRequests => Set<ServiceRequest>();
     public DbSet<RequestDocument> RequestDocuments => Set<RequestDocument>();
-    public DbSet<DocumentType> DocumentTypes => Set<DocumentType>();
+    public DbSet<DocumentTypeEntity> DocumentTypes => Set<DocumentTypeEntity>();
     public DbSet<RequestMilestone> RequestMilestones => Set<RequestMilestone>();
     public DbSet<Currency> Currencies => Set<Currency>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
@@ -69,6 +69,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<ReviewResponse> ReviewResponses => Set<ReviewResponse>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Document> Documents => Set<Document>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

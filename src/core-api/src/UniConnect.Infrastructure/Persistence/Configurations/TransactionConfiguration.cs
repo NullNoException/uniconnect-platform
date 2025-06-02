@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UniConnect.Domain.Entities;
 
+
 namespace UniConnect.Infrastructure.Persistence.Configurations;
 
 public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
@@ -20,7 +21,10 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         builder.Property(t => t.Status)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasConversion<int>();
+
+        builder.Property(t => t.Notes)
+            .HasMaxLength(1000);
 
         builder.Property(t => t.PlatformFeeAmount)
             .IsRequired()
@@ -29,6 +33,15 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         builder.Property(t => t.ProviderAmount)
             .IsRequired()
             .HasColumnType("decimal(18,2)");
+
+        builder.Property(t => t.ServiceRequestId)
+            .IsRequired();
+
+        builder.Property(t => t.StudentId)
+            .IsRequired();
+
+        builder.Property(t => t.ProviderId)
+            .IsRequired();
 
         // Configure relationship with ServiceRequest
         builder.HasOne(t => t.Request)

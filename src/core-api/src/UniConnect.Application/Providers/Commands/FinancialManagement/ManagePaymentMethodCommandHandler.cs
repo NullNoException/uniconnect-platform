@@ -1,9 +1,8 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Enums;
 using UniConnect.Domain.Repositories;
 
 namespace UniConnect.Application.Providers.Commands.FinancialManagement;
@@ -137,7 +136,7 @@ public class ManagePaymentMethodCommandHandler : IRequestHandler<ManagePaymentMe
         // Check if there are any pending transactions using this payment method
         var allTransactions = await _transactionRepository.GetAllAsync(cancellationToken);
         var hasActiveTransactions = allTransactions.Any(t => t.PaymentMethodId == paymentMethod.Id &&
-                                                            (t.Status == "Pending" || t.Status == "Escrowed"));
+                                                            (t.Status == TransactionStatus.Pending || t.Status == TransactionStatus.Escrowed));
 
         if (hasActiveTransactions)
         {

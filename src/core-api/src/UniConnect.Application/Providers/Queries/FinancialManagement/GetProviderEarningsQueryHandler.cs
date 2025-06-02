@@ -1,9 +1,8 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using UniConnect.Application.Common.Interfaces;
 using UniConnect.Application.Providers.DTOs;
 using UniConnect.Domain.Entities;
+using UniConnect.Domain.Enums;
 using UniConnect.Domain.Repositories;
 
 namespace UniConnect.Application.Providers.Queries.FinancialManagement;
@@ -48,13 +47,13 @@ public class GetProviderEarningsQueryHandler : IRequestHandler<GetProviderEarnin
         var lastMonthEnd = thisMonthStart.AddDays(-1);
 
         // Calculate earnings
-        var completedTransactions = transactions.Where(t => t.Status == "Completed" || t.Status == "Released").ToList();
+        var completedTransactions = transactions.Where(t => t.Status == TransactionStatus.Completed || t.Status == TransactionStatus.Released).ToList();
         var totalEarnings = completedTransactions.Sum(t => t.ProviderAmount);
 
-        var pendingTransactions = transactions.Where(t => t.Status == "Pending" || t.Status == "Escrowed").ToList();
+        var pendingTransactions = transactions.Where(t => t.Status == TransactionStatus.Pending || t.Status == TransactionStatus.Escrowed).ToList();
         var pendingEarnings = pendingTransactions.Sum(t => t.ProviderAmount);
 
-        var availableTransactions = completedTransactions.Where(t => t.Status == "Released").ToList();
+        var availableTransactions = completedTransactions.Where(t => t.Status == TransactionStatus.Released).ToList();
         var availableForWithdrawal = availableTransactions.Sum(t => t.ProviderAmount);
 
         var thisMonthEarnings = completedTransactions
@@ -90,7 +89,7 @@ public class GetProviderEarningsQueryHandler : IRequestHandler<GetProviderEarnin
                 TransactionType = t.TransactionType,
                 Amount = t.ProviderAmount,
                 CurrencyCode = t.Currency.CurrencyCode,
-                Status = t.Status,
+                Status = t.Status.ToString(),
                 TransactionDate = t.CreatedAt,
                 Description = $"Payment for {t.Request.Service.ServiceName}",
                 ServiceName = t.Request.Service.ServiceName,

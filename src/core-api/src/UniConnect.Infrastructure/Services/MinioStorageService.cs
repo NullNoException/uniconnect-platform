@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Minio;
@@ -9,7 +10,7 @@ using UniConnect.Domain.Services;
 
 namespace UniConnect.Infrastructure.Services;
 
-public class MinioStorageService : IStorageService, IFileStorageService
+public class MinioStorageService : UniConnect.Application.Common.Interfaces.IStorageService, IFileStorageService
 {
     private readonly MinioClient _minioClient;
     private readonly MinioSettings _minioSettings;
@@ -323,6 +324,44 @@ public class MinioStorageService : IStorageService, IFileStorageService
         }
 
         return sanitized;
+    }
+
+    #endregion
+
+    #region IStorageService Implementation
+
+    public async Task<string> UploadAsync(IFormFile file, string bucketName, string? objectName = null, CancellationToken cancellationToken = default)
+    {
+        using var stream = file.OpenReadStream();
+        var fileName = objectName ?? file.FileName;
+        return await UploadFileAsync(stream, fileName, file.ContentType, bucketName, cancellationToken);
+    }
+
+    public async Task<Stream> DownloadAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
+    {
+        var fileUrl = $"{bucketName}/{objectName}";
+        var stream = await GetFileAsync(fileUrl, cancellationToken);
+        if (stream == null)
+            throw new FileNotFoundException($"File not found: {fileUrl}");
+        return stream;
+    }
+
+    public async Task DeleteAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
+    {
+        var fileUrl = $"{bucketName}/{objectName}";
+        await DeleteFileAsync(fileUrl, cancellationToken);
+    }
+
+    public async Task<bool> BucketExistsAsync(string bucketName, CancellationToken cancellationToken = default)
+    {
+        var args = new Minio.DataModel.Args.BucketExistsArgs().WithBucket(bucketName);
+        return await _minioClient.BucketExistsAsync(args, cancellationToken);
+    }
+
+    public async Task CreateBucketAsync(string bucketName, CancellationToken cancellationToken = default)
+    {
+        var args = new Minio.DataModel.Args.MakeBucketArgs().WithBucket(bucketName);
+        await _minioClient.MakeBucketAsync(args, cancellationToken);
     }
 
     #endregion

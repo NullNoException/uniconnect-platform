@@ -24,15 +24,14 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         if (filter.endDate != null) {
           queryParams['endDate'] = filter.endDate!.toIso8601String();
         }
-        if (filter.serviceCategories != null &&
-            filter.serviceCategories!.isNotEmpty) {
-          queryParams['categories'] = filter.serviceCategories!.join(',');
+        if (filter.serviceCategories.isNotEmpty) {
+          queryParams['categories'] = filter.serviceCategories.join(',');
         }
-        if (filter.providerIds != null && filter.providerIds!.isNotEmpty) {
-          queryParams['providers'] = filter.providerIds!.join(',');
+        if (filter.providerIds.isNotEmpty) {
+          queryParams['providers'] = filter.providerIds.join(',');
         }
-        if (filter.searchQuery != null && filter.searchQuery!.isNotEmpty) {
-          queryParams['search'] = filter.searchQuery!;
+        if (filter.searchQuery.isNotEmpty) {
+          queryParams['search'] = filter.searchQuery;
         }
       }
 
@@ -145,12 +144,11 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       if (filter.endDate != null) {
         queryParams['endDate'] = filter.endDate!.toIso8601String();
       }
-      if (filter.serviceCategories != null &&
-          filter.serviceCategories!.isNotEmpty) {
-        queryParams['categories'] = filter.serviceCategories!.join(',');
+      if (filter.serviceCategories.isNotEmpty) {
+        queryParams['categories'] = filter.serviceCategories.join(',');
       }
-      if (filter.providerIds != null && filter.providerIds!.isNotEmpty) {
-        queryParams['providers'] = filter.providerIds!.join(',');
+      if (filter.providerIds.isNotEmpty) {
+        queryParams['providers'] = filter.providerIds.join(',');
       }
 
       final response = await _apiClient.get(

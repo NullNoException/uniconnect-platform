@@ -91,6 +91,12 @@ public static class DependencyInjection
         // Register repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IDocumentRepository, DocumentRepository>();
+
+        // Register MinioStorageService as implementation for IStorageService (from Application layer)
+        services.AddTransient<UniConnect.Infrastructure.Services.MinioStorageService>();
+        services.AddTransient<UniConnect.Application.Common.Interfaces.IStorageService>(provider => provider.GetRequiredService<UniConnect.Infrastructure.Services.MinioStorageService>());
+        services.AddTransient<UniConnect.Application.Common.Interfaces.IMalwareScannerService, LocalMalwareScannerService>();
 
         // Configure Redis
         services.AddStackExchangeRedisCache(options =>
@@ -115,7 +121,7 @@ public static class DependencyInjection
         services.AddHostedService<SemesterStatusUpdateService>();
 
         // Configure MinIO settings and storage services
-        services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+        services.Configure<Configuration.MinioSettings>(configuration.GetSection("MinioSettings"));
 
 
         // Configure Email settings
@@ -123,11 +129,6 @@ public static class DependencyInjection
         services.AddTransient<EmailService>();
         services.AddTransient<IEmailService>(provider => provider.GetRequiredService<EmailService>());
         services.AddTransient<ISmsService, SmsService>();
-
-        // Register MinioStorageService as implementation for both interfaces
-        services.AddTransient<MinioStorageService>();
-        services.AddTransient<IStorageService>(provider => provider.GetRequiredService<MinioStorageService>());
-        services.AddTransient<IFileStorageService>(provider => provider.GetRequiredService<MinioStorageService>());
 
         services.AddTransient<ICacheService, EnhancedRedisCacheService>();
         services.AddTransient<IPaymentService, PaymentService>();

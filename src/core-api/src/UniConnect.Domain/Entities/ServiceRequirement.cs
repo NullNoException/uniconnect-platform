@@ -12,5 +12,5 @@ public class ServiceRequirement : BaseEntity
 
     // Navigation properties
     public Service Service { get; set; } = null!;
-    public DocumentType? DocumentType { get; set; }
+    public DocumentTypeEntity? DocumentType { get; set; }
 }

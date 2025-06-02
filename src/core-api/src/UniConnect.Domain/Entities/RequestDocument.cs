@@ -17,6 +17,6 @@ public class RequestDocument : BaseEntity
 
     // Navigation properties
     public ServiceRequest Request { get; set; } = null!;
-    public DocumentType DocumentType { get; set; } = null!;
+    public DocumentTypeEntity DocumentType { get; set; } = null!;
     public User? VerifiedBy { get; set; }
 }

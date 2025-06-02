@@ -1,5 +1,4 @@
 import '../../domain/models/dashboard_stats.dart';
-import '../../domain/models/dashboard_filter.dart';
 
 class MockDashboardData {
   static DashboardData get sampleData => DashboardData(

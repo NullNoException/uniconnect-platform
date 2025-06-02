@@ -54,7 +54,7 @@ public class ReceiveEscrowReleaseCommandHandler : IRequestHandler<ReceiveEscrowR
         }
 
         // Validate transaction is in correct state for escrow release
-        if (transaction.Status != "Escrowed")
+        if (transaction.Status != TransactionStatus.Escrowed)
         {
             throw new InvalidOperationException($"Transaction is not in escrow status. Current status: {transaction.Status}");
         }
@@ -84,7 +84,7 @@ public class ReceiveEscrowReleaseCommandHandler : IRequestHandler<ReceiveEscrowR
             }
 
             // Update transaction status
-            transaction.Status = "Released";
+            transaction.Status = TransactionStatus.Released;
             transaction.EscrowReleaseDate = DateTime.UtcNow;
 
             await _transactionRepository.UpdateAsync(transaction, cancellationToken);

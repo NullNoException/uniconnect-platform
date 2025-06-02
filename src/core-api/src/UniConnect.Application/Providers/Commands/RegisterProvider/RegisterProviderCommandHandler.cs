@@ -65,11 +65,13 @@ public class RegisterProviderCommandHandler : IRequestHandler<RegisterProviderCo
         {
             Id = serviceProvider.Id,
             Email = user.Email,
-            OrganizationName = serviceProvider.CompanyName,
-            ContactName = request.ContactName,
+            CompanyName = serviceProvider.CompanyName,
+            ContactEmail = user.Email,
             ContactPhone = request.ContactPhone,
             Website = serviceProvider.CompanyWebsite,
-            Status = serviceProvider.VerificationStatus.ToString()
+            VerificationStatus = serviceProvider.VerificationStatus,
+            CreatedAt = serviceProvider.CreatedAt,
+            UpdatedAt = serviceProvider.UpdatedAt
         };
     }
 }

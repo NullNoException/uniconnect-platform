@@ -8,9 +8,17 @@ public class ServiceProvider : BaseEntity
     public Guid UserId { get; set; }
     public string CompanyName { get; set; } = string.Empty;
     public string? RegistrationNumber { get; set; }
+    public string? ContactEmail { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? CompanyAddress { get; set; }
+    public string? CompanyDescription { get; set; }
+    public string? Website { get; set; }
+    public string? BusinessRegistrationNumber { get; set; }
     public ProviderVerificationStatus VerificationStatus { get; set; } = ProviderVerificationStatus.Pending;
     public Guid? VerifiedById { get; set; }
     public DateTime? VerificationDate { get; set; }
+    public string? VerificationNotes { get; set; }
+    public string? RejectionReason { get; set; }
     public string? CompanyLogoUrl { get; set; }
     public string? CompanyWebsite { get; set; }
     public int? YearsInBusiness { get; set; }

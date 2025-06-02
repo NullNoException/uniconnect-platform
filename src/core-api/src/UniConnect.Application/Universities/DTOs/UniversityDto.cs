@@ -9,6 +9,7 @@ public record UniversityDto : IMapFrom<University>
 {
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
+    public string Code { get; init; } = string.Empty;
     public string? Description { get; init; }
     public Guid CountryId { get; init; }
     public string CountryName { get; init; } = string.Empty;

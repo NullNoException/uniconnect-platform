@@ -6,6 +6,7 @@ namespace UniConnect.Domain.Entities;
 public class University : BaseEntity
 {
     public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
     public string? Description { get; set; }
     public Guid CountryId { get; set; }
     public Guid? AddressId { get; set; }

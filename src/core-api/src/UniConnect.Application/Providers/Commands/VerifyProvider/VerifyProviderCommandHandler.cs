@@ -42,11 +42,15 @@ public class VerifyProviderCommandHandler : IRequestHandler<VerifyProviderComman
         {
             Id = provider.Id,
             Email = user?.Email ?? string.Empty,
-            OrganizationName = provider.CompanyName,
-            ContactName = string.Empty, // Not available in ServiceProvider
-            ContactPhone = string.Empty, // Not available in ServiceProvider
-            Website = provider.CompanyWebsite,
-            Status = provider.VerificationStatus.ToString()
+            CompanyName = provider.CompanyName,
+            ContactEmail = provider.ContactEmail ?? string.Empty,
+            ContactPhone = provider.ContactPhone ?? string.Empty,
+            Website = provider.Website,
+            VerificationStatus = provider.VerificationStatus,
+            VerificationDate = provider.VerificationDate,
+            VerifiedById = provider.VerifiedById,
+            CreatedAt = provider.CreatedAt,
+            UpdatedAt = provider.UpdatedAt
         };
     }
 }

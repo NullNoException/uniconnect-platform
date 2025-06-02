@@ -1,3 +1,75 @@
+// Route constants
+class AppRoutes {
+  // Auth routes
+  static const String login = '/login';
+  static const String forgotPassword = '/forgot-password';
+  static const String authDemo = '/auth-demo';
+
+  // Dashboard
+  static const String dashboard = '/dashboard';
+
+  // Users
+  static const String users = '/users';
+  static const String userDetails = '/users/:id';
+  static const String createUser = '/users/create';
+  static const String editUser = '/users/:id/edit';
+
+  // Providers
+  static const String providers = '/providers';
+  static const String providerDetails = '/providers/:id';
+  static const String createProvider = '/providers/create';
+  static const String editProvider = '/providers/:id/edit';
+
+  // Services
+  static const String services = '/services';
+  static const String serviceDetails = '/services/:id';
+  static const String createService = '/services/create';
+  static const String editService = '/services/:id/edit';
+
+  // Service requests
+  static const String serviceRequests = '/service-requests';
+  static const String serviceRequestDetails = '/service-requests/:id';
+
+  // Transactions
+  static const String transactions = '/transactions';
+  static const String transactionDetails = '/transactions/:id';
+
+  // Financial
+  static const String financial = '/financial';
+  static const String escrowPayments = '/escrow-payments';
+  static const String disputes = '/disputes';
+  static const String refunds = '/refunds';
+
+  // Universities
+  static const String universities = '/universities';
+  static const String universityDetails = '/universities/:id';
+  static const String createUniversity = '/universities/create';
+  static const String editUniversity = '/universities/:id/edit';
+
+  // Academic levels
+  static const String academicLevels = '/academic-levels';
+  static const String createAcademicLevel = '/academic-levels/create';
+  static const String editAcademicLevel = '/academic-levels/:id/edit';
+
+  // Majors
+  static const String majors = '/majors';
+  static const String createMajor = '/majors/create';
+  static const String editMajor = '/majors/:id/edit';
+
+  // University programs
+  static const String universityPrograms = '/university-programs';
+  static const String universityProgramDetails = '/university-programs/:id';
+
+  // Provider programs
+  static const String providerPrograms = '/providers/:providerId/programs';
+  static const String importProviderPrograms =
+      '/providers/:providerId/programs/import';
+
+  // Analytics and settings
+  static const String analytics = '/analytics';
+  static const String settings = '/settings';
+}
+
 // API Endpoints
 class ApiEndpoints {
   // Base URLs
@@ -77,59 +149,32 @@ class ApiEndpoints {
   static const String dashboardRecentRequests =
       '$controlPanelBaseUrl/dashboard/recent-requests';
   static const String dashboardExport = '$controlPanelBaseUrl/dashboard/export';
-}
 
-// Route names
-class AppRoutes {
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String forgotPassword = '/forgot-password';
-  static const String authDemo = '/auth-demo';
-  static const String dashboard = '/dashboard';
+  // Financial management endpoints
+  static const String escrowPayments = '$baseUrl/escrow-payments';
+  static const String escrowPaymentById =
+      '$baseUrl/escrow-payments/'; // Append ID
+  static const String escrowRelease = '$baseUrl/escrow-payments/release';
+  static const String disputes = '$baseUrl/disputes';
+  static const String disputeById = '$baseUrl/disputes/'; // Append ID
+  static const String disputeResolve = '$baseUrl/disputes/resolve';
+  static const String refunds = '$baseUrl/refunds';
+  static const String financialMetrics = '$baseUrl/financial/metrics';
 
-  static const String users = '/users';
-  static const String userDetails = '/users/:id';
-  static const String createUser = '/users/create';
-  static const String editUser = '/users/:id/edit';
+  // System management endpoints (UC-3.4.1)
+  static const String settings = '$controlPanelBaseUrl/settings';
+  static const String systemConfig = '$controlPanelBaseUrl/system/config';
+  static const String featureFlags =
+      '$controlPanelBaseUrl/system/feature-flags';
+  static const String maintenanceMode =
+      '$controlPanelBaseUrl/system/maintenance-mode';
 
-  static const String providers = '/providers';
-  static const String providerDetails = '/providers/:id';
-  static const String createProvider = '/providers/create';
-  static const String editProvider = '/providers/:id/edit';
-
-  static const String services = '/services';
-  static const String serviceDetails = '/services/:id';
-  static const String createService = '/services/create';
-  static const String editService = '/services/:id/edit';
-
-  static const String serviceRequests = '/service-requests';
-  static const String serviceRequestDetails = '/service-requests/:id';
-
-  static const String transactions = '/transactions';
-  static const String transactionDetails = '/transactions/:id';
-
-  static const String universities = '/universities';
-  static const String universityDetails = '/universities/:id';
-  static const String createUniversity = '/universities/create';
-  static const String editUniversity = '/universities/:id/edit';
-
-  static const String academicLevels = '/academic-levels';
-  static const String createAcademicLevel = '/academic-levels/create';
-  static const String editAcademicLevel = '/academic-levels/:id/edit';
-
-  static const String majors = '/majors';
-  static const String createMajor = '/majors/create';
-  static const String editMajor = '/majors/:id/edit';
-
-  static const String universityPrograms = '/university-programs';
-  static const String universityProgramDetails = '/university-programs/:id';
-
-  static const String providerPrograms = '/providers/:providerId/programs';
-  static const String importProviderPrograms =
-      '/providers/:providerId/programs/import';
-
-  static const String analytics = '/analytics';
-  static const String settings = '/settings';
+  // University management endpoints (UC-3.4.2) - Additional endpoints
+  static const String universitySearch = '$baseUrl/universities/search';
+  static const String universityImport = '$baseUrl/universities/import';
+  static const String universityStats = '$baseUrl/universities/statistics';
+  static const String countries = '$baseUrl/countries';
+  static const String cities = '$baseUrl/cities';
 }
 
 // Shared preferences keys

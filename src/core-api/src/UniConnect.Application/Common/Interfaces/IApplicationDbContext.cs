@@ -10,7 +10,7 @@ public interface IApplicationDbContext
     DbSet<Student> Students { get; }
     DbSet<ServiceProvider> ServiceProviders { get; }
     DbSet<ProviderStaff> ProviderStaff { get; }
-    DbSet<Admin> Admins { get; }
+    DbSet<Domain.Entities.Admin> Admins { get; }
     DbSet<Address> Addresses { get; }
     DbSet<Country> Countries { get; }
     DbSet<University> Universities { get; }
@@ -29,7 +29,7 @@ public interface IApplicationDbContext
     DbSet<ServicePriceComponent> ServicePriceComponents { get; }
     DbSet<ServiceRequest> ServiceRequests { get; }
     DbSet<RequestDocument> RequestDocuments { get; }
-    DbSet<DocumentType> DocumentTypes { get; }
+    DbSet<DocumentTypeEntity> DocumentTypes { get; }
     DbSet<RequestMilestone> RequestMilestones { get; }
     DbSet<Currency> Currencies { get; }
     DbSet<Transaction> Transactions { get; }
